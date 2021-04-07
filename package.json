@@ -1,0 +1,15 @@
+{
+  "name": "halyard",
+  "workspaces": [
+    "backend"
+  ],
+  "scripts": {
+    "start-server": "node backend/server.js"
+  },
+  "version": "1.0.0",
+  "description": "Sample halyard project",
+  "repository": "git@github.com:c6o/halyard.git",
+  "author": "narayan & robb",
+  "license": "MIT",
+  "private": true
+}

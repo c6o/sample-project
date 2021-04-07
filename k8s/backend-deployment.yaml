@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: blog-node-container
-          image: backendvm
-          imagePullPolicy: Never
+          image: c6oio/halyard-sample-backend:narayans
+          imagePullPolicy: Always
           ports:
             - containerPort: 3000

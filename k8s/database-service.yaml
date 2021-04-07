@@ -8,7 +8,7 @@ metadata:
     app: mongo-service
     
 spec:
-  type: LoadBalancer
+  type: NodePort
   ports:
     - protocol: TCP
       port: 27017

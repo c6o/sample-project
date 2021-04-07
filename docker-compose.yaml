@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+  halyard-backend:
+    image: c6oio/halyard-sample-backend:$USER
+    build:
+      context: ./backend
+  halyard-frontend:
+    image: c6oio/halyard-sample-frontend:$USER
+    build:
+      context: ./frontend

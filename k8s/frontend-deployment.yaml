@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: frontend-container
-          image: frontendvm
-          imagePullPolicy: Never
+          image: c6oio/halyard-sample-frontend:narayans
+          imagePullPolicy: Always
           ports:
             - containerPort: 80 
