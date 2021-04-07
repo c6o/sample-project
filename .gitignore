@@ -1,0 +1,26 @@
+# Node stuff
+.npmrc
+.idea
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# kubeconfig files from DigitalOcean
+*-kubeconfig.yaml
+*-kubeconfig.yml
+
+# git secrets
+.gitsecret/keys/random_seed
+
+# Secrets should not be checked in
+**/*.secret.*
+!**.secret
+
+# testing stuff.
+coverage
+html-report
+
+# Universal stuff (mac, webstorm, coverage
+*~
+.DS_Store
+**/*.d.ts
