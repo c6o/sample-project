@@ -3,16 +3,16 @@ apiVersion: v1
 kind: Service
 
 metadata:
-  name: frontend-service
+  name: mongo-service
   labels:
-    app: frontend-service
+    app: mongo-service
     
 spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 80
+      port: 27017
+      targetPort: 27017
   selector:
-    app: frontend-pod
+    app: mongo-pod
     
