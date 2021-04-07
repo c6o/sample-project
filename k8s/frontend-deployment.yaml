@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: frontend-deployment
+  labels:
+    app: frontend-deployment
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend-pod
+
+  template:
+    metadata:
+      name: frontend-pod
+      labels:
+        app: frontend-pod
+
+    spec:
+      containers:
+        - name: frontend-container
+          image: frontendvm
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80 
