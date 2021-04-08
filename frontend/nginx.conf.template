@@ -1,5 +1,5 @@
 upstream node-service{
-	server node-service:3000;
+	server ${API_HOST}:${API_PORT};
 }
 
 server {
@@ -15,7 +15,7 @@ server {
     }
 
 	location /api {
-		proxy_pass http://node-service;
+		proxy_pass http://${API_HOST};
 	}
 
     error_page   500 502 503 504  /50x.html;
