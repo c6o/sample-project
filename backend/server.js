@@ -17,12 +17,11 @@ app.get('/api', (req, res) => {
 })
 
 mongoose.connect(monngoURL, { useNewUrlParser: true })
-    .then(
-        () => {
-            console.log('connected to mongo')
-            retVal = 'Yay - connected to mongo! ' + monngoURL
-        }
-    ).catch((error) => {
+    .then(() => {
+        retVal = 'Yay - connected to mongo! ' + monngoURL
+        console.log(retVal)
+    })
+    .catch((error) => {
         retVal = 'Bummer - unable to connected to mongo: ' + monngoURL
         console.log(retVal)
     })
