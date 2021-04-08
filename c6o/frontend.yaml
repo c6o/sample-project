@@ -1,0 +1,15 @@
+name: Halyard Frontend
+appId:  halyard-frontend
+package: '@provisioner/appengine'
+editions:
+  - name: stable
+    status: private
+    spec:
+      provisioner:
+        package: '@provisioner/appengine'
+        image: c6oio/halyard-sample-frontend:narayans
+        tag-prefix: appengine
+        ports: 80
+        launch:
+          type: inline
+          popUp: true
