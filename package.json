@@ -4,7 +4,8 @@
     "backend"
   ],
   "scripts": {
-    "start-server": "node backend/server.js"
+    "start-server": "node backend/server.js",
+    "start-frontend": "node frontend/server.js"
   },
   "version": "1.0.0",
   "description": "Sample halyard project",

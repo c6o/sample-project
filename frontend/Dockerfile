@@ -5,13 +5,9 @@ RUN apk add nano && apk add curl
 COPY ./index.html /usr/share/nginx/html
 
 # Configure nginx
-COPY ./nginx.conf.template /
-
-RUN \
-rm -rf /etc/nginx/conf.d/default.conf && \
-envsubst '${API_HOST} ${API_PORT}' < /nginx.conf.template > /etc/nginx/conf.d/nginx.conf && \
-rm -f /nginx.conf.template
-
+COPY ./nginx.conf.template /etc/nginx/conf.d
+COPY ./nginx-start.sh /usr/bin/nginx-start.sh
+RUN rm -rf /etc/nginx/conf.d/default.conf
+ENTRYPOINT ["/usr/bin/nginx-start.sh"]
 EXPOSE 80
-
-
+CMD ["nginx", "-g", "daemon off;"]
