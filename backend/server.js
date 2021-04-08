@@ -3,7 +3,7 @@ const app = express()
 const mongoose = require('mongoose')
 const cors = require('cors')
 
-const monngoURL = process.env.BACKEND_MONGO_CONNECTION //'mongodb://mongo-svc/database'
+const mongoURL = process.env.BACKEND_MONGO_CONNECTION //'mongodb://mongo-svc/database'
 
 app.use(cors({
     origin: '*'
@@ -16,14 +16,15 @@ app.get('/api', (req, res) => {
     })
 })
 
-mongoose.connect(monngoURL, { useNewUrlParser: true })
+mongoose.connect(mongoURL, { useNewUrlParser: true })
     .then(() => {
-        retVal = 'Yay - connected to mongo! ' + monngoURL
+        retVal = 'Yay - connected to mongo! ' + mongoURL
         console.log(retVal)
     })
     .catch((error) => {
-        retVal = 'Bummer - unable to connected to mongo: ' + monngoURL
+        retVal = 'Bummer - unable to connected to mongo: ' + mongoURL
         console.log(retVal)
+        console.log(error)
     })
 
 app.listen(3000, function() {

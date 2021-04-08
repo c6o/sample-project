@@ -2,7 +2,7 @@
 apiVersion: system.codezero.io/v1
 kind: Environment
 metadata:
-  name: dev
+  name: front-end-dev
 spec:
   services:
     database:
@@ -10,6 +10,3 @@ spec:
     backend:
       fromFile: ../apps/backend.yaml
       await: database
-    frontend:
-      fromFile: ../apps/frontend.yaml
-      await: backend

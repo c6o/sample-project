@@ -5,8 +5,8 @@ metadata:
   name: prod
 spec:
   services:
-    backend: ../apps/backend.yaml
-    frontend: ../apps/frontend.yaml
     database:
       secretsRef:
       - mongo-connections
+    backend: ../apps/backend.yaml
+    frontend: ../apps/frontend.yaml

@@ -23,7 +23,7 @@
             },
             success: (result) => {
                 console.log(result)
-                $('#api-response').html("API Result: "+result)
+                $('#api-response').html("API Result: "+JSON.stringify(result))
             },
             error: (err) => {
                 console.log(err)
