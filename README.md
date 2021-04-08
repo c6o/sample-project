@@ -35,9 +35,9 @@ docker-compose push
 The following environment variables are required:
 
 ``` bash
-API_HOST=node-service
-API_PORT=3000
-BACKEND_MONGO_CONNECTION=http://localhost:27017/database
+export API_HOST=node-service
+export API_PORT=3000
+export BACKEND_MONGO_CONNECTION=http://localhost:27017/database
 ```
 
 ## Install
