@@ -9,7 +9,9 @@
 <body>
 
 </body>
-Hello there - I am here
+<p>Hello there - The frontend is here.</p>
+<div></div>
+<p id="api-response"></p>
 <script>
     $(document).ready(() => {
         const url = "/api/"
@@ -21,9 +23,11 @@ Hello there - I am here
             },
             success: (result) => {
                 console.log(result)
+                $('#api-response').html("API Result: "+result)
             },
             error: (err) => {
                 console.log(err)
+                $('#api-response').html("API Error: "+err.responseText)
             }
         })
     })
