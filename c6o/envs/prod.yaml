@@ -1,0 +1,12 @@
+
+apiVersion: system.codezero.io/v1
+kind: Environment
+metadata:
+  name: prod
+spec:
+  services:
+    backend: ../apps/backend.yaml
+    frontend: ../apps/frontend.yaml
+    database:
+      secretsRef:
+      - mongo-connections

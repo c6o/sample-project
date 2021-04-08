@@ -1,5 +1,5 @@
-name: Halyard Frontend
-appId:  halyard-frontend
+name: Halyard Backend
+appId: halyard-backend
 package: '@provisioner/appengine'
 editions:
   - name: stable
@@ -7,9 +7,8 @@ editions:
     spec:
       provisioner:
         package: '@provisioner/appengine'
-        image: c6oio/halyard-sample-frontend:narayans
+        image: c6oio/halyard-sample-backend:narayans
         tag-prefix: appengine
-        ports: 80
-        launch:
-          type: inline
-          popUp: true
+        ports: 3000
+        secretRefs:
+        - mongo-connections

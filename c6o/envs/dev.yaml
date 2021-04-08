@@ -1,0 +1,13 @@
+
+apiVersion: system.codezero.io/v1
+kind: Environment
+metadata:
+  name: dev
+spec:
+  services:
+    database:
+      fromFile: ../apps/database.yaml
+    backend:
+      fromFile: ../apps/backend.yaml
+    frontend:
+      fromFile: ../apps/frontend.yaml

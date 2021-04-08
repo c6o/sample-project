@@ -1,0 +1,19 @@
+name: Halyard Frontend
+appId:  halyard-frontend
+package: '@provisioner/appengine'
+editions:
+  - name: stable
+    status: private
+    spec:
+      provisioner:
+        package: '@provisioner/appengine'
+        image: c6oio/halyard-sample-frontend:narayans
+        tag-prefix: appengine
+        ports: 80
+        configs:
+          API_PORT: 3000
+          API_HOST: halyard-backend
+      marina:
+        launch:
+          type: inline
+          popUp: true

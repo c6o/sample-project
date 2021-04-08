@@ -1,0 +1,26 @@
+apiVersion: system.codezero.io/v1
+kind: App
+metadata:
+  name: mongo
+  labels:
+    system.codezero.io/edition: stable
+  annotations:
+    system.codezero.io/display: MongoDB
+    system.codezero.io/description: MongoDB is a cross-platform document-oriented database program.
+    system.codezero.io/appId: 01ES27ENPV94Z240RA6Q2QMRVV
+    system.codezero.io/iconUrl: >-
+      https://develop.codezero.io/api/assets/apps/01ES27ENPV94Z240RA6Q2QMRVV/icon
+spec:
+  provisioner:
+    name: mongo
+    tag: 4
+    rootUser: root
+    storageClass: do-block-storage
+    secretKeyRef: mongo-connections
+    config:
+    - database:
+        user: testUser
+        password: password
+        roles:
+          - readWrite
+        secretKey: BACKEND_MONGO_CONNECTION
