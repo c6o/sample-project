@@ -27,7 +27,7 @@
             },
             error: (err) => {
                 console.log(err)
-                $('#api-response').html("API Error: "+err.responseText)
+                $('#api-response').html("API Error: "+JSON.stringify(err))
             }
         })
     })
