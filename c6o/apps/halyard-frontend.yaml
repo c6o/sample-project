@@ -1,14 +1,20 @@
+apiVersion: system.codezero.io/v1
+kind: App
 name: halyard-frontend
 appId:  halyard-frontend
 package: '@provisioner/appengine'
+icon: icon.svg
 editions:
   - name: stable
     status: private
     spec:
+      routes:
+        - type: http
+          targetService: halyard-frontend
       provisioner:
         package: '@provisioner/appengine'
-        image: 'robblovell/halyard-frontend:1.0'
         tag-prefix: appengine
+        image: 'robblovell/halyard-frontend:1.0'
         ports: 80
         configs:
           API_PORT: 3000

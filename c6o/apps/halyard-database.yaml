@@ -1,26 +1,30 @@
 apiVersion: system.codezero.io/v1
 kind: App
-metadata:
-  name: halyard-database
-  labels:
-    system.codezero.io/edition: stable
-  annotations:
-    system.codezero.io/display: Halyard Database
-    system.codezero.io/description: The Halyard database uses MongoDB which is a cross-platform document-oriented database program.
-    system.codezero.io/appId: 01ES27ENPV94Z240RA6Q2QMRVV
-    system.codezero.io/iconUrl: >-
-      https://develop.codezero.io/api/assets/apps/01ES27ENPV94Z240RA6Q2QMRVV/icon
-spec:
-  provisioner:
-    name: halyard-database
-    tag: 4
-    rootUser: root
-    storageClass: do-block-storage
-    secretKeyRef: halyard-database
-    config:
-    - halyard-database:
-        user: testUser
-        password: password
-        roles:
-          - readWrite
-        secretKey: DATABASE_CONNECTION
+name: halyard-database
+appId: halyard-database
+package: '@provisioner/appengine'
+editions:
+  - name: stable
+    status: private
+    spec:
+      routes:
+        - type: http
+          targetService: halyard-database
+      provisioner:
+        tag-prefix: appengine
+        package: '@provisioner/appengine'
+        image: 'mongo:4.4.5'
+        ports: 27017
+#        env:
+#          - name: MONGO_INITDB_DATABASE
+#            value: halyard-database
+#        config:
+#        - halyard-database:
+#            user: testUser
+#            password: password
+#            roles:  readWrite
+#            secretKey: DATABASE_CONNECTION
+      marina:
+        launch:
+          type: inline
+          popUp: false
