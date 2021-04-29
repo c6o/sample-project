@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: halyard-frontend-deployment
+  labels:
+    app: halyard-frontend-deployment
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: halyard-frontend-pod
+
+  template:
+    metadata:
+      name: halyard-frontend-pod
+      labels:
+        app: halyard-frontend-pod
+
+    spec:
+      containers:
+        - name: halyard-frontend-container
+          image: "robblovell/halyard-frontend:1.0"
+          imagePullPolicy: Always
+          env:
+            - name: API_HOST
+              value: 'halyard-backend-service'
+            - name: API_PORT
+              value: '3000'
+          ports:
+            - containerPort: 80 

@@ -1,0 +1,18 @@
+name: halyard-backend
+appId: halyard-backend
+package: '@provisioner/appengine'
+editions:
+  - name: stable
+    status: private
+    spec:
+      provisioner:
+        package: '@provisioner/appengine'
+        image: 'robblovell/halyard-backend:1.0'
+        tag-prefix: appengine
+        ports: 3000
+        configs:
+          DATABASE_CONNECTION: "http://halyard-database:27017"
+          ECHO_CONNECTION: "http://halyard-echo:8080"
+        secretRefs:
+          - halyard-database
+          - halyard-echo

@@ -1,0 +1,17 @@
+name: Halyard Echo Server
+appId: echoserver
+package: '@provisioner/appengine'
+editions:
+  - name: stable
+    status: private
+    spec:
+      provisioner:
+        package: '@provisioner/appengine'
+        image: 'robblovell/echo-server:2.2'
+        tag-prefix: appengine
+        ports: 8000
+        services:
+          - echoserver:
+        config:
+          - halyard-echo:
+              secretKey: ECHO_CONNECTION

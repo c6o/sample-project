@@ -5,8 +5,8 @@ metadata:
   name: prod
 spec:
   services:
-    database:
+    halyard-database:
       secretsRef:
-      - mongo-connections
-    backend: ../apps/backend.yaml
-    frontend: ../apps/frontend.yaml
+      - halyard-database-connections
+    halyard-backend: ../apps/halyard-backend.yaml
+    halyard-frontend: ../apps/halyard-frontend.yaml

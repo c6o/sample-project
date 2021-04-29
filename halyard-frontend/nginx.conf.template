@@ -1,5 +1,6 @@
-upstream node-service{
-	server node-service:3000;
+upstream halyard-backend-service{
+    # requests from the public faccing app to the API server are routed here.
+	server ${API_HOST}:${API_PORT};
 }
 
 server {
@@ -15,7 +16,8 @@ server {
     }
 
 	location /api {
-		proxy_pass http://node-service;
+	    # requests from the public faccing app to the API server are routed here.
+		proxy_pass http://halyard-backend-service;
 	}
 
     error_page   500 502 503 504  /50x.html;

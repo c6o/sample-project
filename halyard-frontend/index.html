@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!--This file is not used within the docker container, see index.html.template.-->
+
+    <head>
+        <meta charset="utf-8" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    </head>
+
+    <body>
+        <p>Hello there - The halyard frontend is here.</p>
+        <div></div>
+        <p id="api-response"></p>
+        <script>
+            $(document).ready(() => {
+                const url = "/api"
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    data: {
+                        "Content-Type": undefined
+                    },
+                    success: (result) => {
+                        console.log(result)
+                        $('#api-response').html(`API result from (${url}):${JSON.stringify(result)}`)
+                    },
+                    error: (err) => {
+                        console.log(err)
+                        $('#api-response').html(`API error from (${url}): ${JSON.stringify(err)}`)
+                    }
+                })
+            })
+        </script>
+    </body>
+
+</html>

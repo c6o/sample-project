@@ -5,8 +5,12 @@ metadata:
   name: front-end-dev
 spec:
   services:
-    database:
-      fromFile: ../apps/database.yaml
-    backend:
-      fromFile: ../apps/backend.yaml
-      await: database
+    halyard-database:
+      fromFile: ../apps/halyard-database.yaml
+    halyard-echo:
+      fromFile: ../apps/halyard-echo.yaml
+      await: halyard-database
+    halyard-backend:
+      fromFile: ../apps/halyard-backend.yaml
+      await: halyard-echo
+    halyard-frontend: local

@@ -1,4 +1,4 @@
-name: Halyard Frontend
+name: halyard-frontend
 appId:  halyard-frontend
 package: '@provisioner/appengine'
 editions:
@@ -7,7 +7,7 @@ editions:
     spec:
       provisioner:
         package: '@provisioner/appengine'
-        image: c6oio/halyard-sample-frontend:narayans
+        image: 'robblovell/halyard-frontend:1.0'
         tag-prefix: appengine
         ports: 80
         configs:

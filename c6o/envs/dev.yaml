@@ -1,15 +1,17 @@
-
 apiVersion: system.codezero.io/v1
 kind: Environment
 metadata:
   name: dev
 spec:
   services:
-    database:
-      fromFile: ../apps/database.yaml
-    backend:
-      fromFile: ../apps/backend.yaml
-      await: database
-    frontend:
-      fromFile: ../apps/frontend.yaml
-      await: backend
+    halyard-database:
+      fromFile: ../apps/halyard-database.yaml
+    halyard-echo:
+      fromFile: ../apps/halyard-echo.yaml
+      await: halyard-database
+    halyard-backend:
+      fromFile: ../apps/halyard-backend.yaml
+      await: halyard-echo
+    halyard-frontend:
+      fromFile: ../apps/halyard-frontend.yaml
+      await: halyard-backend

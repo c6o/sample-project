@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "halyard-backend",
   "version": "1.0.0",
   "description": "Simple Nodeserver",
   "main": "server.js",
