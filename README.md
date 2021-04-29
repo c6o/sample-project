@@ -5,16 +5,18 @@ A project for experimenting with developer productivity.
 A minimum set of features for CI/CD experimentation:
 
 * Front End
-* Back End
+  * halyard-frontend
+* 2 Back Ends
+  * halyard-backend
+  * echo-server from git@github.com:robblovell/echo-server.git that builds the docker container: robblovell/echo-server:2.2
 * Database
+  * halyard-database from a mongodb container
 
 Technologies:
 
 * Dockerized
 * Kubernetes
-
-See: https://betterprogramming.pub/kubernetes-deployment-connect-your-front-end-to-your-back-end-with-nginx-7e4e7cfef177
-
+* CodeZero
 
 ## Operating manifest items
 
@@ -49,7 +51,7 @@ docker network create halyard
 docker run --network halyard --name halyard-database -d mongo:4.4.5
 docker run --network halyard -p 8002:3000 --detach --name halyard-backend --env ECHO_CONNECTION="http://echo:8080" --env DATABASE_CONNECTION="mongodb://halyard-database:27017" halyard-backend:1.0
 docker run --network halyard -p 8001:80 --detach --name halyard-frontend --env API_HOST=halyard-backend --env API_PORT=3000 halyard-frontend:1.0
-docker run --network halyard -p 8000:8080 --detach --name echo echo-server:2.2
+docker run --network halyard -p 8000:8080 --detach --name echo robblovell/echo-server:2.2
 ```
 
 Now open `https://localhost:8001`
@@ -143,3 +145,6 @@ czctl install ./c6o/halyard-frontend.yaml --local
 ### Promote from environment to Environment
 
 ### Build/Publish/Deploy on Check In
+
+#### Based On: https://betterprogramming.pub/kubernetes-deployment-connect-your-front-end-to-your-back-end-with-nginx-7e4e7cfef177
+
