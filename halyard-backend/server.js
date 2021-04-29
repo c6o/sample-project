@@ -1,25 +1,23 @@
 const express = require('express')
-const app = express()
 const cors = require('cors')
 const http = require('http')
+const { MongoClient, Server } = require('mongodb')
 
 // To route to Echo Server: Same namespace: servicename:port, Different namespace: servicename.namespace:port
 const echoURL = process.env.ECHO_CONNECTION || 'http://localhost:8000'
 const mongoURL = process.env.DATABASE_CONNECTION || 'mongodb://localhost:27017'
 const mongoDB = new URL(mongoURL)
 
-const MongoClient = require('mongodb').MongoClient
-    , Server = require('mongodb').Server;
-
 const mongoClient = new MongoClient(new Server(mongoDB.hostname, mongoDB.port));
 
+const app = express()
 app.use(cors({
     origin: '*'
 }))
 
 let mongodbState = 'Not connected to the Halyard database yet'
 
-mongoClient.connect((error) => {
+const databaseConnectCallback = (error) => {
     if (error) {
         mongodbState = 'Bummer - unable to connected to the Halyard database: ' + mongoURL
         console.log(mongodbState)
@@ -29,12 +27,14 @@ mongoClient.connect((error) => {
         mongodbState = 'Yay - connected to the Halyard database! ' + mongoURL
     }
     mongoClient.close()
-})
+    return mongodbState
+}
 
-app.get('/api', (req, res) => {
+mongoClient.connect(databaseConnectCallback)
 
+const getHandler = (req, res) => {
     let retVal = ''
-    http.get(echoURL, (resp) => {
+    const readHandler = (resp) => {
         let data = ''
         // A chunk of data has been received.
         resp.on('data', (chunk) => {
@@ -49,17 +49,24 @@ app.get('/api', (req, res) => {
                 'data': retVal
             })
         })
-    }).on("error", (err) => {
+    }
+
+    const readErrorHandler = (err) => {
         retVal = `${mongodbState}</br></br> Echo Service Error: ${err.message}`
         res.send({
             'data': retVal
         })
-    })
+    }
+    http.get(echoURL, readHandler).on("error", readErrorHandler)
+    return {readHandler, readErrorHandler}
+}
 
-})
+app.get('/api', getHandler)
 
-app.listen(3000, function () {
+const serviceHandler = function () {
     console.log('listening on 3000')
-})
+}
 
-module.exports = app  // Exported for unit testing.
+app.listen(3000, serviceHandler)
+
+module.exports = { app, databaseConnectCallback, getHandler, serviceHandler }  // Exported for unit testing.
