@@ -23,7 +23,7 @@ editions:
 #            user: testUser
 #            password: password
 #            roles:  readWrite
-#            secretKey: DATABASE_CONNECTION
+#            secretKey: HALYARD_DATABASE
       marina:
         launch:
           type: inline

@@ -6,12 +6,14 @@ spec:
   services:
     halyard-database:
       fromFile: ../apps/halyard-database.yaml
+
     halyard-echo:
       fromFile: ../apps/halyard-echo.yaml
-      await: halyard-database
+
     halyard-backend:
       fromFile: ../apps/halyard-backend.yaml
-      await: halyard-echo
+      await: [ halyard-echo, halyard-database ]
+
     halyard-frontend:
       fromFile: ../apps/halyard-frontend.yaml
       await: halyard-backend

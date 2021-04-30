@@ -1,6 +1,6 @@
 upstream halyard-backend-service{
     # requests from the public faccing app to the API server are routed here.
-	server ${API_HOST}:${API_PORT};
+	server ${HALYARD_BACKEND};
 }
 
 server {

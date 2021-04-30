@@ -4,8 +4,8 @@ const http = require('http')
 const { MongoClient, Server } = require('mongodb')
 
 // To route to Echo Server: Same namespace: servicename:port, Different namespace: servicename.namespace:port
-const echoURL = process.env.ECHO_CONNECTION || 'http://localhost:8000'
-const mongoURL = process.env.DATABASE_CONNECTION || 'mongodb://localhost:27017'
+const echoURL = process.env.HALYARD_ECHO || 'http://localhost:8000'
+const mongoURL = process.env.HALYARD_DATABASE || 'mongodb://localhost:27017'
 const mongoDB = new URL(mongoURL)
 
 const mongoClient = new MongoClient(new Server(mongoDB.hostname, mongoDB.port));
@@ -16,6 +16,7 @@ app.use(cors({
 }))
 
 let mongodbState = 'Not connected to the Halyard database yet'
+const version = 'Version 1.0'
 
 const databaseConnectCallback = (error) => {
     if (error) {
@@ -42,7 +43,7 @@ const getHandler = (req, res) => {
         })
         // The whole response has been received. Print out the result.
         resp.on('end', () => {
-            retVal = `${mongodbState}</br></br> Echo Service Response: ${
+            retVal = `${version} </br></br>${mongodbState} </br></br> Echo Service Response: ${
                 data.replace(/[\n\r]/g,'</br>')
             }`
             res.send({
@@ -52,7 +53,7 @@ const getHandler = (req, res) => {
     }
 
     const readErrorHandler = (err) => {
-        retVal = `${mongodbState}</br></br> Echo Service Error: ${err.message}`
+        retVal = `${version} </br></br> ${mongodbState}</br></br> Echo Service Error: ${err.message}`
         res.send({
             'data': retVal
         })

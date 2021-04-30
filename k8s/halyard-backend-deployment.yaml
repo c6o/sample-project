@@ -22,12 +22,12 @@ spec:
     spec:
       containers:
         - name: blog-node-container
-          image: "robblovell/halyard-backend:1.0"
+          image: "robblovell/halyard-backend:1.1"
           imagePullPolicy: Always
           env:
-            - name: ECHO_CONNECTION
+            - name: HALYARD_ECHO
               value: http://echo-service:8000
-            - name: DATABASE_CONNECTION
+            - name: HALYARD_DATABASE
               value: mongodb://halyard-database-service:27017
           ports:
             - containerPort: 3000

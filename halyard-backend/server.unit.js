@@ -56,7 +56,7 @@ describe('server.js', () => {
     }
     const SOME_HOSTNAME = 'localhost'
     const SOME_PORT = '27017'
-    process.env.DATABASE_CONNECTION = `mongodb://${SOME_HOSTNAME}:${SOME_PORT}`
+    process.env.HALYARD_DATABASE = `mongodb://${SOME_HOSTNAME}:${SOME_PORT}`
 
     test('Server Starts on load.', () => {
         expect(app.use).toBeCalled()

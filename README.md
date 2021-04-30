@@ -40,21 +40,21 @@ docker build --tag halyard-frontend ./halyard-frontend:1.0
 
 ### M1 build for remote systems:
 ```bash
-docker build --tag robblovell/halyard-backend:1.0 --platform linux/amd64 ./halyard-backend
-docker build --tag robblovell/halyard-frontend:1.0 --platform linux/amd64 ./halyard-frontend
-docker push robblovell/halyard-backend:1.0
-docker push robblovell/halyard-frontend:1.0
+docker build --tag robblovell/halyard-backend:1.1 --platform linux/amd64 ./halyard-backend
+docker build --tag robblovell/halyard-frontend:1.1 --platform linux/amd64 ./halyard-frontend
+docker push robblovell/halyard-backend:1.1
+docker push robblovell/halyard-frontend:1.1
 ```
 
 ```bash
 docker network create halyard
-docker run --network halyard --name halyard-database -d mongo:4.4.5
-docker run --network halyard -p 8002:3000 --detach --name halyard-backend --env ECHO_CONNECTION="http://echo:8080" --env DATABASE_CONNECTION="mongodb://halyard-database:27017" halyard-backend:1.0
-docker run --network halyard -p 8001:80 --detach --name halyard-frontend --env API_HOST=halyard-backend --env API_PORT=3000 halyard-frontend:1.0
-docker run --network halyard -p 8000:8080 --detach --name echo robblovell/echo-server:2.2
+docker run --network halyard -p 27017:27017 --name halyard-database -d mongo:4.4.5
+docker run --network halyard -p 8000:8080 --detach --name halyard-echo robblovell/echo-server:2.2
+docker run --network halyard -p 8001:3000 --detach --name halyard-backend --env HALYARD_ECHO="http://halyard-echo:8080" --env HALYARD_DATABASE="mongodb://halyard-database:27017" robblovell/halyard-backend:1.1
+docker run --network halyard -p 8002:80 --detach --name halyard-frontend --env HALYARD_BACKEND='halyard-backend:3000' robblovell/halyard-frontend:1.1
 ```
 
-Now open `https://localhost:8001`
+Now open `https://localhost:8002`
 
 ### For a public echo server: 
 ```bash
@@ -64,17 +64,17 @@ docker run --network halyard -p 8000:8080 --detach --name echo echo-server:1.0
 ### publish to docker hub
 
 ```bash
-docker tag e3053bf8c609 robblovell/halyard-backend:1.0
-docker tag f2cf0963cccd robblovell/halyard-frontend:1.0
-docker push robblovell/halyard-backend:1.0
-docker push robblovell/halyard-frontend:1.0
+docker tag e3053bf8c609 robblovell/halyard-backend:1.1
+docker tag f2cf0963cccd robblovell/halyard-frontend:1.1
+docker push robblovell/halyard-backend:1.1
+docker push robblovell/halyard-frontend:1.1
 ```
 docker tag
 
 Cleaning up:
 
 ```bash
-docker kill halyard-backend halyard-frontend halyard-database echo
+docker kill halyard-backend halyard-frontend halyard-database halyard-echo
 docker container prune -f && docker image prune -f 
 docker network rm halyard
 ```
@@ -97,9 +97,8 @@ docker inspect -f '{{.NetworkSettings.Networks.[network].IPAddress}}' [container
 The following environment variables are required:
 
 ```bash
-export API_HOST=node-service
-export API_PORT=8002
-export DATABASE_CONNECTION=mongodb://localhost:8003
+export HALYARD_DATABASE=mongodb://localhost:8003
+export HALYARD_BACKEND=http://node-service:8002
 ```
 
 ## Install

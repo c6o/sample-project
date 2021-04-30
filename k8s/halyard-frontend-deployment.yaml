@@ -22,12 +22,10 @@ spec:
     spec:
       containers:
         - name: halyard-frontend-container
-          image: "robblovell/halyard-frontend:1.0"
+          image: "robblovell/halyard-frontend:1.1"
           imagePullPolicy: Always
           env:
-            - name: API_HOST
-              value: 'halyard-backend-service'
-            - name: API_PORT
-              value: '3000'
+            - name: HALYARD_BACKEND
+              value: 'http://halyard-backend-service:3000'
           ports:
             - containerPort: 80 
