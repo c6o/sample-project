@@ -51,7 +51,7 @@ docker network create halyard
 docker run --network halyard -p 27017:27017 --name halyard-database -d mongo:4.4.5
 docker run --network halyard -p 8000:8080 --detach --name halyard-echo robblovell/echo-server:2.2
 docker run --network halyard -p 8001:3000 --detach --name halyard-backend --env HALYARD_ECHO="http://halyard-echo:8080" --env HALYARD_DATABASE="mongodb://halyard-database:27017" robblovell/halyard-backend:1.1
-docker run --network halyard -p 8002:80 --detach --name halyard-frontend --env HALYARD_BACKEND='halyard-backend:3000' robblovell/halyard-frontend:1.1
+docker run --network halyard -p 8002:80 --detach --name halyard-frontend --env HALYARD_BACKEND_HOST='halyard-backend:3000' robblovell/halyard-frontend:1.1
 ```
 
 Now open `https://localhost:8002`
@@ -98,7 +98,7 @@ The following environment variables are required:
 
 ```bash
 export HALYARD_DATABASE=mongodb://localhost:8003
-export HALYARD_BACKEND=http://node-service:8002
+export HALYARD_BACKEND_HOST=node-service:8002
 ```
 
 ## Install

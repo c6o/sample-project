@@ -19,11 +19,8 @@ editions:
         image: 'robblovell/halyard-backend:1.0'
         ports: 3000
         configs:
-          HALYARD_DATABASE_X: "mongodb://halyard-database:27017"
-          HALYARD_ECHO_X: "http://halyard-echo:8080"
-
-          HALYARD_DATABASE: halyard-database
-          HALYARD_ECHO: halyard-echo
+          HALYARD_DATABASE: "mongodb://halyard-database:27017"
+          HALYARD_ECHO: "http://halyard-echo:8080"
 #        secretRefs:
 #          - halyard-database
 #          - halyard-echo
