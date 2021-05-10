@@ -5,8 +5,31 @@ metadata:
   name: prod
 spec:
   services:
-    database:
-      secretsRef:
-      - mongo-connections
-    backend: ../apps/backend.yaml
-    frontend: ../apps/frontend.yaml
+    halyard-database:
+      fromConnectionString: "mongodb://halyard-database:27017"
+      fromIAMToken: halyard-database-IAM-access
+      fromCredentials: halyard-database-credentials
+      fromSecret: halyard-database-secret
+      fromConfig: halyard-database-config
+      fromContainer: 'mongo:4.4.5'
+        connection: 'alksdfjaldfsjalkdfjaldfjalsdfjlaksdfjlaksdfjlaksdfjlkjalkfsdj'
+      fromFile: '../apps/halyard-database.yaml'
+
+    halyard-echo:
+      fromRepo: git@github.com:robblovell/echo-server.git
+      fromContainer: 'robblovell/echo-server:2.2'
+      fromFile: '../apps/halyard-echo.yaml'
+
+    halyard-backend:
+      fromFile: ../apps/halyard-backend.yaml
+      await: [ halyard-echo, halyard-database ]
+
+    halyard-frontend:
+      fromFile: ../apps/halyard-frontend.yaml
+      await: halyard-backend
+
+    halyard_wikijs:
+      fromContainer: 'wikijs:3.5.6'
+        CONNECTION_TO_DATABASE: halyard-database
+        PORT:
+        HOST:

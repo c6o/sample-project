@@ -1,0 +1,30 @@
+apiVersion: system.codezero.io/v1
+kind: App
+name: halyard-backend
+appId: halyard-backend
+package: '@provisioner/appengine'
+icon: icon.svg
+editions:
+  - name: stable
+    status: private
+    spec:
+      # this gets me a route to the outside world.
+      routes:
+        - type: http
+          targetService: halyard-backend
+
+      provisioner:
+        package: '@provisioner/appengine'
+        tag-prefix: appengine
+        image: 'robblovell/halyard-backend:1.0'
+        ports: 3000
+        configs:
+          HALYARD_DATABASE: "mongodb://halyard-database:27017"
+          HALYARD_ECHO: "http://halyard-echo:8080"
+#        secretRefs:
+#          - halyard-database
+#          - halyard-echo
+      marina:
+        launch:
+          type: inline
+          popUp: false

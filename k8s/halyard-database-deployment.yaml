@@ -3,21 +3,21 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: mongo-deployment
+  name: halyard-database-deployment
   labels:
-    app: mongo-deployment
+    app: halyard-database-deployment
 
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: mongo-pod
+      app: halyard-database-pod
 
   template:
     metadata:
-      name: mongo-pod
+      name: halyard-database-pod
       labels:
-        app: mongo-pod
+        app: halyard-database-pod
 
     spec:
       containers:
@@ -25,6 +25,6 @@ spec:
           image: mongo
           env: 
             - name: MONGO_INITDB_DATABASE
-              value: database
+              value: halyard-database
           ports:
             - containerPort: 27017 

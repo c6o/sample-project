@@ -1,0 +1,21 @@
+{
+  "name": "halyard-backend",
+  "version": "1.0.0",
+  "description": "Simple Nodeserver",
+  "main": "server.js",
+  "scripts": {
+    "test": "jest --config=\"./jest.config.unittest.js\" --maxWorkers=3"
+  },
+  "author": "Vidhyanshu Jain",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "axios": "^0.21.1",
+    "mongodb": "^3.6.5"
+  },
+  "devDependencies": {
+    "jest": "^26.0.1",
+    "jest-html-reporters": "^2.0.3"
+  }
+}
