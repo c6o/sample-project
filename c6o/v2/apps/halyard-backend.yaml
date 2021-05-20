@@ -1,0 +1,57 @@
+apiVersion: system.codezero.io/v1
+kind: App
+name: halyard-backend
+appId: halyard-backend
+package: '@provisioner/appengine'
+icon: icon.svg
+editions:
+  - name: stable
+    status: private
+    spec:
+      # this gets me a route to the outside world.
+      routes:
+        - type: http
+          targetService: halyard-backend
+
+      provisioner:
+        package: '@provisioner/appengine'
+        tag-prefix: appengine
+        image: 'robblovell/halyard-backend:1.1'
+        ports: 3000
+        exports: # Exports -> Option 1: The environment provisioner does this for me
+          # Exports -> Option 2: The connection string is explicitly given here
+          HALYARD_BACKEND: "http://halyard-backend:3000"
+
+        # Secrets -> Option 1: Reference other services secrets files
+        secretRefs:
+          - halyard-echo
+          - halyard-database
+
+        # Config -> Option 1: This service defines connected services.
+        configMaps:
+          - halyard-echo
+          - halyard-database
+        # Config -> Option 1b: This service defines it's own config map (a beacon?).
+        # install setup, forms the beacon
+        configs:
+          HALYARD_DATABASE: "mongodb://halyard-database:27017"
+          HALYARD_ECHO: "http://halyard-echo:8080"
+
+        # Dependencies -> Option 1: optionally, you can specify what the dependencies are here instead of in the environment.
+        dependsOn: [ halyard-echo, halyard-database ]
+
+        # XXX Initializers -> Option 1: This initializer is defined here by the service that needs it and gets passed to the database provisioner
+        initializers:
+          - target: halyard-database
+            action:
+              name: MONGO_INITDB_DATABASE # this is a command to the provisioner
+              value: halyard-database
+              config:
+                user: testUser
+                password: password
+                roles: readWrite
+                secretKey: HALYARD_DATABASE_DATABASE
+      marina:
+        launch:
+          type: inline
+          popUp: false

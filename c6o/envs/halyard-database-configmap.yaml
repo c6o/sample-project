@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: halyard-database
+  labels:
+    name: halyard-database
+    system.codezero.io/app: halyard
+data:
+  user: testUser
+  password: password
+  roles: readWrite
+  secretKey: HALYARD_DATABASE

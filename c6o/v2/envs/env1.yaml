@@ -1,0 +1,33 @@
+apiVersion: system.codezero.io/v1
+kind: Environment
+metadata:
+  name: dev # this defines the namespace created for this environment.
+spec:
+  services:
+    # each service makes available to the environment provisioner a connection string.
+    halyard-database:
+      fromFile: ../apps/halyard-database.yaml
+
+    halyard-echo:
+      fromFile: ../apps/halyard-echo.yaml
+
+    halyard-backend:
+      fromFile: ../apps/halyard-backend.yaml
+      # Dependencies -> Option 2: optionally, you can specify what the dependencies are here instead of in the environment.
+      dependsOn: [ halyard-echo, halyard-database ]
+
+      # Initializers -> Option 2: This initializer is defined here in the environment for the service that needs it and gets passed to the database provisioner
+      initializers:
+        - target: halyard-database
+          action:
+            name: MONGO_INITDB_DATABASE # this is a command to the provisioner
+            value: halyard-database
+            config:
+              user: testUser
+              password: password
+              roles: readWrite
+              secretKey: HALYARD_DATABASE_DATABASE
+
+    halyard-frontend:
+      fromFile: ../apps/halyard-frontend.yaml
+      dependsOn: halyard-backend

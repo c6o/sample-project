@@ -12,8 +12,8 @@ spec:
 
     halyard-backend:
       fromFile: ../apps/halyard-backend.yaml
-      await: [ halyard-echo, halyard-database ]
+      dependsOn: [ halyard-echo, halyard-database ]
 
     halyard-frontend:
       fromFile: ../apps/halyard-frontend.yaml
-      await: halyard-backend
+      dependsOn: halyard-backend

@@ -18,12 +18,16 @@ editions:
 #        env:
 #          - name: MONGO_INITDB_DATABASE
 #            value: halyard-database
-#        config:
-#        - halyard-database:
-#            user: testUser
-#            password: password
-#            roles:  readWrite
-#            secretKey: HALYARD_DATABASE
+        config:
+        - halyard-database:
+            user: testUser
+            password: password
+            roles:
+              - readWrite
+            secretKey: HALYARD_DATABASE
+            secretKeyRef:
+              name: mariadb-root
+              key: {{rootPasswordKey}}
       marina:
         launch:
           type: inline

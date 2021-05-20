@@ -10,9 +10,9 @@
     "start-server": "node halyard-backend/server.js",
     "start-frontend": "node halyard-frontend/server.js",
     "test": "jest --config=\"./jest.config.unit.js\"",
-    "tests-units": "jest --config=\"./jest.config.unit.js\" --maxWorkers=3",
-    "tests-functionals": "NODE_ENV=test jest --config=\"./jest.config.spec.js\" --forceExit --maxWorkers=1",
-    "tests-integrations": "NODE_ENV=test jest --forceExit --maxWorkers=1"
+    "unit-tests": "jest --config=\"./jest.config.unit.js\" --maxWorkers=3 --coverage",
+    "functional-tests": "NODE_ENV=test jest --config=\"./jest.config.spec.js\" --forceExit --maxWorkers=1",
+    "integration-tests": "NODE_ENV=test jest --forceExit --maxWorkers=1"
   },
   "version": "1.0.0",
   "description": "Sample halyard project",

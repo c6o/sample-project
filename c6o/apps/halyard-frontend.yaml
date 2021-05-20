@@ -14,10 +14,11 @@ editions:
       provisioner:
         package: '@provisioner/appengine'
         tag-prefix: appengine
-        image: 'robblovell/halyard-frontend:1.0'
+        image: 'robblovell/halyard-frontend:1.1'
         ports: 80
         configs:
-          HALYARD_BACKEND_HOST: halyard-backend:3000
+          API_HOST: halyard-backend
+          API_PORT: 3000
       marina:
         launch:
           type: inline

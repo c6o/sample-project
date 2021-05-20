@@ -1,0 +1,43 @@
+apiVersion: system.codezero.io/v1
+kind: App
+name: Halyard Echo Server
+appId: halyard-echo
+package: '@provisioner/appengine'
+
+# Errata
+icon: icon.svg
+description:
+  Ever want to meet an server that is a good listener? Look no further, connect with your inner narcissist and buy echo server today!
+summary:
+  Echo server just replies back what you sent it.
+category: dev-tools
+keywords:
+  - Developer
+  - Tools
+
+repo: https://github.com/robblovell/echo-server
+license: https://www.apache.org/licenses/LICENSE-2.0.html
+support: https://github.com/robblovell/echo-server/issues
+
+provisioner:
+  repo: https://github.com/robblovell/echo-server
+  support: https://github.com/robblovell/echo-server/issues
+
+# Editions
+editions:
+  - name: stable
+    status: private
+    spec:
+      # this gets me a route to the outside world.
+      routes:
+        - type: http
+          targetService: halyard-echo
+      provisioner:
+        tag-prefix: appengine
+        package: '@provisioner/appengine'
+        image: 'robblovell/echo-server:2.2'
+        ports: 8080
+      marina:
+        launch:
+          type: inline
+          popUp: true

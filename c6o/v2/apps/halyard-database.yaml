@@ -1,0 +1,52 @@
+apiVersion: system.codezero.io/v1
+kind: App
+name: halyard-database
+appId: halyard-database
+package: '@provisioner/appengine'
+editions:
+  - name: stable
+    status: private
+    spec:
+      # Routes is strictly not necessary, don't need public visiblity
+      routes:
+        - type: http
+          targetService: halyard-database
+
+      provisioner:
+        tag-prefix: appengine
+        package: '@provisioner/appengine'
+        image: 'mongo:4.4.5'
+        ports: 27017
+
+# Idea?
+#        exports: ## the environment provisioner does this for me ##
+#          HALYARD_DATABASE: "mongodb://halyard-database:27017"
+#          HALYARD_DATABASE_HOST: "halyard-database:27017"
+#          HALYARD_DATABASE_HOSTNAME: "halyard-database"
+#          HALYARD_DATABASE_HREF: "mongodb://halyard-database:27017"
+#          HALYARD_DATABASE_ORIGIN: "mongodb://halyard-database"
+#          HALYARD_DATABASE_PASSWORD: ""
+#          HALYARD_DATABASE_PORT: "27017"
+#          HALYARD_DATABASE_PROTOCOL: "mongodb://"
+#          HALYARD_DATABASE_USERNAME: ""
+#          # the initialzer
+#          HALYARD_DATABASE_DATABASE: "mongodb://testUser:password@halyard-database:27017/halyard-database"
+#          # ... more breakdowns of HALYARD_DATABASE_DATABASE
+
+        # Instructions to the provisioner on how to initialize this service.
+        # Should this be in the service that needs it? What if multiple services need it?
+        # Initializers -> Option 3: This initializer is defined here with the target of the initializer and gets passed to the database provisioner
+        initializers: # Self initialize, contextual to the environment
+          - target: halyard-database
+            action:
+              name: MONGO_INITDB_DATABASE # this is a command to the provisioner
+              value: halyard-database
+              config:
+                user: testUser
+                password: password
+                roles: readWrite
+                secretKey: HALYARD_DATABASE_DATABASE
+      marina:
+        launch:
+          type: inline
+          popUp: false

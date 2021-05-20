@@ -50,8 +50,8 @@ docker push robblovell/halyard-frontend:1.1
 docker network create halyard
 docker run --network halyard -p 27017:27017 --name halyard-database -d mongo:4.4.5
 docker run --network halyard -p 8000:8080 --detach --name halyard-echo robblovell/echo-server:2.2
-docker run --network halyard -p 8001:3000 --detach --name halyard-backend --env HALYARD_ECHO="http://halyard-echo:8080" --env HALYARD_DATABASE="mongodb://halyard-database:27017" robblovell/halyard-backend:1.1
-docker run --network halyard -p 8002:80 --detach --name halyard-frontend --env HALYARD_BACKEND_HOST='halyard-backend:3000' robblovell/halyard-frontend:1.1
+docker run --network halyard -p 8001:3000 --detach --name halyard-backend --env HALYARD_ECHO='http://halyard-echo:8080' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.1
+docker run --network halyard -p 8002:80 --detach --name halyard-frontend --env API_HOST='halyard-backend' --env API_PORT='3000' robblovell/halyard-frontend:1.1
 ```
 
 Now open `https://localhost:8002`
@@ -98,7 +98,9 @@ The following environment variables are required:
 
 ```bash
 export HALYARD_DATABASE=mongodb://localhost:8003
-export HALYARD_BACKEND_HOST=node-service:8002
+export HALYARD_DATABASE_DATABASE=database
+export API_HOST=node-service
+export API_PORT=8002
 ```
 
 ## Install
@@ -121,19 +123,33 @@ kubectl apply -f ./k8s/halyard-frontend-service.yaml
 ### Using CodeZero
 
 ```bash
-czctl install ./c6o --local
+czctl install -n testing ./c6o --local
 ```
 
 or
 
 ```bash
-czctl install ./c6o/halyard-backend.yaml --local
-czctl install ./c6o/halyard-frontend.yaml --local
+czctl install -n testing ./c6o/apps/halyard-database.yaml --local
+czctl install -n testing ./c6o/apps/halyard-echo.yaml --local
+czctl install -n testing ./c6o/apps/halyard-backend.yaml --local
+czctl install -n testing ./c6o/apps/halyard-frontend.yaml --local
+```
+
+or
+
+```bash
+czctl environment:create -n testing ./c6o/envs/dev.yaml
 ```
 
 ## Halyard Deployment process
 
 ### Teleport
+
+To setup a teleport session so that a local service can talk to the remote ones, use:
+
+```bash
+sudo -s czctl teleport -n testing 
+```
 
 ### Impersonate
 

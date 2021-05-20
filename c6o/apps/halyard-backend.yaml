@@ -16,11 +16,13 @@ editions:
       provisioner:
         package: '@provisioner/appengine'
         tag-prefix: appengine
-        image: 'robblovell/halyard-backend:1.0'
+        image: 'robblovell/halyard-backend:1.1'
         ports: 3000
+
         configs:
           HALYARD_DATABASE: "mongodb://halyard-database:27017"
           HALYARD_ECHO: "http://halyard-echo:8080"
+
 #        secretRefs:
 #          - halyard-database
 #          - halyard-echo

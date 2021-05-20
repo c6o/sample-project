@@ -1,0 +1,27 @@
+apiVersion: system.codezero.io/v1
+kind: App
+name: halyard-mongo
+appId: halyard-mongo
+package: '@provisioner/appengine'
+editions:
+  - name: stable
+    status: private
+    spec:
+      # Routes is strictly not necessary, don't need public visiblity
+      routes:
+        - type: http
+          targetService: halyard-database
+
+      provisioner:
+        name: mongo
+        tag: 4.4.5
+        rootUser: root
+        storageClass: do-block-storage
+#        secretKeyRef: halyard-mongo
+        config:
+          - halyard-mongo:
+              user: testUser
+              password: password
+              roles:
+                - readWrite
+              secretKey: HALYARD_DATABASE
