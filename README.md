@@ -50,8 +50,8 @@ docker push robblovell/halyard-frontend:1.2
 docker network create halyard
 docker run --network halyard -p 27017:27017 --name halyard-database -d mongo:4.4.5
 docker run --network halyard -p 8000:8080 --detach --name halyard-echo robblovell/echo-server:2.2
-docker run --network halyard -p 8001:3000 --detach --name halyard-backend --env HALYARD_ECHO='http://halyard-echo:8080' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.2
-docker run --network halyard -p 8002:80 --detach --name halyard-frontend --env HALYARD_API_HOST='halyard-backend' --env HALYARD_API_PORT='3000' robblovell/halyard-frontend:1.2
+docker run --network halyard -p 8001:80 --detach --name halyard-backend --env HALYARD_API_PORT='80' --env HALYARD_ECHO='http://halyard-echo:8080' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.2
+docker run --network halyard -p 8002:80 --detach --name halyard-frontend --env HALYARD_API_HOST='halyard-backend' --env HALYARD_API_PORT='80' robblovell/halyard-frontend:1.2
 ```
 
 Now open `https://localhost:8002`

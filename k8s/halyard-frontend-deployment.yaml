@@ -28,6 +28,6 @@ spec:
             - name: HALYARD_API_HOST
               value: 'halyard-backend-service'
             - name: HALYARD_API_PORT
-              value: '3000'
+              value: '80'
           ports:
             - containerPort: 80

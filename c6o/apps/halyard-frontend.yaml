@@ -19,7 +19,7 @@ editions:
         ports: 80
         configs:
           HALYARD_API_HOST: halyard-backend
-          HALYARD_API_PORT: 3000
+          HALYARD_API_PORT: 80
       marina:
         launch:
           type: inline

@@ -12,18 +12,19 @@ editions:
       routes:
         - type: http
           targetService: halyard-backend
+          targetPort: 80
 
       provisioner:
         package: '@provisioner/appengine'
         tag-prefix: appengine
         image: 'robblovell/halyard-backend:1.2'
         imagePullPolicy: Always
-        ports: 3000
+        ports: 80
 
         configs:
           HALYARD_DATABASE: "mongodb://halyard-database:27017"
           HALYARD_ECHO: "http://halyard-echo:8080"
-
+          HALYARD_API_PORT: 80
 #        secretRefs:
 #          - halyard-database
 #          - halyard-echo

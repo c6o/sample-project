@@ -20,7 +20,7 @@ editions:
         ports: 3000
         exports: # Exports -> Option 1: The environment provisioner does this for me
           # Exports -> Option 2: The connection string is explicitly given here
-          HALYARD_BACKEND: "http://halyard-backend:3000"
+          HALYARD_BACKEND: "http://halyard-backend:80"
 
         # Secrets -> Option 1: Reference other services secrets files
         secretRefs:
