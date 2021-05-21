@@ -22,7 +22,7 @@ spec:
     spec:
       containers:
         - name: blog-node-container
-          image: "robblovell/halyard-backend:1.1"
+          image: "robblovell/halyard-backend:1.2"
           imagePullPolicy: Always
           env:
             - name: HALYARD_ECHO

@@ -16,7 +16,7 @@ editions:
       provisioner:
         package: '@provisioner/appengine'
         tag-prefix: appengine
-        image: 'robblovell/halyard-backend:1.1'
+        image: 'robblovell/halyard-backend:1.2'
         ports: 3000
         exports: # Exports -> Option 1: The environment provisioner does this for me
           # Exports -> Option 2: The connection string is explicitly given here

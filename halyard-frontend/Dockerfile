@@ -8,6 +8,7 @@ COPY ./index.html /usr/share/nginx/html
 # Configure nginx
 COPY ./nginx.conf.template /etc/nginx/conf.d
 COPY ./nginx-start.sh /usr/bin/nginx-start.sh
+RUN chmod +x /usr/bin/nginx-start.sh
 RUN rm -rf /etc/nginx/conf.d/default.conf
 ENTRYPOINT ["/usr/bin/nginx-start.sh"]
 EXPOSE 80

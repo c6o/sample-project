@@ -36,6 +36,7 @@ editions:
         tag-prefix: appengine
         package: '@provisioner/appengine'
         image: 'robblovell/echo-server:2.2'
+        imagePullPolicy: Always
         ports: 8080
       marina:
         launch:
