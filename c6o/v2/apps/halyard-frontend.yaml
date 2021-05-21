@@ -17,8 +17,8 @@ editions:
         image: 'robblovell/halyard-frontend:1.0'
         ports: 80
         configs:
-          API_HOST: HALYARD_BACKEND_HOSTNAME
-          API_PORT: HALYARD_BACKEND_PORT
+          HALYARD_APIHOST: HALYARD_BACKEND_HOSTNAME
+          HALYARD_APIPORT: HALYARD_BACKEND_PORT
         secretRefs:
           - halyard-backend
           # Brings in stuff the halyard services created for me to get to it:

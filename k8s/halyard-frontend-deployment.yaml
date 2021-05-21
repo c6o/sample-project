@@ -25,9 +25,9 @@ spec:
           image: "robblovell/halyard-frontend:1.1"
           imagePullPolicy: Always
           env:
-            - name: API_HOST
+            - name: HALYARD_APIHOST
               value: 'halyard-backend-service'
-            - name: API_PORT
+            - name: HALYARD_APIPORT
               value: '3000'
           ports:
-            - containerPort: 80 
+            - containerPort: 80

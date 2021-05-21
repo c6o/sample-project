@@ -17,8 +17,8 @@ editions:
         image: 'robblovell/halyard-frontend:1.1'
         ports: 80
         configs:
-          API_HOST: halyard-backend
-          API_PORT: 3000
+          HALYARD_APIHOST: halyard-backend
+          HALYARD_APIPORT: 3000
       marina:
         launch:
           type: inline

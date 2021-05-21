@@ -6,6 +6,7 @@ const { MongoClient, Server } = require('mongodb')
 // To route to Echo Server: Same namespace: servicename:port, Different namespace: servicename.namespace:port
 const echoURL = process.env.HALYARD_ECHO || 'http://localhost:8000'
 const mongoURL = process.env.HALYARD_DATABASE || 'mongodb://localhost:27017'
+const backendAPIPort = process.env.HALYARD_APIPORT || 3000
 const mongoDB = new URL(mongoURL)
 
 const mongoClient = new MongoClient(new Server(mongoDB.hostname, mongoDB.port));
@@ -65,9 +66,9 @@ const getHandler = (req, res) => {
 app.get('/api', getHandler)
 
 const serviceHandler = function () {
-    console.log('listening on 3000')
+    console.log('listening on ' + backendAPIPort)
 }
 
-app.listen(3000, serviceHandler)
+app.listen(backendAPIPort, serviceHandler)
 
 module.exports = { app, databaseConnectCallback, getHandler, serviceHandler }  // Exported for unit testing.
