@@ -14,7 +14,7 @@ editions:
       provisioner:
         package: '@provisioner/appengine'
         tag-prefix: appengine
-        image: 'robblovell/halyard-frontend:1.1'
+        image: 'robblovell/halyard-frontend:1.2'
         ports: 80
         configs:
           HALYARD_APIHOST: halyard-backend

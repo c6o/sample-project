@@ -34,16 +34,16 @@ docker-compose push
 
 ### manual builds:
 ```bash
-docker build --tag halyard-backend ./halyard-backend:1.0
-docker build --tag halyard-frontend ./halyard-frontend:1.0
+docker build --tag halyard-backend ./halyard-backend:1.2
+docker build --tag halyard-frontend ./halyard-frontend:1.2
 ```
 
 ### M1 build for remote systems:
 ```bash
-docker build --tag robblovell/halyard-backend:1.1 --platform linux/amd64 ./halyard-backend
-docker build --tag robblovell/halyard-frontend:1.1 --platform linux/amd64 ./halyard-frontend
-docker push robblovell/halyard-backend:1.1
-docker push robblovell/halyard-frontend:1.1
+docker build --tag robblovell/halyard-backend:1.2 --platform linux/amd64 --platform linux/arm64 ./halyard-backend
+docker build --tag robblovell/halyard-frontend:1.2 --platform linux/amd64 --platform linux/arm64 ./halyard-frontend
+docker push robblovell/halyard-backend:1.2
+docker push robblovell/halyard-frontend:1.2
 ```
 
 ```bash

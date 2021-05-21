@@ -16,7 +16,7 @@ editions:
       provisioner:
         package: '@provisioner/appengine'
         tag-prefix: appengine
-        image: 'robblovell/halyard-backend:1.1'
+        image: 'robblovell/halyard-backend:1.2'
         ports: 3000
 
         configs:
