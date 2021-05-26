@@ -1,0 +1,19 @@
+apiVersion: system.codezero.io/v1
+kind: Environment
+metadata:
+  name: ${name}
+spec:
+  services:
+    halyard-database:
+      fromFile: ../apps/halyard-database.yaml
+
+    halyard-echo:
+      fromFile: ../apps/halyard-echo.yaml
+
+    halyard-backend:
+      fromFile: ../apps/halyard-backend.yaml
+      dependsOn: [ halyard-echo, halyard-database ]
+
+    halyard-frontend:
+      fromFile: ../apps/halyard-frontend.yaml
+      dependsOn: halyard-backend
