@@ -7,6 +7,7 @@ const { MongoClient, Server } = require('mongodb')
 const echoURL = process.env.HALYARD_ECHO || 'http://localhost:8000'
 const mongoURL = process.env.HALYARD_DATABASE || 'mongodb://localhost:27017'
 const backendAPIPort = process.env.HALYARD_API_PORT || 3000
+const backendAPIHost = process.env.HALYARD_API_HOST || 'localhost'
 const mongoDB = new URL(mongoURL)
 
 const mongoClient = new MongoClient(new Server(mongoDB.hostname, mongoDB.port));
@@ -69,6 +70,6 @@ const serviceHandler = function () {
     console.log('listening on ' + backendAPIPort)
 }
 
-app.listen(backendAPIPort, serviceHandler)
+app.listen(backendAPIPort, backendAPIHost, serviceHandler)
 
 module.exports = { app, databaseConnectCallback, getHandler, serviceHandler }  // Exported for unit testing.
