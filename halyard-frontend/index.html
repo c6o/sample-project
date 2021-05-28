@@ -10,12 +10,47 @@
     <body>
         <p>Hello there - The halyard frontend is here.</p>
         <div></div>
-        <p id="api-response"></p>
+        <p id="api-info">...</p>
+        <p id="api-response">...</p>
+        <p id="ws-info">...</p>
+        <p id="ws-support">...</p>
+        <p id="ws-messages">...</p>
+        <p id="ws-ping-messages">...</p>
+        <p id="ws-sent">...</p>
+        <p id="ws-closed">...</p>
         <script>
+            function WebSocketTest() {
+                if ("WebSocket" in window) {
+                    const url = "ws://localhost:8002" // for docker build local run
+                    // const url = "ws://:8999"
+                    $('#ws-info').html("Communicating with websockets at: " + url)
+                    $('#ws-support').html("WebSocket is supported by this Browser!")
+                    const ws = new WebSocket(url)
+                    ws.onopen = function() {
+                        // Web Socket is connected, send data using send()
+                        $('#ws-sent').html("Sent Message:\"Hello World\"")
+                        ws.send("Hello World")
+                    };
+                    ws.onmessage = function (evt) {
+                        const received_msg = evt.data
+                        if (received_msg.includes('PING'))
+                            $('#ws-ping-messages').html("Ping received: "+received_msg)
+                        else
+                            $('#ws-messages').html("Message received: "+received_msg)
+
+                    };
+                    ws.onclose = function() {
+                        $('#ws-closed').html("Connection is closed...")
+                    };
+                } else {
+                    $('#ws-support').html("Error: WebSocket NOT supported by this Browser!")
+                }
+            }
             $(document).ready(() => {
-                // const url = "http://localhost:3000/api"
-                //const url = "http://halyard-backend:3000/api"
-                const url = "/api"
+                //const url = "http://localhost:3000/api"
+                const url = "http://localhost:8001/api" // for docker build local run
+                //const url = "/api"
+                $('#api-info').html("Calling backend at: " + url)
                 $.ajax({
                     url: url,
                     type: "GET",
@@ -31,6 +66,7 @@
                         $('#api-response').html(`API error from (${url}): ${JSON.stringify(err)}`)
                     }
                 })
+                WebSocketTest()
             })
         </script>
     </body>

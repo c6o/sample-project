@@ -161,7 +161,8 @@ describe('Halyard Sockets: server.js', () => {
         expect(console.log).toBeCalledWith('ping: ' + ANOTHER_ID)
         expect(SOME_WS.timerPingPong).toBeDefined()
         expect(SOME_WS.ping).toBeCalledWith('coucou', false, 'utf8')
-        expect(SOME_WS.send).toBeCalledWith(`${commMessages.pingHelloPrompt} ${undefined}`)
+        expect(SOME_WS.send).toBeCalledWith(
+            `${commMessages.pingHelloPrompt}${NaN}. Previous message sent-> ${undefined}`)
 
         expect(setInterval).toHaveBeenCalledTimes(1)
 

@@ -24,8 +24,9 @@ jest.mock('mongodb', () => {
 })
 jest.mock('cors', () => jest.fn())
 jest.mock('http', () => {
+    const getOnMock = jest.fn()
     const getMock = jest.fn().mockReturnValue({
-        on: jest.fn()
+        on: getOnMock
     })
     const createServerMock = jest.fn().mockReturnValue({
         get: getMock,
@@ -33,13 +34,14 @@ jest.mock('http', () => {
     return ({
         createServer: createServerMock,
         get: getMock, // make this available to the test for a spy.
+        getOnMock,
     })
 })
 const http = require('http')
 
 const cors = require('cors')
 const {MongoClient, Server, connectMock, closeMock } = require('mongodb')
-const { app, databaseConnectCallback, getHandler, serviceHandler } = require('./server')
+const { app, databaseConnectCallback, getHandler, serviceHandler, echoURL, version, mongoURL } = require('./server')
 
 describe('Halyard Backend: server.js', () => {
     const originalLog = console.log
@@ -90,6 +92,33 @@ describe('Halyard Backend: server.js', () => {
             end: jest.fn()
         }
         const {readHandler, readErrorHandler} = getHandler(SOME_REQUEST, response)
+        expect(http.get).toBeCalledWith(echoURL, readHandler)
+        expect(http.getOnMock).toBeCalledWith('error', readErrorHandler)
+
+        readErrorHandler(SOME_ERROR)
+        expect(response.send).toBeCalledWith(
+            {
+                'data': `${version} </br></br> ${'Bummer - unable to connected to the Halyard database: ' + mongoURL + ', Connect Error: error'}</br></br> Echo Service Error: ${SOME_ERROR.message}`
+            })
+
+        const SOME_RESPONSE = {
+            on: jest.fn(),
+        }
+        readHandler(SOME_RESPONSE)
+        expect(SOME_RESPONSE.on).toHaveBeenNthCalledWith(1, 'data', expect.any(Function))
+        const onDataCallback = SOME_RESPONSE.on.mock.calls[0][1]
+
+        expect(SOME_RESPONSE.on).toHaveBeenNthCalledWith(2, 'end', expect.any(Function))
+        const onEndCallback = SOME_RESPONSE.on.mock.calls[1][1]
+        const SOME_CHUNK_1 = 'chunk-1'+'\n\r'
+        const SOME_CHUNK_2 = 'chunk-2'
+        onDataCallback(SOME_CHUNK_1)
+        onDataCallback(SOME_CHUNK_2)
+        onEndCallback()
+        const data = SOME_CHUNK_1+SOME_CHUNK_2
+        expect(response.send).toBeCalledWith({data: `${version} </br></br>${'Bummer - unable to connected to the Halyard database: ' + mongoURL + ', Connect Error: error'} </br></br> Echo Service Response: ${
+                data.replace(/[\n\r]/g,'</br>')
+            }`})
 
     })
 

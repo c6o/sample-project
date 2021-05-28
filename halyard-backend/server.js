@@ -74,4 +74,4 @@ const serviceHandler = function () {
 app.listen(backendAPIPort, serviceHandler)
 
 // export for unit tests.
-module.exports = { app, databaseConnectCallback, getHandler, serviceHandler }  // Exported for unit testing.
+module.exports = { app, databaseConnectCallback, getHandler, serviceHandler, echoURL, version, mongoURL }  // Exported for unit testing.

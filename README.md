@@ -56,10 +56,18 @@ docker run --network halyard -p 27017:27017 --name halyard-database -d mongo:4.4
 docker run --network halyard -p 8000:8080 --detach --name halyard-echo robblovell/echo-server:2.2
 docker run --network halyard -p 8001:3000 --detach --name halyard-backend --env HALYARD_API_PORT='3000' --env HALYARD_ECHO='http://halyard-echo:8080' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.3
 docker run --network halyard -p 8002:8999 --detach --name halyard-sockets --env HALYARD_SOCKETS_PORT='8999' robblovell/halyard-sockets:1.3
-docker run --network halyard -p 8003:80 --detach --name halyard-frontend --env HALYARD_API_HOST='halyard-backend' --env HALYARD_API_PORT='3000' robblovell/halyard-frontend:1.3
+docker run --network halyard -p 8003:80 --detach --name halyard-frontend --env HALYARD_API_HOST='halyard-backend' --env HALYARD_API_PORT='8001' robblovell/halyard-frontend:1.3
 ```
 
 Now open `https://localhost:8003`
+
+Cleaning up:
+
+```bash
+docker kill halyard-backend halyard-frontend halyard-database halyard-echo halyard-sockets
+docker container prune -f && docker image prune -f 
+docker network rm halyard
+```
 
 ### For a public echo server: 
 ```bash
@@ -76,20 +84,13 @@ docker push robblovell/halyard-frontend:1.1
 ```
 docker tag
 
-Cleaning up:
-
-```bash
-docker kill halyard-backend halyard-frontend halyard-database halyard-echo halyard-sockets
-docker container prune -f && docker image prune -f 
-docker network rm halyard
-```
-
 Helpful information:
 
 [Useful article on docker networking](https://maximorlov.com/4-reasons-why-your-docker-containers-cant-talk-to-each-other/)
 
 crib notes:
 ```bash
+docker exec -it [container] /bin/sh
 docker network create [network]
 docker network ls   
 docker network rm [network]

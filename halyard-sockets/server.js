@@ -3,17 +3,14 @@ const http = require('http')
 const WebSocket = require('ws')
 const {v4: uuidv4} = require('uuid')
 const app = express()
-
-//initialize a simple http server
 const server = http.createServer(app)
-
-//initialize the WebSocket server instance
 const wss = new WebSocket.Server({server})
 const userMessages = {}
+const count = {}
 const commMessages = {
     helloPrompt: 'Hello, you sent ->',
     broadcastHelloPrompt: 'Hello, broadcast message ->',
-    pingHelloPrompt: 'Hello, ping message ->',
+    pingHelloPrompt: 'PING! #',
     serverStartup: 'Hi there, I am a WebSocket server',
 }
 const pingInterval = process.env.HALYARD_PING_INTERVAL || 5000
@@ -25,12 +22,12 @@ wss.on('connection', (ws) => {
     ws.isAlive = true
     ws.id = `${uuidv4()}`
     userMessages[ws.id] = ''
+    count[ws.id] = 0
 
     ws.on('error', function (error) {
         console.log('Cannot start server')
     })
 
-    //connection is up, let's add a simple simple event
     ws.on('message', (message) => {
 
         //log the received message and send it back to the client
@@ -66,10 +63,9 @@ wss.on('connection', (ws) => {
         clearInterval(ws.timerPingPong)
     })
 
-    //send immediatly a feedback to the incoming connection
     ws.send(commMessages.serverStartup)
 
-    ws.timer = setInterval(pingpong, pingInterval, ws)
+    ws.timer = setInterval(pingpong, parseInt(pingInterval), ws)
     return ws
 })
 
@@ -85,13 +81,12 @@ const pingpong = (ws) => {
         console.log(`ping: ${ws.id}`)
         ws.timerPingPong = setInterval(pingpongclose, pingpongIntervalFail, ws)
         ws.ping('coucou', false, 'utf8')
-        ws.send(`${commMessages.pingHelloPrompt} ${userMessages[ws.id]}`)
+        ws.send(`${commMessages.pingHelloPrompt}${count[ws.id]++}. Previous message sent-> ${userMessages[ws.id]}`)
     } else {
         console.log('Web socket is undefined?', ws)
     }
-} // end of pingpong
+}
 
-//start our server
 server.listen(socketsPort, () => {
     const address = server.address()
     console.log(`Server started on port ${typeof address === 'string' ? address : address.port} :)`)
