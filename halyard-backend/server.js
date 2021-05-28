@@ -70,6 +70,8 @@ const serviceHandler = function () {
     console.log('listening on ' + backendAPIPort)
 }
 
-app.listen(backendAPIPort, backendAPIHost, serviceHandler)
+// app.listen(backendAPIPort, backendAPIHost, serviceHandler)
+app.listen(backendAPIPort, serviceHandler)
 
+// export for unit tests.
 module.exports = { app, databaseConnectCallback, getHandler, serviceHandler }  // Exported for unit testing.

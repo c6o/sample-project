@@ -34,27 +34,32 @@ docker-compose push
 
 ### manual builds:
 ```bash
-docker build --tag halyard-backend ./halyard-backend:1.2
-docker build --tag halyard-frontend ./halyard-frontend:1.2
+
+docker build --tag halyard-backend ./halyard-backend:1.3
+docker build --tag halyard-sockets ./halyard-sockets:1.3
+docker build --tag halyard-frontend ./halyard-frontend:1.3
 ```
 
 ### M1 build for remote systems:
 ```bash
-docker build --tag robblovell/halyard-backend:1.2 --platform linux/amd64 --platform linux/arm64 ./halyard-backend
-docker build --tag robblovell/halyard-frontend:1.2 --platform linux/amd64 --platform linux/arm64 ./halyard-frontend
-docker push robblovell/halyard-backend:1.2
-docker push robblovell/halyard-frontend:1.2
+docker build --no-cache --tag robblovell/halyard-backend:1.3 --platform linux/amd64 --platform linux/arm64 --platform linux/arm64/v8 ./halyard-backend
+docker build --no-cache --tag robblovell/halyard-sockets:1.3 --platform linux/amd64 --platform linux/arm64 --platform linux/arm64/v8 ./halyard-sockets
+docker build --no-cache --tag robblovell/halyard-frontend:1.3 --platform linux/amd64 --platform linux/arm64 --platform linux/arm64/v8 ./halyard-frontend
+docker push robblovell/halyard-backend:1.3
+docker push robblovell/halyard-sockets:1.3
+docker push robblovell/halyard-frontend:1.3
 ```
 
 ```bash
 docker network create halyard
 docker run --network halyard -p 27017:27017 --name halyard-database -d mongo:4.4.5
 docker run --network halyard -p 8000:8080 --detach --name halyard-echo robblovell/echo-server:2.2
-docker run --network halyard -p 8001:80 --detach --name halyard-backend --env HALYARD_API_PORT='3000' --env HALYARD_ECHO='http://halyard-echo:8080' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.2
-docker run --network halyard -p 8002:80 --detach --name halyard-frontend --env HALYARD_API_HOST='halyard-backend' --env HALYARD_API_PORT='3000' robblovell/halyard-frontend:1.2
+docker run --network halyard -p 8001:3000 --detach --name halyard-backend --env HALYARD_API_PORT='3000' --env HALYARD_ECHO='http://halyard-echo:8080' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.3
+docker run --network halyard -p 8002:8999 --detach --name halyard-sockets --env HALYARD_SOCKETS_PORT='8999' robblovell/halyard-sockets:1.3
+docker run --network halyard -p 8003:80 --detach --name halyard-frontend --env HALYARD_API_HOST='halyard-backend' --env HALYARD_API_PORT='3000' robblovell/halyard-frontend:1.3
 ```
 
-Now open `https://localhost:8002`
+Now open `https://localhost:8003`
 
 ### For a public echo server: 
 ```bash
@@ -74,7 +79,7 @@ docker tag
 Cleaning up:
 
 ```bash
-docker kill halyard-backend halyard-frontend halyard-database halyard-echo
+docker kill halyard-backend halyard-frontend halyard-database halyard-echo halyard-sockets
 docker container prune -f && docker image prune -f 
 docker network rm halyard
 ```

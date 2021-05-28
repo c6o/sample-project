@@ -25,6 +25,7 @@
     "eslint-config-prettier": "^6.10.0",
     "javascript-obfuscator": "^1.10.2",
     "jest": "^26.0.1",
-    "jest-html-reporters": "^2.0.3"
+    "jest-html-reporters": "^2.0.3",
+    "typescript": "^4.3.2"
   }
 }

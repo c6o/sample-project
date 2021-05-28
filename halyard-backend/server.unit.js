@@ -41,7 +41,7 @@ const cors = require('cors')
 const {MongoClient, Server, connectMock, closeMock } = require('mongodb')
 const { app, databaseConnectCallback, getHandler, serviceHandler } = require('./server')
 
-describe('server.js', () => {
+describe('Halyard Backend: server.js', () => {
     const originalLog = console.log
     const testLog = jest.fn()
     beforeAll(() => {
@@ -66,6 +66,7 @@ describe('server.js', () => {
         expect(closeMock).toBeCalledWith()
 
         expect(app.get).toBeCalledWith('/api', expect.any(Function))
+        // expect(app.listen).toBeCalledWith(3000, 'localhost', expect.any(Function))
         expect(app.listen).toBeCalledWith(3000, expect.any(Function))
         expect(cors).toBeCalledWith({origin: '*'})
     })
