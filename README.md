@@ -40,8 +40,8 @@ docker build --tag halyard-frontend ./halyard-frontend:1.2
 
 ### M1 build for remote systems:
 ```bash
-docker build --tag robblovell/halyard-backend:1.2 --platform linux/amd64 --platform linux/arm64 ./halyard-backend
-docker build --tag robblovell/halyard-frontend:1.2 --platform linux/amd64 --platform linux/arm64 ./halyard-frontend
+docker build --tag robblovell/halyard-backend:1.2 --platform linux/amd64 ./halyard-backend --no-cache
+docker build --tag robblovell/halyard-frontend:1.2 --platform linux/amd64 ./halyard-frontend --no-cache
 docker push robblovell/halyard-backend:1.2
 docker push robblovell/halyard-frontend:1.2
 ```
@@ -136,10 +136,11 @@ czctl install -n testing ./c6o/apps/halyard-frontend.yaml --local
 ```
 
 ```bash
-czctl app:install ./c6o/apps/halyard-database.yaml --local -n staging
-czctl app:install ./c6o/apps/halyard-echo.yaml --local -n staging
-czctl app:install ./c6o/apps/halyard-backend.yaml --local -n staging
-czctl app:install ./c6o/apps/halyard-frontend.yaml --local -n staging
+czctl app install ./c6o/apps/halyard-database.yaml --local --environment=staging
+czctl app install ./c6o/apps/halyard-echo.yaml --local --environment=staging
+czctl app install ./c6o/apps/halyard-backend.yaml --local --environment=staging
+czctl app install ./c6o/apps/halyard-frontend.yaml --local --environment=staging
+
 ```
 
 or (not working yet)
