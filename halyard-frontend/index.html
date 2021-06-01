@@ -22,7 +22,6 @@
             function WebSocketTest() {
                 if ("WebSocket" in window) {
                     //const url = "ws://localhost:8002" // for docker build local run
-                    const url = "ws://:8999/sockets"
                     const loc = window.location
                     const protocol = (loc.protocol === "https:") ? "wss:" : "ws:"
                     const socket_uri = `${protocol}//${loc.host}${loc.pathname}/sockets`
