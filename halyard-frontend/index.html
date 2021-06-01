@@ -23,9 +23,13 @@
                 if ("WebSocket" in window) {
                     //const url = "ws://localhost:8002" // for docker build local run
                     const url = "ws://:8999/sockets"
+                    const loc = window.location
+                    const protocol = (loc.protocol === "https:") ? "wss:" : "ws:"
+                    const socket_uri = `${protocol}//${loc.host}${loc.pathname}/sockets`
+
                     $('#ws-info').html("Communicating with websockets at: " + url)
                     $('#ws-support').html("WebSocket is supported by this Browser!")
-                    const ws = new WebSocket(url)
+                    const ws = new WebSocket(socket_uri)
                     ws.onopen = function() {
                         // Web Socket is connected, send data using send()
                         $('#ws-sent').html("Sent Message:\"Hello World\"")
