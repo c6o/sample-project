@@ -1,0 +1,4 @@
+FROM nginx:1.17.10-alpine
+# Bundle up the front end.
+COPY ./index.html /usr/share/nginx/html
+EXPOSE 80
