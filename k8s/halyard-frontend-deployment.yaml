@@ -30,5 +30,9 @@ spec:
               value: halyard-backend
             - name: HALYARD_API_PORT
               value: '3000'
+            - name: HALYARD_SOCKETS_HOST
+              value: halyard-sockets
+            - name: HALYARD_SCOKETS_PORT
+              value: 8999
           ports:
             - containerPort: 80
