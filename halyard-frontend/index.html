@@ -21,8 +21,8 @@
         <script>
             function WebSocketTest() {
                 if ("WebSocket" in window) {
-                    const url = "ws://localhost:8002" // for docker build local run
-                    // const url = "ws://:8999"
+                    //const url = "ws://localhost:8002" // for docker build local run
+                    const url = "ws://:8999/sockets"
                     $('#ws-info').html("Communicating with websockets at: " + url)
                     $('#ws-support').html("WebSocket is supported by this Browser!")
                     const ws = new WebSocket(url)

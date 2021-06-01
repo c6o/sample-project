@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: halyard-sockets
+  labels:
+    app: halyard
+    component: sockets
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: halyard
+      component: sockets
+
+  template:
+    metadata:
+      labels:
+        app: halyard
+        component: sockets
+
+    spec:
+      containers:
+        - name: halyard-sockets
+          image: robblovell/halyard-sockets:1.3
+          imagePullPolicy: Always
+          env:
+            - name: HALYARD_SOCKETS_PORT
+              value: '8999'
+          ports:
+            - containerPort: 8999
