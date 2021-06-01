@@ -28,7 +28,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: HALYARD_ECHO
-              value: halyard-echo:8080
+              value: http://halyard-echo:8080
             - name: HALYARD_DATABASE
               value: mongodb://halyard-database:27017
           ports:

@@ -6,12 +6,12 @@ data:
     frontend-nginx-config: |
       upstream halyard-backend{
         # requests from the public facing app to the API server are routed here.
-        server halyard-backed:3000;
+        server halyard-backend:3000;
       }
 
       upstream halyard-sockets{
-          # requests from the public faccing app to the SOCKETS server are routed here.
-        server halyard-sockets:8989;
+          # requests from the public facing app to the SOCKETS server are routed here.
+        server halyard-sockets:8999;
       }
 
       server {
@@ -21,17 +21,12 @@ data:
           #charset koi8-r;
           #access_log  /var/log/nginx/host.access.log  main;
 
-          location / {
-              root   /usr/share/nginx/html;
-              index  index.html index.htm;
-          }
-
-        location /api {
+        location ^~ /api {
             # requests from the public faccing app to the API server are routed here.
           proxy_pass http://halyard-backend;
         }
 
-          location ^~ /sockets/ {
+        location ^~ /sockets {
               # matches any query beginning with /api/ and halts searching
               # proxy api requests to the upstream server declared above
               proxy_pass http://halyard-sockets;
@@ -44,6 +39,11 @@ data:
               proxy_http_version 1.1;
               proxy_set_header Upgrade $http_upgrade;
               proxy_set_header Connection "upgrade";
+          }
+
+          location / {
+              root   /usr/share/nginx/html;
+              index  index.html index.htm;
           }
 
           error_page   500 502 503 504  /50x.html;
@@ -93,7 +93,7 @@ spec:
             - containerPort: 80
           volumeMounts:
             - name: halyard-frontend-volume
-              mountPath: /etc/nginx/conf.d/nginx.conf
+              mountPath: /etc/nginx/conf.d/default.conf
               subPath: frontend-nginx-config
       volumes:
       - name: halyard-frontend-volume
