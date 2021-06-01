@@ -34,7 +34,6 @@ docker-compose push
 
 ### manual builds:
 ```bash
-
 docker build --tag halyard-backend ./halyard-backend:1.3
 docker build --tag halyard-sockets ./halyard-sockets:1.3
 docker build --tag halyard-frontend ./halyard-frontend:1.3
@@ -42,11 +41,12 @@ docker build --tag halyard-frontend ./halyard-frontend:1.3
 
 ### M1 build for remote systems:
 ```bash
-docker build --tag robblovell/halyard-backend:1.2 --platform linux/amd64 ./halyard-backend --no-cache
-docker build --no-cache --tag robblovell/halyard-sockets:1.3 --platform linux/amd64 ./halyard-sockets --no-cache
-docker build --tag robblovell/halyard-frontend:1.2 --platform linux/amd64 ./halyard-frontend --no-cache
-docker push robblovell/halyard-backend:1.2
-docker push robblovell/halyard-frontend:1.2
+docker build --tag robblovell/halyard-backend:1.3 --platform linux/amd64 ./halyard-backend --no-cache
+docker build --tag robblovell/halyard-sockets:1.3 --platform linux/amd64 ./halyard-sockets --no-cache
+docker build --tag robblovell/halyard-frontend:1.3 --platform linux/amd64 ./halyard-frontend --no-cache
+docker push robblovell/halyard-backend:1.3
+docker push robblovell/halyard-sockets:1.3
+docker push robblovell/halyard-frontend:1.3
 ```
 Other architectures:
 ```bash
@@ -132,22 +132,16 @@ kubectl apply -f ./k8s/halyard-frontend-service.yaml
 ### Using CodeZero
 
 ```bash
-czctl install -n testing ./c6o --local
+czctl install ./c6o --local --environment=staging
 ```
 
 or
 
 ```bash
-czctl install -n testing ./c6o/apps/halyard-database.yaml --local
-czctl install -n testing ./c6o/apps/halyard-echo.yaml --local
-czctl install -n testing ./c6o/apps/halyard-backend.yaml --local
-czctl install -n testing ./c6o/apps/halyard-frontend.yaml --local
-```
-
-```bash
 czctl app install ./c6o/apps/halyard-database.yaml --local --environment=staging
 czctl app install ./c6o/apps/halyard-echo.yaml --local --environment=staging
 czctl app install ./c6o/apps/halyard-backend.yaml --local --environment=staging
+czctl app install ./c6o/apps/halyard-sockets.yaml --local --environment=staging
 czctl app install ./c6o/apps/halyard-frontend.yaml --local --environment=staging
 
 ```

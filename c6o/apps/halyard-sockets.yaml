@@ -13,6 +13,7 @@ editions:
         - type: http
           targetService: halyard-sockets
 
+
       provisioner:
         package: '@provisioner/appengine'
         tag-prefix: appengine
@@ -20,6 +21,7 @@ editions:
         imagePullPolicy: Always
         configs:
           HALYARD_SOCKETS_PORT: 8999
+        ports: 8999
 
       marina:
         launch:

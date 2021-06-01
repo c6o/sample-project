@@ -48,8 +48,8 @@
             }
             $(document).ready(() => {
                 //const url = "http://localhost:3000/api"
-                const url = "http://localhost:8001/api" // for docker build local run
-                //const url = "/api"
+                // const url = "http://localhost:8001/api" // for docker build local run
+                const url = "/api"
                 $('#api-info').html("Calling backend at: " + url)
                 $.ajax({
                     url: url,
