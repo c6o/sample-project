@@ -32,7 +32,7 @@ spec:
               value: '3000'
             - name: HALYARD_SOCKETS_HOST
               value: halyard-sockets
-            - name: HALYARD_SCOKETS_PORT
+            - name: HALYARD_SOCKETS_PORT
               value: '8999'
           ports:
             - containerPort: 80
