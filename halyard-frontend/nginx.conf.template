@@ -15,17 +15,12 @@ server {
     #charset koi8-r;
     #access_log  /var/log/nginx/host.access.log  main;
 
-    location / {
-        root   /usr/share/nginx/html;
-        index  index.html index.htm;
-    }
+  location ^~ /api {
+      # requests from the public faccing app to the API server are routed here.
+    proxy_pass http://halyard-backend;
+  }
 
-	location /api {
-	    # requests from the public faccing app to the API server are routed here.
-		proxy_pass http://halyard-backend;
-	}
-
-    location ^~ /sockets/ {
+  location ^~ /sockets {
         # matches any query beginning with /api/ and halts searching
         # proxy api requests to the upstream server declared above
         proxy_pass http://halyard-sockets;
@@ -38,6 +33,11 @@ server {
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
+    }
+
+    location / {
+        root   /usr/share/nginx/html;
+        index  index.html index.htm;
     }
 
     error_page   500 502 503 504  /50x.html;
