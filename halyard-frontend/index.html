@@ -24,9 +24,9 @@
                     //const url = "ws://localhost:8002" // for docker build local run
                     const loc = window.location
                     const protocol = (loc.protocol === "https:") ? "wss:" : "ws:"
-                    const socket_uri = `${protocol}//${loc.host}${loc.pathname}/sockets`
+                    const socket_uri = `${protocol}//${loc.host}${loc.pathname}sockets/`
 
-                    $('#ws-info').html("Communicating with websockets at: " + url)
+                    $('#ws-info').html("Communicating with websockets at: " + socket_uri)
                     $('#ws-support').html("WebSocket is supported by this Browser!")
                     const ws = new WebSocket(socket_uri)
                     ws.onopen = function() {
@@ -49,6 +49,7 @@
                     $('#ws-support').html("Error: WebSocket NOT supported by this Browser!")
                 }
             }
+
             $(document).ready(() => {
                 //const url = "http://localhost:3000/api"
                 // const url = "http://localhost:8001/api" // for docker build local run

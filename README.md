@@ -44,7 +44,7 @@ docker build --tag halyard-frontend ./halyard-frontend:1.3
 docker build --tag robblovell/halyard-backend:1.3 --platform linux/amd64 ./halyard-backend --no-cache
 docker build --tag robblovell/halyard-sockets:1.3 --platform linux/amd64 ./halyard-sockets --no-cache
 docker build --tag robblovell/halyard-frontend:1.3 --platform linux/amd64 ./halyard-frontend --no-cache
-docker build --tag robblovell/halyard-frontend2:1.3 --platform linux/amd64 ./halyard-frontend --no-cache
+docker build --tag robblovell/halyard-frontend:1.3 --platform linux/amd64 ./halyard-frontend -f ./halyard-frontend/DockerFile.configMap
 docker push robblovell/halyard-backend:1.3
 docker push robblovell/halyard-sockets:1.3
 docker push robblovell/halyard-frontend:1.3
