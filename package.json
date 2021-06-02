@@ -1,7 +1,8 @@
 {
   "name": "halyard",
   "workspaces": [
-    "halyard-backend"
+    "halyard-backend",
+    "halyard-sockets"
   ],
   "scripts": {
     "build": "",
@@ -9,6 +10,8 @@
     "publish": "",
     "start-server": "node halyard-backend/server.js",
     "start-frontend": "node halyard-frontend/server.js",
+    "start-backend": "node halyard-backend/server.js",
+    "start-sockets": "node halyard-sockets/server.js",
     "test": "jest --config=\"./jest.config.unit.js\"",
     "unit-tests": "jest --config=\"./jest.config.unit.js\" --maxWorkers=3 --coverage",
     "functional-tests": "NODE_ENV=test jest --config=\"./jest.config.spec.js\" --forceExit --maxWorkers=1",
