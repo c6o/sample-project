@@ -141,12 +141,19 @@ czctl install ./c6o --local --environment=staging
 or
 
 ```bash
+czctl install ./c6o/apps/halyard-database.yaml --local -n staging
+czctl install ./c6o/apps/halyard-echo.yaml --local -n staging
+czctl install ./c6o/apps/halyard-backend.yaml --local -n staging
+czctl install ./c6o/apps/halyard-sockets.yaml --local -n staging
+czctl install ./c6o/apps/halyard-frontend.yaml --local -n staging
+```
+
+```bash
 czctl app install ./c6o/apps/halyard-database.yaml --local --environment=staging
 czctl app install ./c6o/apps/halyard-echo.yaml --local --environment=staging
 czctl app install ./c6o/apps/halyard-backend.yaml --local --environment=staging
 czctl app install ./c6o/apps/halyard-sockets.yaml --local --environment=staging
 czctl app install ./c6o/apps/halyard-frontend.yaml --local --environment=staging
-
 ```
 
 or (not working yet)

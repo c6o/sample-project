@@ -18,7 +18,7 @@ app.use(cors({
 }))
 
 let mongodbState = 'Not connected to the Halyard database yet'
-const version = 'Version 1.0'
+const version = 'Version 2.0'
 
 const databaseConnectCallback = (error) => {
     if (error) {
