@@ -1,26 +1,21 @@
 apiVersion: apps/v1
-
 kind: Deployment
-
 metadata:
   name: halyard-backend
   labels:
     app: halyard
     component: backend
-
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: halyard
       component: backend
-
   template:
     metadata:
       labels:
         app: halyard
         component: backend
-
     spec:
       containers:
         - name: halyard-backend
@@ -31,5 +26,9 @@ spec:
               value: http://halyard-echo:8080
             - name: HALYARD_DATABASE
               value: mongodb://halyard-database:27017
+            - name: HALYARD_MUTATOR_HTTPS_PORT
+              value: '8443'
+            - name: HALYARD_MUTATOR_HTTP_PORT
+              value: '3000'
           ports:
             - containerPort: 3000

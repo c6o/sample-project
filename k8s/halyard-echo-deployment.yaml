@@ -7,14 +7,12 @@ metadata:
   labels:
     app: halyard
     component: echo
-
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: halyard
       component: echo
-
   template:
     metadata:
       labels:

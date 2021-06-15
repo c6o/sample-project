@@ -8,7 +8,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-    - protocol: TCP
+    - name: unsecure
+      protocol: TCP
       port: 80
       targetPort: 80
   selector:
