@@ -4,6 +4,14 @@ services:
     image: robblovell/halyard-backend:$USER
     build:
       context: ./halyard-backend
+  halyard-sockets:
+    image: robblovell/halyard-sockets:$USER
+    build:
+      context: ./halyard-sockets
+  halyard-database:
+    image: robblovell/halyard-database:$USER
+    build:
+      context: ./halyard-database
   halyard-frontend:
     image: robblovell/halyard-frontend:$USER
     build:
