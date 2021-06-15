@@ -101,6 +101,7 @@ docker run -d -p 5000:5000 --restart=always --name registry registry:2
 ### Containerizing
 
 #### composer builds:
+
 ** untested **
 ```bash
 docker-compose build
@@ -154,13 +155,34 @@ docker push robblovell/halyard-frontend:1.1
 This can be started in a docker container and made available to localhost.  Note, echo server cannot run on port 80 
 locally because of operating system level protection of ports < 1024.
 
-docker run -p 27017:27017 --name halyard-database -d mongo:4.4.5
-docker run -p 8080:8080 --detach --name halyard-echo robblovell/echo-server:2.2
+Running echo server:
+
+docker run -p 8000:8080 --detach --name halyard-echo robblovell/echo-server:2.2
+
+
+MongoDB:
+
+```bash
+docker run --name mongodb -d mongo:latest
+```
+
+or
+```bash
+docker run --name mongodb -d mongo:4.0.25
+```
 
 #### halyard-backend
+
+The halyard backend will start with errors if a database is not running, but will function without
+the database, just reporting that it could not connect in response to any requests that are made.
+Similarly, if halyard echo server is not running, the backend will function and respond with what
+errors were received from echo server.
+
+
+Here is how to start the backend on two different ports (3000 is default)
 ```bash
-HALYARD_API_PORT=3010 yarn start-backend
-HALYARD_API_PORT=3020 yarn start-backend
+HALYARD_API_PORT=3010 HALYARD_ECHO='http://localhost:8000' yarn start-backend
+HALYARD_API_PORT=3020 HALYARD_ECHO='http://localhost:8000' yarn start-backend
 ```
 
 #### halyard-sockets
