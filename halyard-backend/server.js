@@ -24,14 +24,14 @@ const databaseConnectCallback = (error) => {
     if (error) {
         mongodbState = 'Bummer - unable to connected to the Halyard database: ' + mongoURL
         console.log(mongodbState)
-        console.log(error)
-        mongodbState = `${mongodbState}, Connect Error: ${error.message}`
+        mongodbState = `${mongodbState}, Connect Error: ${error.message}.`
     } else {
         mongodbState = 'Yay - connected to the Halyard database! ' + mongoURL
     }
     mongoClient.close()
     return mongodbState
 }
+
 
 mongoClient.connect(databaseConnectCallback)
 
@@ -74,9 +74,11 @@ pingHandler = (req, res) => {
 
 app.get('/api', getHandler)
 app.get('/', pingHandler)
+app.get('/ping', pingHandler)
 
 const serviceHandler = function () {
     console.log('listening on ' + backendAPIPort)
+    console.log('version ', version)
 }
 
 // app.listen(backendAPIPort, backendAPIHost, serviceHandler)
