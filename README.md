@@ -118,9 +118,9 @@ docker build --tag halyard-frontend ./halyard-frontend:1.3
 
 #### M1 build for remote systems:
 ```bash
-docker build --tag robblovell/halyard-backend:1.3 --platform linux/amd64 ./halyard-backend --no-cache
+docker build --tag robblovell/halyard-backend:1.5 --platform linux/amd64 ./halyard-backend --no-cache
 docker build --tag robblovell/halyard-sockets:1.3 --platform linux/amd64 ./halyard-sockets --no-cache
-docker build --tag robblovell/halyard-frontend:1.3 --platform linux/amd64 ./halyard-frontend --no-cache
+docker build --tag robblovell/halyard-frontend:1.5 --platform linux/amd64 ./halyard-frontend -f ./halyard-frontend/Dockerfile.confgMap
 docker build --tag robblovell/halyard-frontend:1.4 --platform linux/amd64 ./halyard-frontend -f ./halyard-frontend/Dockerfile.confgMap
 ```
 Other architectures:
@@ -131,11 +131,12 @@ Other architectures:
 ### Publishing
 
 ```bash
-docker push robblovell/halyard-backend:1.3
+docker push robblovell/halyard-backend:1.5
 docker push robblovell/halyard-sockets:1.3
 docker push robblovell/halyard-frontend:1.3
 docker push robblovell/halyard-frontend:1.4
 docker push robblovell/halyard-frontend2:1.3
+docker push robblovell/halyard-frontend:1.5
 ```
 
 ### publish to docker hub

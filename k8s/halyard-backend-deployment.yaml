@@ -19,16 +19,12 @@ spec:
     spec:
       containers:
         - name: halyard-backend
-          image: robblovell/halyard-backend:1.3
+          image: robblovell/halyard-backend:1.5
           imagePullPolicy: Always
           env:
             - name: HALYARD_ECHO
               value: http://halyard-echo:8080
             - name: HALYARD_DATABASE
               value: mongodb://halyard-database:27017
-            - name: HALYARD_MUTATOR_HTTPS_PORT
-              value: '8443'
-            - name: HALYARD_MUTATOR_HTTP_PORT
-              value: '3000'
           ports:
             - containerPort: 3000

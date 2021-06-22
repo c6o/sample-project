@@ -23,7 +23,12 @@ data:
 
         location ^~ /api {
             # requests from the public faccing app to the API server are routed here.
-          proxy_pass http://halyard-backend;
+            proxy_pass http://halyard-backend;
+        }
+
+        location ^~ /ping {
+            # requests from the public faccing app to the API server are routed here.
+            proxy_pass http://halyard-backend;
         }
 
         location ^~ /sockets {
@@ -78,7 +83,7 @@ spec:
     spec:
       containers:
         - name: halyard-frontend
-          image: robblovell/halyard-frontend:1.4
+          image: robblovell/halyard-frontend:1.6
           imagePullPolicy: Always
           env:
             - name: HALYARD_API_HOST

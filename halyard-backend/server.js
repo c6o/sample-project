@@ -75,6 +75,9 @@ pingHandler = (req, res) => {
 app.get('/api', getHandler)
 app.get('/', pingHandler)
 app.get('/ping', pingHandler)
+app.post('/ping', pingHandler)
+app.put('/ping', pingHandler)
+app.delete('/ping', pingHandler)
 
 const serviceHandler = function () {
     console.log('listening on ' + backendAPIPort)
