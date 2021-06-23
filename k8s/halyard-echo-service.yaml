@@ -6,7 +6,6 @@ metadata:
     app: halyard
     component: echo
 spec:
-  type: NodePort
   ports:
     - protocol: TCP
       port: 8080

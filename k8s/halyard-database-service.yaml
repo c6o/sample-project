@@ -6,7 +6,6 @@ metadata:
     app: halyard
     component: database
 spec:
-  type: NodePort
   ports:
     - protocol: TCP
       port: 27017

@@ -26,5 +26,8 @@ spec:
               value: http://halyard-echo:8080
             - name: HALYARD_DATABASE
               value: mongodb://halyard-database:27017
+          envFrom:
+            - configMapRef:
+                name: halyard-backend-config
           ports:
             - containerPort: 3000

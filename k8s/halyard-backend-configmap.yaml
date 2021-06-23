@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: halyard-backend-config
+data:
+  SAMPLE1_KEY: VALUE1
+  SAMPLE2_KEY: VALUE2

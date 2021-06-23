@@ -6,7 +6,6 @@ metadata:
     app: halyard
     component: backend
 spec:
-  type: NodePort
   ports:
     - name: unsecure
       protocol: TCP

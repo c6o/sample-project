@@ -6,7 +6,6 @@ metadata:
     app: halyard
     component: sockets
 spec:
-  type: NodePort
   ports:
     - protocol: TCP
       port: 8999
