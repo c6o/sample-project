@@ -5,13 +5,20 @@
     <head>
         <meta charset="utf-8" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <style>
+            body {
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+        </style>
     </head>
 
     <body>
         <p>Hello there - The halyard frontend is here.</p>
         <div></div>
+        <h3>Backend</h3>
         <p id="api-info">...</p>
         <p id="api-response">...</p>
+        <h3>Socket</h3>
         <p id="ws-info">...</p>
         <p id="ws-support">...</p>
         <p id="ws-messages">...</p>
@@ -19,6 +26,7 @@
         <p id="ws-sent">...</p>
         <p id="ws-closed">...</p>
         <script>
+            let counter = 0
             function WebSocketTest() {
                 if ("WebSocket" in window) {
                     //const url = "ws://localhost:8002" // for docker build local run
@@ -26,13 +34,13 @@
                     const protocol = (loc.protocol === "https:") ? "wss:" : "ws:"
                     const socket_uri = `${protocol}//${loc.host}${loc.pathname}sockets/`
 
-                    $('#ws-info').html("Communicating with websockets at: " + socket_uri)
+                    $('#ws-info').html("Communicating with WebSockets at: " + socket_uri)
                     $('#ws-support').html("WebSocket is supported by this Browser!")
                     const ws = new WebSocket(socket_uri)
                     ws.onopen = function() {
                         // Web Socket is connected, send data using send()
                         $('#ws-sent').html("Sent Message:\"Hello World\"")
-                        ws.send("Hello World")
+                        ws.send(`Hello World ${counter}`)
                     };
                     ws.onmessage = function (evt) {
                         const received_msg = evt.data
@@ -50,11 +58,9 @@
                 }
             }
 
-            $(document).ready(() => {
-                //const url = "http://localhost:3000/api"
-                // const url = "http://localhost:8001/api" // for docker build local run
+            function main() {
                 const url = "/api"
-                $('#api-info').html("Calling backend at: " + url)
+                $('#api-info').html(`Calling backend ${url} count ${counter}`)
                 $.ajax({
                     url: url,
                     type: "GET",
@@ -67,11 +73,14 @@
                     },
                     error: (err) => {
                         console.log(err)
-                        $('#api-response').html(`API error from (${url}): ${JSON.stringify(err)}`)
+                        $('#api-response').html(`API  error from (${url}): ${JSON.stringify(err)}`)
                     }
                 })
                 WebSocketTest()
-            })
+                counter++
+            }
+
+            $(document).ready(() => setInterval(main, 1000))
         </script>
     </body>
 
