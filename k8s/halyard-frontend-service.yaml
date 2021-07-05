@@ -1,18 +1,17 @@
 apiVersion: v1
-
 kind: Service
-
 metadata:
-  name: halyard-frontend-service
+  name: halyard-frontend
   labels:
-    app: halyard-frontend-service
-    
+    app: halyard
+    component: frontend
 spec:
   type: LoadBalancer
   ports:
-    - protocol: TCP
+    - name: unsecure
+      protocol: TCP
       port: 80
       targetPort: 80
   selector:
-    app: halyard-frontend-pod
-    
+    app: halyard
+    component: frontend

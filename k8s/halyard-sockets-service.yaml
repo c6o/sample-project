@@ -1,15 +1,15 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: halyard-database
+  name: halyard-sockets
   labels:
     app: halyard
-    component: database
+    component: sockets
 spec:
   ports:
     - protocol: TCP
-      port: 27017
-      targetPort: 27017
+      port: 8999
+      targetPort: 8999
   selector:
     app: halyard
-    component: database
+    component: sockets

@@ -9,6 +9,7 @@ const mongoURL = process.env.HALYARD_DATABASE || 'mongodb://localhost:27017'
 const backendAPIPort = process.env.HALYARD_API_PORT || 3000
 const backendAPIHost = process.env.HALYARD_API_HOST || 'localhost'
 const mongoDB = new URL(mongoURL)
+const version = process.env.HALYARD_VERSION || 'Version 1.0'
 
 const mongoClient = new MongoClient(new Server(mongoDB.hostname, mongoDB.port));
 
@@ -18,14 +19,12 @@ app.use(cors({
 }))
 
 let mongodbState = 'Not connected to the Halyard database yet'
-const version = 'Version 1.0'
 
 const databaseConnectCallback = (error) => {
     if (error) {
         mongodbState = 'Bummer - unable to connected to the Halyard database: ' + mongoURL
         console.log(mongodbState)
-        console.log(error)
-        mongodbState = `${mongodbState}, Connect Error: ${error.message}`
+        mongodbState = `${mongodbState}, Connect Error: ${error.message}.`
     } else {
         mongodbState = 'Yay - connected to the Halyard database! ' + mongoURL
     }
@@ -33,9 +32,11 @@ const databaseConnectCallback = (error) => {
     return mongodbState
 }
 
+
 mongoClient.connect(databaseConnectCallback)
 
 const getHandler = (req, res) => {
+    console.log("Request: ", req.headers)
     let retVal = ''
     const readHandler = (resp) => {
         let data = ''
@@ -63,11 +64,24 @@ const getHandler = (req, res) => {
     http.get(echoURL, readHandler).on("error", readErrorHandler)
     return {readHandler, readErrorHandler}
 }
+pingHandler = (req, res) => {
+    console.log("Request: ", req.headers)
+    retVal = `Halyard-Backend: ${version}`
+    res.send({
+        'data': retVal
+    })
+}
 
 app.get('/api', getHandler)
+app.get('/', pingHandler)
+app.get('/ping', pingHandler)
+app.post('/ping', pingHandler)
+app.put('/ping', pingHandler)
+app.delete('/ping', pingHandler)
 
 const serviceHandler = function () {
     console.log('listening on ' + backendAPIPort)
+    console.log('version ', version)
 }
 
 // app.listen(backendAPIPort, backendAPIHost, serviceHandler)

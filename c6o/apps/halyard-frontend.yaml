@@ -20,6 +20,8 @@ editions:
         configs:
           HALYARD_API_HOST: halyard-backend
           HALYARD_API_PORT: 3000
+          HALYARD_SOCKETS_HOST: halyard-sockets
+          HALYARD_SCOKETS_PORT: 8999
       marina:
         launch:
           type: inline

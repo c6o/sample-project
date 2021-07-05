@@ -1,17 +1,16 @@
 apiVersion: v1
-
 kind: Service
-
 metadata:
-  name: halyard-backend-service
+  name: halyard-backend
   labels:
-    app: halyard-backend-service
-    
+    app: halyard
+    component: backend
 spec:
-  type: NodePort
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 80
+    - name: unsecure
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
   selector:
-    app: halyard-backend-pod
+    app: halyard
+    component: backend

@@ -1,33 +1,33 @@
 apiVersion: apps/v1
-
 kind: Deployment
-
 metadata:
-  name: halyard-backend-deployment
+  name: halyard-backend
   labels:
-    app: halyard-backend-deployment
-
+    app: halyard
+    component: backend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: halyard-backend-pod
-
+      app: halyard
+      component: backend
   template:
     metadata:
-      name: halyard-backend-pod
       labels:
-        app: halyard-backend-pod
-
+        app: halyard
+        component: backend
     spec:
       containers:
-        - name: blog-node-container
-          image: "robblovell/halyard-backend:1.2"
+        - name: halyard-backend
+          image: robblovell/halyard-backend:1.5
           imagePullPolicy: Always
           env:
             - name: HALYARD_ECHO
-              value: http://echo-service:8000
+              value: http://halyard-echo:8080
             - name: HALYARD_DATABASE
-              value: mongodb://halyard-database-service:27017
+              value: mongodb://halyard-database:27017
+          envFrom:
+            - configMapRef:
+                name: halyard-backend-config
           ports:
             - containerPort: 3000

@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: halyard-echo
+  labels:
+    app: halyard
+    component: echo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: halyard
+      component: echo
+  template:
+    metadata:
+      labels:
+        app: halyard
+        component: echo
+    spec:
+      containers:
+        - name: halyard-echo
+          image: robblovell/echo-server:2.2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
