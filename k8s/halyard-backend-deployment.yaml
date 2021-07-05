@@ -19,13 +19,13 @@ spec:
     spec:
       containers:
         - name: halyard-backend
-          image: robblovell/halyard-backend:1.5
+          image: c6oio/halyard-demo-backend:latest
           imagePullPolicy: Always
           env:
             - name: HALYARD_ECHO
               value: http://halyard-echo:8080
             - name: HALYARD_DATABASE
-              value: mongodb://halyard-database:27017
+              value: mongodb://halyard-database:27017/halyard-database
           envFrom:
             - configMapRef:
                 name: halyard-backend-config

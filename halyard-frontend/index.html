@@ -46,12 +46,13 @@
                         const received_msg = evt.data
                         if (received_msg.includes('PING'))
                             $('#ws-ping-messages').html("Ping received: "+received_msg)
+
                         else
                             $('#ws-messages').html("Message received: "+received_msg)
 
                     };
                     ws.onclose = function() {
-                        $('#ws-closed').html("Connection is closed...")
+                        $('#ws-closed').html(`Closed connection ${counter}...`)
                     };
                 } else {
                     $('#ws-support').html("Error: WebSocket NOT supported by this Browser!")

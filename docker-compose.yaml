@@ -1,18 +1,14 @@
 version: "3.7"
 services:
   halyard-backend:
-    image: robblovell/halyard-backend:$USER
+    image: c6oio/halyard-demo-backend:$USER
     build:
       context: ./halyard-backend
   halyard-sockets:
-    image: robblovell/halyard-sockets:$USER
+    image: c6oio/halyard-demo-sockets:$USER
     build:
       context: ./halyard-sockets
-  halyard-database:
-    image: robblovell/halyard-database:$USER
-    build:
-      context: ./halyard-database
   halyard-frontend:
-    image: robblovell/halyard-frontend:$USER
+    image: c6oio/halyard-demo-frontend:$USER
     build:
       context: ./halyard-frontend

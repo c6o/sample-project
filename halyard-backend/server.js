@@ -46,9 +46,11 @@ const getHandler = (req, res) => {
         })
         // The whole response has been received. Print out the result.
         resp.on('end', () => {
-            retVal = `${version} </br></br>${mongodbState} </br></br> Echo Service Response: ${
-                data.replace(/[\n\r]/g,'</br>')
-            }`
+            // retVal = `${version} </br></br>${mongodbState} </br></br> Echo Service Response: ${
+            //     data.replace(/[\n\r]/g,'</br>')
+            // }`
+            retVal = `${version}`
+
             res.send({
                 'data': retVal
             })
@@ -64,6 +66,7 @@ const getHandler = (req, res) => {
     http.get(echoURL, readHandler).on("error", readErrorHandler)
     return {readHandler, readErrorHandler}
 }
+
 pingHandler = (req, res) => {
     console.log("Request: ", req.headers)
     retVal = `Halyard-Backend: ${version}`

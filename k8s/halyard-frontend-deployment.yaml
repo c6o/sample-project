@@ -83,7 +83,7 @@ spec:
     spec:
       containers:
         - name: halyard-frontend
-          image: robblovell/halyard-frontend:1.6
+          image: c6oio/halyard-demo-frontend:latest
           imagePullPolicy: Always
           env:
             - name: HALYARD_API_HOST
