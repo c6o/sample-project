@@ -431,14 +431,6 @@ export HALYARD_API_PORT=8002
 kubectl apply -f ./k8s
 ```
 
-```bash
-kubectl apply -f ./k8s/halyard-backend-deployment.yaml
-kubectl apply -f ./k8s/halyard-backend-service.yaml
-kubectl apply -f ./k8s/halyard-database-deployment.yaml
-kubectl apply -f ./k8s/halyard-database-service.yaml
-kubectl apply -f ./k8s/halyard-frontend-deployment.yaml
-kubectl apply -f ./k8s/halyard-frontend-service.yaml
-```
 ### Using CodeZero
 
 Legacy command
@@ -486,21 +478,19 @@ To setup a teleport session so that a local service can talk to the remote ones,
 
 Teleport:
 ```bash
-sudo -E czctl deployment teleport halyard-backend -n halyard -f env.sh
+czctl deployment teleport halyard-backend -n halyard -f env.sh
 ```
 
 Intercept
 ```bash
-czctl service intercept halyard-backend -p 3000 -o 3010 -n halyard -x X-LOCAL:true
+czctl service intercept halyard-backend -l 3030 -n halyard
 ```
 
 Curl Commands
 
 ```bash
 curl http://halyard-backend:3000 --silent
-curl http://halyard-backend:3010 --silent
-curl http://halyard-backend:3020 --silent
-curl -H "X-LOCAL:true" -L -X GET http://159.203.52.118/api
+curl -H "X-C6O-INTERCEPT:YES" -L -X GET http://halyard-backend:3000/ping --silent
 ```
 
 #### Based On: https://betterprogramming.pub/kubernetes-deployment-connect-your-front-end-to-your-back-end-with-nginx-7e4e7cfef177
