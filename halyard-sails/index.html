@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <style>
+            html, body {
+                height: 100%;
+                margin: 20;
+                padding: 20;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+
+            img {
+                padding: 20;
+                display: block;
+                margin: 20 auto;
+                max-height: 65%;
+                max-width: 90%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <p id="sailboat-status">Halyard sails</p>
+        <img id="sailboat" src="yacht-sails-down.png"></img>
+        <p id="api-info"></p>
+        <p id="api-error"></p>
+
+        <script>
+            let counter = 0
+            let counterError = 0
+
+            function main() {
+                const url = "/sails"
+                $('#api-info').html(`Query: ${url} (${counter})`)
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    data: {
+                        "Content-Type": undefined
+                    },
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader('X-C6O-INTERCEPT', 'YES')
+                    },
+                    success: (result) => {
+                        console.log(result)
+                        if (result === 'up') {
+                            $('#sailboat').attr({src: "yacht-sails-up.png"})
+                            $('#sailboat-status').html("Halyard Local Server")
+                        }
+                        else {
+                            $('#sailboat').attr({src: "yacht-sails-down.png"})
+                            $('#sailboat-status').html("Halyard Remote Server.")
+                        }
+                        if (counter > counterError)
+                            $('#api-error').html(``)
+                        counter++
+                    },
+                    error: (err) => {
+                        console.log(err)
+                        $('#api-error').html(`API error from (${url}): ${err.status} ${err.statusText} (${counter})`)
+                        $('#sailboat').attr({src: "yacht-sails-error.png"})
+                        $('#sailboat-status').html("Halyard sharks in the waters!")
+                        counterError = counter++
+                    }
+                })
+            }
+
+            $(document).ready(() => setInterval(main, 7000))
+        </script>
+    </body>
+
+</html>

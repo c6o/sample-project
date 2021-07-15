@@ -12,3 +12,7 @@ services:
     image: c6oio/halyard-demo-frontend:$USER
     build:
       context: ./halyard-frontend
+  halyard-sails:
+    image: c6oio/halyard-demo-sails:$USER
+    build:
+      context: ./halyard-sails

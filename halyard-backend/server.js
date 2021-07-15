@@ -23,7 +23,7 @@ let mongodbState = 'Not connected to the Halyard database yet'
 const databaseConnectCallback = (error) => {
     if (error) {
         mongodbState = 'Bummer - unable to connected to the Halyard database: ' + mongoURL
-        console.log(mongodbState)
+        // console.log(mongodbState)
         mongodbState = `${mongodbState}, Connect Error: ${error.message}.`
     } else {
         mongodbState = 'Yay - connected to the Halyard database! ' + mongoURL
@@ -46,10 +46,10 @@ const getHandler = (req, res) => {
         })
         // The whole response has been received. Print out the result.
         resp.on('end', () => {
-            // retVal = `${version} </br></br>${mongodbState} </br></br> Echo Service Response: ${
-            //     data.replace(/[\n\r]/g,'</br>')
-            // }`
-            retVal = `${version}`
+            retVal = `${version} </br></br>${mongodbState} </br></br> Echo Service Response: ${
+                data.replace(/[\n\r]/g,'</br>')
+            }`
+            // retVal = `${version}`
 
             res.send({
                 'data': retVal
@@ -68,11 +68,20 @@ const getHandler = (req, res) => {
 }
 
 pingHandler = (req, res) => {
-    console.log("Request: ", req.headers)
+    console.log("Ping Request: ", req.headers)
     retVal = `Halyard-Backend: ${version}`
     res.send({
         'data': retVal
     })
+}
+
+sailsHandler = (req, res) => {
+    console.log("Sails Request: ", req.headers)
+    if (version === 'Version 1.0')
+        retVal = 'down'
+    else
+        retVal = 'up'
+    res.send(retVal)
 }
 
 app.get('/api', getHandler)
@@ -81,6 +90,7 @@ app.get('/ping', pingHandler)
 app.post('/ping', pingHandler)
 app.put('/ping', pingHandler)
 app.delete('/ping', pingHandler)
+app.get('/sails', sailsHandler)
 
 const serviceHandler = function () {
     console.log('listening on ' + backendAPIPort)

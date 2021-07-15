@@ -1,8 +1,10 @@
 # CodeZero Halyard
 
+## Halyard Demo Functionality
+
 A project for experimenting with developer productivity.
 
-A minimum set of features for CI/CD experimentation:
+The project contains a minimum set of features for experimentation with CodeZero's Teleport and Intercept debugging tools:
 
 * 1 Front Ends
   * halyard-frontend
@@ -19,14 +21,100 @@ Technologies:
 * Kubernetes
 * CodeZero
 
-## Running the code locally
+## What to do to try out Teleport and Intercept.
 
+### Setup
+First, install the CodeZero command with
+
+```bash
+yarn global add @c6o/cli
+```
+Second, deploy the project to a Kubernetes cluster so that you have a remote system to interact with through Teleport and Intercept.
+
+```bash
+kubeclt create namespace halyard
+kubectl apply -n halyard -f ./k8s 
+```
+
+### Teleport
+
+This will run the halyard project's components in the cluster in the namespace 'halyard'.
+
+Say you want to run the halyard-frontend and talk to the halyard-backend in the cloud. Issue the following command
+to access halyard-backend as if your local machine is in the cloud.
+
+```bash
+czctl deployment teleport halyard-backend -n halyard -l 3010
+```
+
+Now you can curl the halyard-backend:
+```bash
+curl -X GET http://halyard-backend:3000
+```
+Thes paths will route to the backend server:
+
+```bash
+curl -X GET http://halyard-frontend/api
+curl -X GET http://halyard-frontend/ping
+curl -X GET http://halyard-sail/api
+curl -X GET http://halyard-sail/ping
+curl -X GET http://halyard-sail/sail
+```
+
+It will reply:
+```bash
+{"data":"Halyard-Backend: Version 1.0"}
+```
+
+### Intercept
+
+Now, let's run halyard-backend locally and have the server side traffic sent to this local service.
+
+Run the halyard-backend locally on port 3010 with version 3010
+
+```bash
+cd halyard-backend
+export HALYARD_VERSION=version 3010
+export HALYARD_API_PORT=3010
+npm start
+```
+It will have trouble connecting to the database, just ignore this problem for now.
+```bash
+> halyard-backend@1.0.0 start
+> node server.js
+
+listening on 3010
+version  version 3010
+```
+
+Now run intercept:
+```bash
+czctl service intercept halyard-backend -n halyard -l 3010
+```
+
+At this point a curl to the remote front end path of /api, and /ping (or /sail for the sail frontend)
+will with a header key/value of X-C6O-INTERCEPT=YES will direct to the locally 
+running backend server.
+
+```bash
+> curl -H "X-C6O-INTERCEPT:YES" -L -X GET http://halyard-frontend/ping --silent
+{"data":"Halyard-Backend: version 3010"}
+```
+Or directly to the backend server:
+```bash
+> curl -H "X-C6O-INTERCEPT:YES" -L -X GET http://halyard-backend:3000/ping --silent
+{"data":"Halyard-Backend: version 3010"}
+```
+
+# Development Details
+
+## Running the code locally
 To run the code locally, you can start each server individually. Each backend service uses environment
 variables with useful defaults if you don't specifiy anything. These should be started up in the following
 order:
 
 ```
-halyard-database | halyard-echo | halyard-backend | halyard-sockets | halyard-frontend
+halyard-database | halyard-echo | halyard-backend | halyard-sockets | halyard-frontend | halyard-sail
 ```
 
 ### halyard-database
@@ -80,14 +168,16 @@ HALYARD_PING_INTERVAL || 5000
 HALYARD_PINGPONGFAIL_INTERVAL || 10000
 HALYARD_SOCKETS_PORT || 8999
 ```
-### halyard-frontend
+### halyard-frontend && halyard-sails
 
 The halyard frontend is a webpage that makes requests to the halyard backend /api endpoint and reports back the results
-to a browswer window. It also opens a websocket connection to halyard sockets and prints out the messages it received.
+to a browser window. It also opens a websocket connection to halyard sockets and prints out the messages it received.
 
 The halyard frontend proxies http and websocket connections to the halyard-backend and halyard-sockets backend servers
 through an NGINX proxy. Requests to websockets go to halyard-sockets, requests to `/api` go to halyard-backend. `/` 
 returns the frontend html.
+
+The sail server has a different web experience and relies on the backend endpoint /sail.
 
 ## Operating manifest items
 
@@ -110,42 +200,52 @@ docker-compose push
 
 #### manual builds:
 ```bash
-docker build --tag halyard-database ./halyard-database:1.3
-docker build --tag halyard-backend ./halyard-backend:1.3
-docker build --tag halyard-sockets ./halyard-sockets:1.3
-docker build --tag halyard-frontend ./halyard-frontend:1.3
+docker build --tag halyard-database:1.5 ./halyard-database
+docker build --tag halyard-backend:1.5 ./halyard-backend
+docker build --tag halyard-sockets:1.5 ./halyard-sockets
+docker build --tag halyard-frontend:1.5 ./halyard-frontend
+docker build --tag halyard-sails:1.5 ./halyard-frontend
 ```
 
-#### M1 build for remote systems:
+#### building from an M1 machine for remote systems:
+
 ```bash
 docker build --tag robblovell/halyard-backend:1.5 --platform linux/amd64 ./halyard-backend --no-cache
-docker build --tag robblovell/halyard-sockets:1.3 --platform linux/amd64 ./halyard-sockets --no-cache
+docker build --tag robblovell/halyard-sockets:1.5 --platform linux/amd64 ./halyard-sockets --no-cache
 docker build --tag robblovell/halyard-frontend:1.5 --platform linux/amd64 ./halyard-frontend -f ./halyard-frontend/Dockerfile.confgMap
-docker build --tag robblovell/halyard-frontend:1.4 --platform linux/amd64 ./halyard-frontend -f ./halyard-frontend/Dockerfile.confgMap
+docker build --tag robblovell/halyard-sails:1.5 --platform linux/amd64 ./halyard-sails -f ./halyard-sails/Dockerfile.confgMap
 ```
 Other architectures:
 ```bash
 ... --platform linux/amd64 --platform linux/arm64 --platform linux/arm64/v8 
 ```
 
+#### build for running on M1:
+
+```bash
+docker build --tag robblovell/halyard-backend:1.5 --platform linux/arm64 ./halyard-backend --no-cache
+docker build --tag robblovell/halyard-sockets:1.5 --platform linux/arm64 ./halyard-sockets --no-cache
+docker build --tag robblovell/halyard-frontend-local:1.5 --platform linux/arm64 ./halyard-frontend -f ./halyard-frontend/Dockerfile
+docker build --tag robblovell/halyard-sails-local:1.5 --platform linux/arm64 ./halyard-sails -f ./halyard-sails/Dockerfile
+```
+
 ### Publishing
 
 ```bash
 docker push robblovell/halyard-backend:1.5
-docker push robblovell/halyard-sockets:1.3
-docker push robblovell/halyard-frontend:1.3
-docker push robblovell/halyard-frontend:1.4
-docker push robblovell/halyard-frontend2:1.3
+docker push robblovell/halyard-sockets:1.5
 docker push robblovell/halyard-frontend:1.5
+docker push robblovell/halyard-sails:1.5
 ```
 
 ### publish to docker hub
 
 ```bash
-docker tag e3053bf8c609 robblovell/halyard-backend:1.1
-docker tag f2cf0963cccd robblovell/halyard-frontend:1.1
-docker push robblovell/halyard-backend:1.1
-docker push robblovell/halyard-frontend:1.1
+docker tag e3053bf8c609 robblovell/halyard-backend:1.5
+docker tag f2cf0963cccd robblovell/halyard-frontend:1.5
+docker push robblovell/halyard-backend:1.5
+docker push robblovell/halyard-frontend:1.5
+etc.
 ```
 
 ## Running
@@ -157,9 +257,9 @@ This can be started in a docker container and made available to localhost.  Note
 locally because of operating system level protection of ports < 1024.
 
 Running echo server:
-
+```bash
 docker run -p 8000:8080 --detach --name halyard-echo robblovell/echo-server:2.2
-
+```
 
 MongoDB:
 
@@ -177,13 +277,20 @@ docker run --name mongodb -d mongo:4.0.25
 The halyard backend will start with errors if a database is not running, but will function without
 the database, just reporting that it could not connect in response to any requests that are made.
 Similarly, if halyard echo server is not running, the backend will function and respond with what
-errors were received from echo server.
+errors we've received from echo server.
 
 
 Here is how to start the backend on two different ports (3000 is default)
 ```bash
 HALYARD_API_PORT=3010 HALYARD_ECHO='http://localhost:8000' yarn start-backend
 HALYARD_API_PORT=3020 HALYARD_ECHO='http://localhost:8000' yarn start-backend
+```
+You can also set the variables `HALYARD_VERSION` when running the backend to alter the look of the
+backend's replies and the front end web pages. When teleported, you will need to run the halyard backend on a port other
+than 3000 because the remote server will be using this port.
+
+```bash
+HALYARD_VERSION=Version 2.0
 ```
 
 #### halyard-sockets
@@ -197,14 +304,37 @@ Since you don't have a local NGINX to forward requests to the backend, the front
 index.html will need to be modified to talk directly to the backend service. You will not be able to 
 run this service locally on port 80 as this port is < 1024 and is protected by your operating system.
 
-You can also run this in a docker container to use NGINX forwarding.
+You need to run this in a docker container to use NGINX forwarding.
 
-docker run 8888:80 --detach --name halyard-frontend --env HALYARD_API_HOST='localhost' --env HALYARD_API_PORT='3010' robblovell/halyard-frontend:1.3
-docker run 8889:80 --detach --name halyard-frontend --env HALYARD_API_HOST='localhost' --env HALYARD_API_PORT='3020' robblovell/halyard-frontend:1.3
+docker run 8888:80 --detach --name halyard-frontend robblovell/halyard-frontend:1.5
+docker run 8889:80 --detach --name halyard-sails robblovell/halyard-frontend:1.5
 
+Or you can use your debugger and run a server to serve index.html, however you will need to run the backend 
+outside of docker and change the url in the frontend or sails index.html file:
+
+Run the backend:
 ```bash
-yarn start-frontend
+yarn run start-backend
+yarn run start-sockets
 ```
+For frontend websockets:
+```nashorn js
+const loc = window.location
+loc.host = 'localhost'
+```
+For frontend backend request:
+
+```nashorn js
+ const url = "http://localhost:3000/api"
+```
+
+For sails: 
+```nashorn js
+ const url = "http://localhost:3000/sails"
+```
+
+Or you can run teleport with intercept and use the remote server names of halyard-backend and halyard-sockets instead of localhost.
+Be careful as when you teleport, there could be port collisions to deal with.
 
 ### With docker
 
@@ -214,9 +344,40 @@ To run with docker, a local network needs to be created and all containers start
 docker network create halyard
 docker run --network halyard -p 27017:27017 --name halyard-database -d mongo:4.4.5
 docker run --network halyard -p 8000:8080 --detach --name halyard-echo robblovell/echo-server:2.2
-docker run --network halyard -p 8001:3000 --detach --name halyard-backend --env HALYARD_API_PORT='3000' --env HALYARD_ECHO='http://halyard-echo:8080' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.3
-docker run --network halyard -p 8002:8999 --detach --name halyard-sockets --env HALYARD_SOCKETS_PORT='8999' robblovell/halyard-sockets:1.3
-docker run --network halyard -p 8003:80 --detach --name halyard-frontend --env HALYARD_API_HOST='halyard-backend' --env HALYARD_API_PORT='8001' --env HALYARD_SOCKETS_HOST='halyard-sockets' --env HALYARD_SOCKETS_PORT='8002' robblovell/halyard-frontend:1.3
+docker run --network halyard -p 3000:3000 --detach --name halyard-backend --env HALYARD_VERSION='Version 3030' --env HALYARD_ECHO='http://halyard-echo:8000' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.5
+docker run --network halyard -p 8999:8999 --detach --name halyard-sockets robblovell/halyard-sockets:1.5
+docker run --network halyard -p 8888:80 --detach --name halyard-frontend robblovell/halyard-frontend-local:1.5
+docker run --network halyard -p 8889:80 --detach --name halyard-sails robblovell/halyard-sails-local:1.5
+```
+
+With a teleport session running, port collisions will occur, so you need to change the ports docker exposes. Note
+that the internal references within NGINX are within the docker network and talk to the internal container port. By
+changing the port, you can intercept remote server side requests to these locally running services:
+
+```bash
+docker network create halyard
+docker run --network halyard -p 27017:27017 --name halyard-database -d mongo:4.4.5
+docker run --network halyard -p 8010:8080 --detach --name halyard-echo robblovell/echo-server:2.2
+docker run --network halyard -p 3030:3000 --detach --name halyard-backend --env HALYARD_VERSION='Version 3010' --env HALYARD_ECHO='http://halyard-echo:8010' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.5
+docker run --network halyard -p 8989:8999 --detach --name halyard-sockets robblovell/halyard-sockets:1.5
+docker run --network halyard -p 8898:80 --detach --name halyard-frontend robblovell/halyard-frontend-local:1.5
+docker run --network halyard -p 8899:80 --detach --name halyard-sails robblovell/halyard-sails-local:1.5
+docker ps
+```
+
+So, you don't need to expose halyard-backend, halyard-sockets, halyard-echo or halyard-database 
+unless you want to intercept into these services. Since halyard-frontend and halyard-sails are locally exposed services
+they will need to have their ports changed when teleported to the remote server running these services.
+
+```bash
+docker network create halyard
+docker run --network halyard --name halyard-database -d mongo:4.4.5
+docker run --network halyard --detach --name halyard-echo robblovell/echo-server:2.2
+docker run --network halyard --detach --name halyard-backend --env HALYARD_VERSION='Version 3010' --env HALYARD_ECHO='http://halyard-echo:8080' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.5
+docker run --network halyard --detach --name halyard-sockets robblovell/halyard-sockets:1.5
+docker run --network halyard -p 8898:80 --detach --name halyard-frontend robblovell/halyard-frontend-local:1.5
+docker run --network halyard -p 8899:80 --detach --name halyard-sails robblovell/halyard-sails-local:1.5
+docker ps
 ```
 
 Now open `https://localhost:8003`
@@ -224,7 +385,7 @@ Now open `https://localhost:8003`
 Cleaning up:
 
 ```bash
-docker kill halyard-backend halyard-frontend halyard-database halyard-echo halyard-sockets
+docker kill halyard-backend halyard-frontend halyard-database halyard-echo halyard-sockets halyard-sails
 docker container prune -f && docker image prune -f 
 docker network rm halyard
 ```
