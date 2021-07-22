@@ -49,7 +49,6 @@ const getHandler = (req, res) => {
             retVal = `${version} </br></br>${mongodbState} </br></br> Echo Service Response: ${
                 data.replace(/[\n\r]/g,'</br>')
             }`
-            // retVal = `${version}`
 
             res.send({
                 'data': retVal

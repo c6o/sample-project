@@ -32,7 +32,8 @@
             let counterError = 0
 
             function main() {
-                const url = "/sails"
+                const url = "http://halyard-sails/sails?x_c6o_intercept=yes"
+                //const url = "/sails"
                 $('#api-info').html(`Query: ${url} (${counter})`)
                 $.ajax({
                     url: url,
@@ -47,11 +48,11 @@
                         console.log(result)
                         if (result === 'up') {
                             $('#sailboat').attr({src: "yacht-sails-up.png"})
-                            $('#sailboat-status').html("Halyard Local Server")
+                            $('#sailboat-status').html("Response From Localhost Server")
                         }
                         else {
                             $('#sailboat').attr({src: "yacht-sails-down.png"})
-                            $('#sailboat-status').html("Halyard Remote Server.")
+                            $('#sailboat-status').html("Response From Remote Kubernetes Server")
                         }
                         if (counter > counterError)
                             $('#api-error').html(``)
