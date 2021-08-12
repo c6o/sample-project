@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: halyard-backend
-          image: robblovell/halyard-backend:1.5
+          image: c6oio/halyard-backend:latest
           imagePullPolicy: Always
           env:
             - name: HALYARD_ECHO

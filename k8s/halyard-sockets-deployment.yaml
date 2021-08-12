@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: halyard-sockets
-          image: robblovell/halyard-sockets:1.5
+          image: c6oio/halyard-sockets:latest
           imagePullPolicy: Always
           env:
             - name: HALYARD_SOCKETS_PORT

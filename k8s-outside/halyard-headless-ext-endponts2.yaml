@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: halyard-headless-ext2
+subsets:
+  - addresses:
+      - ip: 174.138.114.251
+    ports:
+      - protocol: TCP
+        port: 80
+

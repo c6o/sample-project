@@ -7,11 +7,12 @@ A project for experimenting with developer productivity.
 The project contains a minimum set of features for experimentation with CodeZero's Teleport and Intercept debugging tools:
 
 * 1 Front Ends
-  * halyard-frontend
-* 3 Back Ends
+  * halyard-frontend (one that works with the headless service, the other not)
+* 4 Back Ends
   * halyard-backend
   * halyard-sockets
   * echo-server from git@github.com:robblovell/echo-server.git that builds the docker container: robblovell/echo-server:2.2
+  * halyard-headless
 * Database
   * halyard-database from a mongodb container
 
@@ -34,6 +35,25 @@ Second, deploy the project to a Kubernetes cluster so that you have a remote sys
 ```bash
 kubeclt create namespace halyard
 kubectl apply -n halyard -f ./k8s 
+```
+
+Third, deploy the headless version of the frontend and the headless service. 
+This is done in two steps, first installing the services and deployments in the k8s-headless directory,
+second, getting the ip addresses of the pods, updating the endpoints ip addresses 
+in the k8s-headless-endpoings/halyard-headless-endpoints.yaml to refelct these values.
+
+```bash
+kk apply -n halyard -f ./k8s-headless
+kk get -n halyard pods -o wide | grep headless
+halyard-headless-5867684f46-5h95b   1/1     Running   0          4m4s    10.244.0.108   kittens-worker-pool-85h89   <none>           <none>
+halyard-headless-5867684f46-9q2wl   1/1     Running   0          4m4s    10.244.1.9     kittens-worker-pool-85h8z   <none>           <none>
+vi k8s-headless-endpoints/halyard-headless-endpoints.yaml
+```
+
+then:
+
+```bash
+kk apply -n halyard -f ./k8s-headless-endpoints
 ```
 
 ### Teleport
@@ -198,22 +218,29 @@ docker-compose build
 docker-compose push
 ```
 
+Note: Set environment variable USER to 'latest' to push images that will be deployed from the k8s directory
+```bash
+export USER=latest
+```
+
 #### manual builds:
 ```bash
-docker build --tag halyard-database:1.5 ./halyard-database
-docker build --tag halyard-backend:1.5 ./halyard-backend
-docker build --tag halyard-sockets:1.5 ./halyard-sockets
-docker build --tag halyard-frontend:1.5 ./halyard-frontend
-docker build --tag halyard-sails:1.5 ./halyard-frontend
+docker build --tag halyard-database:latest ./halyard-database
+docker build --tag halyard-backend:latest ./halyard-backend
+docker build --tag halyard-sockets:latest ./halyard-sockets
+docker build --tag halyard-frontend:latest ./halyard-frontend
+docker build --tag halyard-sails:latest ./halyard-frontend
 ```
+
+(note halyard headless uses the echo server container)
 
 #### building from an M1 machine for remote systems:
 
 ```bash
-docker build --tag robblovell/halyard-backend:1.5 --platform linux/amd64 ./halyard-backend --no-cache
-docker build --tag robblovell/halyard-sockets:1.5 --platform linux/amd64 ./halyard-sockets --no-cache
-docker build --tag robblovell/halyard-frontend:1.5 --platform linux/amd64 ./halyard-frontend -f ./halyard-frontend/Dockerfile.confgMap
-docker build --tag robblovell/halyard-sails:1.5 --platform linux/amd64 ./halyard-sails -f ./halyard-sails/Dockerfile.confgMap
+docker build --tag c6oio/halyard-backend:latest --platform linux/amd64 ./halyard-backend --no-cache
+docker build --tag c6oio/halyard-sockets:latest --platform linux/amd64 ./halyard-sockets --no-cache
+docker build --tag c6oio/halyard-frontend:latest --platform linux/amd64 ./halyard-frontend -f ./halyard-frontend/Dockerfile.confgMap
+docker build --tag c6oio/halyard-sails:latest --platform linux/amd64 ./halyard-sails -f ./halyard-sails/Dockerfile.confgMap
 ```
 Other architectures:
 ```bash
@@ -223,28 +250,28 @@ Other architectures:
 #### build for running on M1:
 
 ```bash
-docker build --tag robblovell/halyard-backend:1.5 --platform linux/arm64 ./halyard-backend --no-cache
-docker build --tag robblovell/halyard-sockets:1.5 --platform linux/arm64 ./halyard-sockets --no-cache
-docker build --tag robblovell/halyard-frontend-local:1.5 --platform linux/arm64 ./halyard-frontend -f ./halyard-frontend/Dockerfile
-docker build --tag robblovell/halyard-sails-local:1.5 --platform linux/arm64 ./halyard-sails -f ./halyard-sails/Dockerfile
+docker build --tag c6oio/halyard-backend:latest --platform linux/arm64 ./halyard-backend --no-cache
+docker build --tag c6oio/halyard-sockets:latest --platform linux/arm64 ./halyard-sockets --no-cache
+docker build --tag c6oio/halyard-frontend-local:latest --platform linux/arm64 ./halyard-frontend -f ./halyard-frontend/Dockerfile
+docker build --tag c6oio/halyard-sails-local:latest --platform linux/arm64 ./halyard-sails -f ./halyard-sails/Dockerfile
 ```
 
 ### Publishing
 
 ```bash
-docker push robblovell/halyard-backend:1.5
-docker push robblovell/halyard-sockets:1.5
-docker push robblovell/halyard-frontend:1.5
-docker push robblovell/halyard-sails:1.5
+docker push c6oio/halyard-backend:latest
+docker push c6oio/halyard-sockets:latest
+docker push c6oio/halyard-frontend:latest
+docker push c6oio/halyard-sails:latest
 ```
 
 ### publish to docker hub
 
 ```bash
-docker tag e3053bf8c609 robblovell/halyard-backend:1.5
-docker tag f2cf0963cccd robblovell/halyard-frontend:1.5
-docker push robblovell/halyard-backend:1.5
-docker push robblovell/halyard-frontend:1.5
+docker tag e3053bf8c609 c6oio/halyard-backend:latest
+docker tag f2cf0963cccd c6oio/halyard-frontend:latest
+docker push c6oio/halyard-backend:latest
+docker push c6oio/halyard-frontend:latest
 etc.
 ```
 
@@ -306,8 +333,8 @@ run this service locally on port 80 as this port is < 1024 and is protected by y
 
 You need to run this in a docker container to use NGINX forwarding.
 
-docker run 8888:80 --detach --name halyard-frontend robblovell/halyard-frontend:1.5
-docker run 8889:80 --detach --name halyard-sails robblovell/halyard-frontend:1.5
+docker run 8888:80 --detach --name halyard-frontend c6oio/halyard-frontend:latest
+docker run 8889:80 --detach --name halyard-sails c6oio/halyard-frontend:latest
 
 Or you can use your debugger and run a server to serve index.html, however you will need to run the backend 
 outside of docker and change the url in the frontend or sails index.html file:
@@ -344,10 +371,10 @@ To run with docker, a local network needs to be created and all containers start
 docker network create halyard
 docker run --network halyard -p 27017:27017 --name halyard-database -d mongo:4.4.5
 docker run --network halyard -p 8000:8080 --detach --name halyard-echo robblovell/echo-server:2.2
-docker run --network halyard -p 3000:3000 --detach --name halyard-backend --env HALYARD_VERSION='Version 3030' --env HALYARD_ECHO='http://halyard-echo:8000' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.5
-docker run --network halyard -p 8999:8999 --detach --name halyard-sockets robblovell/halyard-sockets:1.5
-docker run --network halyard -p 8888:80 --detach --name halyard-frontend robblovell/halyard-frontend-local:1.5
-docker run --network halyard -p 8889:80 --detach --name halyard-sails robblovell/halyard-sails-local:1.5
+docker run --network halyard -p 3000:3000 --detach --name halyard-backend --env HALYARD_VERSION='Version 3030' --env HALYARD_ECHO='http://halyard-echo:8000' --env HALYARD_DATABASE='mongodb://halyard-database:27017' c6oio/halyard-backend:latest
+docker run --network halyard -p 8999:8999 --detach --name halyard-sockets c6oio/halyard-sockets:latest
+docker run --network halyard -p 8888:80 --detach --name halyard-frontend c6oio/halyard-frontend-local:latest
+docker run --network halyard -p 8889:80 --detach --name halyard-sails c6oio/halyard-sails-local:latest
 ```
 
 With a teleport session running, port collisions will occur, so you need to change the ports docker exposes. Note
@@ -358,10 +385,10 @@ changing the port, you can intercept remote server side requests to these locall
 docker network create halyard
 docker run --network halyard -p 27017:27017 --name halyard-database -d mongo:4.4.5
 docker run --network halyard -p 8010:8080 --detach --name halyard-echo robblovell/echo-server:2.2
-docker run --network halyard -p 3030:3000 --detach --name halyard-backend --env HALYARD_VERSION='Version 3010' --env HALYARD_ECHO='http://halyard-echo:8010' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.5
-docker run --network halyard -p 8989:8999 --detach --name halyard-sockets robblovell/halyard-sockets:1.5
-docker run --network halyard -p 8898:80 --detach --name halyard-frontend robblovell/halyard-frontend-local:1.5
-docker run --network halyard -p 8899:80 --detach --name halyard-sails robblovell/halyard-sails-local:1.5
+docker run --network halyard -p 3030:3000 --detach --name halyard-backend --env HALYARD_VERSION='Version 3010' --env HALYARD_ECHO='http://halyard-echo:8010' --env HALYARD_DATABASE='mongodb://halyard-database:27017' c6oio/halyard-backend:latest
+docker run --network halyard -p 8989:8999 --detach --name halyard-sockets c6oio/halyard-sockets:latest
+docker run --network halyard -p 8898:80 --detach --name halyard-frontend c6oio/halyard-frontend-local:latest
+docker run --network halyard -p 8899:80 --detach --name halyard-sails c6oio/halyard-sails-local:latest
 docker ps
 ```
 
@@ -373,10 +400,10 @@ they will need to have their ports changed when teleported to the remote server 
 docker network create halyard
 docker run --network halyard --name halyard-database -d mongo:4.4.5
 docker run --network halyard --detach --name halyard-echo robblovell/echo-server:2.2
-docker run --network halyard --detach --name halyard-backend --env HALYARD_VERSION='Version 3010' --env HALYARD_ECHO='http://halyard-echo:8080' --env HALYARD_DATABASE='mongodb://halyard-database:27017' robblovell/halyard-backend:1.5
-docker run --network halyard --detach --name halyard-sockets robblovell/halyard-sockets:1.5
-docker run --network halyard -p 8898:80 --detach --name halyard-frontend robblovell/halyard-frontend-local:1.5
-docker run --network halyard -p 8899:80 --detach --name halyard-sails robblovell/halyard-sails-local:1.5
+docker run --network halyard --detach --name halyard-backend --env HALYARD_VERSION='Version 3010' --env HALYARD_ECHO='http://halyard-echo:8080' --env HALYARD_DATABASE='mongodb://halyard-database:27017' c6oio/halyard-backend:latest
+docker run --network halyard --detach --name halyard-sockets c6oio/halyard-sockets:latest
+docker run --network halyard -p 8898:80 --detach --name halyard-frontend c6oio/halyard-frontend-local:latest
+docker run --network halyard -p 8899:80 --detach --name halyard-sails c6oio/halyard-sails-local:latest
 docker ps
 ```
 

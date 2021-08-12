@@ -5,7 +5,8 @@
     "halyard-sockets"
   ],
   "scripts": {
-    "build": "",
+    "build": "tsc -b ./tsconfig.json",
+    "test": "pnpm unit-tests && pnpm functional-tests && pnpm integration-tests",
     "package": "",
     "publish": "",
     "start-server": "node halyard-backend/server.js",
@@ -14,8 +15,8 @@
     "start-sockets": "node halyard-sockets/server.js",
     "test": "jest --config=\"./jest.config.unit.js\"",
     "unit-tests": "jest --config=\"./jest.config.unit.js\" --maxWorkers=3 --coverage",
-    "functional-tests": "NODE_ENV=test jest --config=\"./jest.config.spec.js\" --forceExit --maxWorkers=1",
-    "integration-tests": "NODE_ENV=test jest --forceExit --maxWorkers=1"
+    "functional-tests": "NODE_ENV=test jest --config=\"./jest.config.spec.js\" --forceExit --maxWorkers=1 --detectOpenHandles",
+    "integration-tests": "NODE_ENV=test jest --config=\"./jest.config.js\" --forceExit --maxWorkers=1 --detectOpenHandles"
   },
   "version": "1.0.0",
   "description": "Sample halyard project",

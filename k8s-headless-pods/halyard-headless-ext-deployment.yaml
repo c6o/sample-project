@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: halyard-headless-ext
+  labels:
+    app: halyard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: halyard-headless-ext
+  template:
+    metadata:
+      labels:
+        app: halyard-headless-ext
+    spec:
+      containers:
+        - name: halyard-headless-ext
+          image: tecnativa/tcp-proxy
+          imagePullPolicy: IfNotPresent # IfNotPresent for production
+          env:
+            - name: LISTEN
+              value: ":25060"
+            - name: TALK
+              value: "165.227.218.43:25060"
+          ports:
+            - name: test-proxy
+              containerPort: 25060

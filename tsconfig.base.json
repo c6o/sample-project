@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "target": "es2018",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "lib": ["es2018", "dom"]
+  },
+  "exclude": [
+    "test",
+    "spec",
+    "lib",
+    "node_modules",
+    "**/*.unit.ts",
+    "**/*.spec.ts",
+  ]
+}

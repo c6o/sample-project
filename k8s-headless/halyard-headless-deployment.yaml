@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: halyard-headless
+  labels:
+    app: halyard
+    component: headless
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: halyard
+      component: headless
+  template:
+    metadata:
+      labels:
+        app: halyard
+        component: headless
+    spec:
+      containers:
+        - name: halyard-headless
+          image: robblovell/echo-server:2.2
+          ports:
+            - containerPort: 8080

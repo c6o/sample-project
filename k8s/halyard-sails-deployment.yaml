@@ -86,7 +86,7 @@ spec:
     spec:
       containers:
         - name: halyard-sails
-          image: robblovell/halyard-sails:1.5
+          image: c6oio/halyard-sails:latest
           imagePullPolicy: Always
           env:
             - name: HALYARD_API_HOST
