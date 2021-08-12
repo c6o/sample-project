@@ -17,7 +17,8 @@ const commMessages = {
 const pingInterval = process.env.HALYARD_PING_INTERVAL || 5000
 const pingpongIntervalFail = process.env.HALYARD_PINGPONGFAIL_INTERVAL || 10000
 const socketsPort = process.env.HALYARD_SOCKETS_PORT || 8999
-
+const pongMessage = process.env.HALYARD_PONG_MESSAGE || 'pong'
+const socketMessage = process.env.HALYARD_SOCKETS_MESSAGE || 'coucou'
 wss.on('connection', (ws) => {
 
     ws.isAlive = true
@@ -59,7 +60,7 @@ wss.on('connection', (ws) => {
     })
 
     ws.on('pong', () => {
-        console.log(`pong: ${ws.id}`)
+        console.log(`${pongMessage}: ${ws.id}`)
         ws.isAlive = true
         clearInterval(ws.timerPingPong)
     })
@@ -81,7 +82,7 @@ const pingpong = (ws) => {
     if (ws?.id) {
         console.log(`ping: ${ws.id}`)
         ws.timerPingPong = setInterval(pingpongclose, pingpongIntervalFail, ws)
-        ws.ping('coucou', false, 'utf8')
+        ws.ping(socketMessage, false, 'utf8')
         ws.send(`${commMessages.pingHelloPrompt}${count[ws.id]++}. Previous message sent-> ${userMessages[ws.id]}`)
     } else {
         console.log('Web socket is undefined?', ws)

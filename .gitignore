@@ -24,3 +24,11 @@ html-report
 *~
 .DS_Store
 **/*.d.ts
+
+# tsc and build output
+packages/**/lib
+tsconfig.tsbuildinfo
+
+halyard-backend/**/*.js
+halyard-backend/**/*.js.map
+halyard-backend/**/*.ts.map

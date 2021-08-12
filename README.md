@@ -25,6 +25,9 @@ Technologies:
 ## What to do to try out Teleport and Intercept.
 
 ### Setup
+See how to run this project in the cloud below in the cluster install section. 
+You will need to have things running in a Kubernetes cluster in a namespace 'halyard'.
+
 First, install the CodeZero command with
 
 ```bash
@@ -128,6 +131,28 @@ Or directly to the backend server:
 
 # Development Details
 
+## Building
+
+```bash
+yarn install
+yarn build
+yarn run unit-tests
+yarn run functional-tests
+yarn run integration-tests
+```
+
+### Cleaning up options
+
+Clean up just typescript for clean builds
+```bash
+yarn clean
+```
+
+Clean up out dependencies and typescript
+```bash
+yarn clean-all
+```
+
 ## Running the code locally
 To run the code locally, you can start each server individually. Each backend service uses environment
 variables with useful defaults if you don't specifiy anything. These should be started up in the following
@@ -165,7 +190,7 @@ development environments. It starts up and tries to connect to halyard-database 
 and reports back any responses from echo server.
 `/` Is used as ping that reports the version deployed
 
-Enviroment variables:
+Environment variables:
 ```bash
 HALYARD_ECHO || 'http://localhost:8000'
 HALYARD_DATABASE || 'mongodb://localhost:27017'
@@ -173,6 +198,7 @@ HALYARD_API_PORT || 3000
 HALYARD_API_HOST || 'localhost'
 HALYARD_VERSION || 'Version 1.0'
 ```
+See below for running this locally, but normally, this is run in a cluster.
 
 ### halyard-sockets
 
@@ -187,7 +213,10 @@ Environment Variables:
 HALYARD_PING_INTERVAL || 5000
 HALYARD_PINGPONGFAIL_INTERVAL || 10000
 HALYARD_SOCKETS_PORT || 8999
+HALYARD_PONG_MESSAGE || 'pong'
+HALYARD_SOCKETS_MESSAGE || 'coucou'
 ```
+
 ### halyard-frontend && halyard-sails
 
 The halyard frontend is a webpage that makes requests to the halyard backend /api endpoint and reports back the results
@@ -276,6 +305,15 @@ etc.
 ```
 
 ## Running
+
+### In a cluster
+
+```bash
+kubectl apply -f ./k8s -n halyard
+```
+
+See below for informatoin on how to run the headles/podless services in a cluster.
+
 ### Locally
 
 #### Database and echo server
@@ -306,7 +344,6 @@ the database, just reporting that it could not connect in response to any reques
 Similarly, if halyard echo server is not running, the backend will function and respond with what
 errors we've received from echo server.
 
-
 Here is how to start the backend on two different ports (3000 is default)
 ```bash
 HALYARD_API_PORT=3010 HALYARD_ECHO='http://localhost:8000' yarn start-backend
@@ -316,12 +353,21 @@ You can also set the variables `HALYARD_VERSION` when running the backend to alt
 backend's replies and the front end web pages. When teleported, you will need to run the halyard backend on a port other
 than 3000 because the remote server will be using this port.
 
+Normally, the code is run in a cluster, but it can be run from docker (see below). Here's how to run it locally:
+
+To run backend server. For the intercept usage shown below, it's best to change up the version and the API port for the backend.
 ```bash
-HALYARD_VERSION=Version 2.0
+export HALYARD_VERSION='version 3010'
+export HALYARD_API_PORT=3010
+yarn start-backend
 ```
 
 #### halyard-sockets
+
+Normally, the code is run in a cluster from a docker container (see below), but here's how to run it locally:
 ```bash
+export HALYARD_PONG_MESSAGE='pikachu'
+export HALYARD_SOCKETS_MESSAGE='Hello!'
 yarn start-sockets
 ```
 
@@ -363,7 +409,7 @@ For sails:
 Or you can run teleport with intercept and use the remote server names of halyard-backend and halyard-sockets instead of localhost.
 Be careful as when you teleport, there could be port collisions to deal with.
 
-### With docker
+## Running With Docker Locally
 
 To run with docker, a local network needs to be created and all containers started on this network.
 
@@ -439,23 +485,38 @@ docker network connect [network] [container]
 docker exec [containerA] ping [containerB] -c2
 docker inspect -f '{{.NetworkSettings.Networks.[network].IPAddress}}' [container]
 ```
-## Configuration
 
-The following environment variables are required:
 
-```bash
-export HALYARD_DATABASE=mongodb://localhost:8003
-export HALYARD_DATABASE_DATABASE=database
-export HALYARD_API_HOST=node-service
-export HALYARD_API_PORT=8002
-```
-
-## Install
+## Install in a Cluster
 
 ### Using Kubectl
 
 ```bash
-kubectl apply -f ./k8s
+kubectl apply -f ./k8s -n halyard
+```
+To test headless and podless services
+
+```bash
+kubectl apply -f ./k8s-headless -n halyard
+kubectl apply -f ./k8s-headless-pods -n halyard
+kubectl apply -f ./k8s-outside -n halyard
+```
+
+You will need to edit the endpoints files in `k8s-headless-endpoints` to match the deployed endpoints and external services they connect to.
+We use a in cluster postgres server, a cloud based postgres server an internal http echo server on port 80. 
+
+For the halyard-headles-endponts.yaml, this points to the two pods started by k8s-headless/halyard-headless-deployment.yaml.
+Just look at the addresses Kubernetes gives to these pods and use those IP adresses:
+
+```bash
+kubectl get pods -n halyard -o wide | grep halyard-headless
+halyard-headless-5867684f46-89dvj   1/1     Running   0          3d1h    10.244.0.209   kittens-worker-pool-8h4kc   <none>           <none>
+halyard-headless-5867684f46-vckwf   1/1     Running   0          3d1h    10.244.0.93    kittens-worker-pool-8h4ku   <none>           <none>
+```
+
+Once the files are edited, you can apply them to make the headless and podless services work.
+```bash
+kubectl apply -f ./k8s-headless-endpoints -n halyard
 ```
 
 ### Using CodeZero
@@ -520,5 +581,5 @@ curl http://halyard-backend:3000 --silent
 curl -H "X-C6O-INTERCEPT:YES" -L -X GET http://halyard-backend:3000/ping --silent
 ```
 
-#### Based On: https://betterprogramming.pub/kubernetes-deployment-connect-your-front-end-to-your-back-end-with-nginx-7e4e7cfef177
+#### Some code is based on: https://betterprogramming.pub/kubernetes-deployment-connect-your-front-end-to-your-back-end-with-nginx-7e4e7cfef177
 

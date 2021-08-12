@@ -1,6 +1,6 @@
 {
   "files": [],
   "references": [
-    {"path": "./halyard-backend"},
+    {"path": "./halyard-backend"}
   ]
 }
