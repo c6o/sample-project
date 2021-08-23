@@ -66,6 +66,24 @@ HALYARD_API_HOST || 'localhost'
 HALYARD_VERSION || 'Version 1.0'
 ```
 
+The backend mounts two drives so that volume mounting can be tried. To mount halyard-backend's folders, first
+teleport into halyard backend and then apply the k8s-nfs folder to start an nfs server in the cluster. 
+Once the nfs server is started, you can mount the disks with the `mount` command. 
+
+```bash
+czctl deployment teleport halyard-backend -n halyard
+mkdir mnt-test
+mount -w -t nfs -o vers=4 nfs-server:/ mnt-test
+```
+
+Note: if you have something in the directory where you are mounting the drives, the folder will look like it is overwritten. 
+But unmounting it (see below) will make the drive reappear.
+
+To unmount these drives:
+```bash
+umount mnt-test
+```
+
 ### halyard-sockets
 
 The halyard sockets is a server that is used to test websocket connectivity between internal kubernetes pods and 
