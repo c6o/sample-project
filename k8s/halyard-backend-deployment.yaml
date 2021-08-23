@@ -31,3 +31,15 @@ spec:
                 name: halyard-backend-config
           ports:
             - containerPort: 3000
+          volumeMounts:
+            - name: volume-test1
+              mountPath: "/volumes/test1"
+            - name: volume-test2
+              mountPath: "/volumes/test2"
+      volumes:
+        - name: volume-test1
+          persistentVolumeClaim:
+            claimName: halyard-backend-claim1
+        - name: volume-test2
+          persistentVolumeClaim:
+            claimName: halyard-backend-claim2

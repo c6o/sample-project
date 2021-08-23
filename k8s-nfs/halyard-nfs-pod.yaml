@@ -1,0 +1,38 @@
+# todo: make a deployment for this.
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nfs-server-pod
+  labels:
+    role: nfs
+spec:
+  containers:
+    - name: nfs-server-container
+      ports:
+        - containerPort: 2049
+      image: c6oio/nfs-server-alpine
+      imagePullPolicy: Always
+      securityContext:
+        privileged: true
+      volumeMounts:
+        - name: mnt-root
+          mountPath: /mnt-root
+        - name: mnt-root-test1
+          mountPath: "/mnt-root/test1"
+        - name: mnt-root-test2
+          mountPath: "/mnt-root/test2"
+        - name: nfs-export-volume
+          mountPath: /etc/exports
+          subPath: exports
+  volumes:
+    - name: mnt-root
+      emptyDir: {}
+    - name: mnt-root-test1
+      persistentVolumeClaim:
+        claimName: halyard-backend-claim1
+    - name: mnt-root-test2
+      persistentVolumeClaim:
+        claimName: halyard-backend-claim2
+    - name: nfs-export-volume
+      configMap:
+        name: nfs-server-exports

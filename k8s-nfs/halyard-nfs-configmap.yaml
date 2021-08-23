@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nfs-server-exports
+data:
+  exports: |
+    /mnt-root *(fsid=0,rw,async,no_subtree_check,no_auth_nlm,insecure,all_squash,anonuid=0,anongid=0)
+    /mnt-root/test1 *(rw,async,no_subtree_check,no_auth_nlm,insecure,all_squash,anonuid=0,anongid=0)
+    /mnt-root/test2 *(rw,async,no_subtree_check,no_auth_nlm,insecure,all_squash,anonuid=0,anongid=0)
