@@ -5,5 +5,5 @@ metadata:
 data:
   SAMPLE1_KEY: VALUE1
   SAMPLE2_KEY: VALUE2
-  HALYARD_VERSION: 'version argos'
+  HALYARD_VERSION: version argos
   HALYARD_API_PORT: 3000
