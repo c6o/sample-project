@@ -1,0 +1,28 @@
+apiVersion: system.codezero.io/v1
+kind: App
+name: sample-project-web
+appId:  sample-project-web
+package: '@provisioner/appengine'
+icon: icon.svg
+editions:
+  - name: stable
+    status: private
+    spec:
+      routes:
+        - type: http
+          targetService: sample-project-web
+      provisioner:
+        package: '@provisioner/appengine'
+        tag-prefix: appengine
+        image: 'robblovell/sample-project-web:1.3'
+        imagePullPolicy: Always
+        ports: 80
+        configs:
+          SAMPLE_PROJECT_API_HOST: sample-project-server
+          SAMPLE_PROJECT_API_PORT: 3000
+          SAMPLE_PROJECT_SOCKETS_HOST: sample-project-sockets
+          SAMPLE_PROJECT_SCOKETS_PORT: 8999
+      marina:
+        launch:
+          type: inline
+          popUp: true

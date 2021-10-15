@@ -1,0 +1,35 @@
+apiVersion: system.codezero.io/v1
+kind: App
+name: sample-project-server
+appId: sample-project-server
+package: '@provisioner/appengine'
+icon: icon.svg
+editions:
+  - name: stable
+    status: private
+    spec:
+      # this gets me a route to the outside world.
+      routes:
+        - type: http
+          targetService: sample-project-server
+          targetPort: 3000
+
+      provisioner:
+        package: '@provisioner/appengine'
+        tag-prefix: appengine
+        image: 'robblovell/sample-project-server:1.3'
+        imagePullPolicy: Always
+        ports: 3000
+
+        configs:
+          SAMPLE_PROJECT_DATABASE: "mongodb://sample-project-database:27017"
+          SAMPLE_PROJECT_ECHO: "http://sample-project-echo:8080"
+          SAMPLE_PROJECT_API_PORT: 3000
+#        secretRefs:
+#          - sample-project-database
+#          - sample-project-echo
+
+      marina:
+        launch:
+          type: inline
+          popUp: false

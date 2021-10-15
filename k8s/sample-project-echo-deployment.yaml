@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: sample-project-echo
+  labels:
+    app: sample-project
+    component: echo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-project
+      component: echo
+  template:
+    metadata:
+      labels:
+        app: sample-project
+        component: echo
+    spec:
+      containers:
+        - name: sample-project-echo
+          image: robblovell/echo-server:2.2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080

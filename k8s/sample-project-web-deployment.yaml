@@ -1,0 +1,106 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-project-web
+data:
+    sample-project-web-nginx-config: |
+      upstream sample-project-server{
+        # requests from the public facing app to the API server are routed here.
+        server sample-project-server:3000;
+      }
+
+      upstream sample-project-sockets{
+          # requests from the public facing app to the SOCKETS server are routed here.
+        server sample-project-sockets:8999;
+      }
+
+      server {
+          listen       80;
+          server_name  localhost;
+
+          #charset koi8-r;
+          #access_log  /var/log/nginx/host.access.log  main;
+
+        location ^~ /api {
+            # requests from the public faccing app to the API server are routed here.
+            proxy_pass http://sample-project-server;
+        }
+
+        location ^~ /ping {
+            # requests from the public faccing app to the API server are routed here.
+            proxy_pass http://sample-project-server;
+        }
+
+        location ^~ /sockets {
+              # matches any query beginning with /api/ and halts searching
+              # proxy api requests to the upstream server declared above
+              proxy_pass http://sample-project-sockets;
+
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header Host $host;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+              # WebSocket support
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "upgrade";
+          }
+
+          location / {
+              root   /usr/share/nginx/html;
+              index  index.html index.htm;
+          }
+
+          error_page   500 502 503 504  /50x.html;
+          location = /50x.html {
+              root   /usr/share/nginx/html;
+          }
+      }
+---
+
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: sample-project-web
+  labels:
+    app: sample-project
+    component: web
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-project
+      component: web
+
+  template:
+    metadata:
+      labels:
+        app: sample-project
+        component: web
+    spec:
+      containers:
+        - name: sample-project-web
+          image: c6oio/sample-project-web:latest
+          imagePullPolicy: Always
+          env:
+            - name: SAMPLE_PROJECT_API_HOST
+              value: sample-project-server
+            - name: SAMPLE_PROJECT_API_PORT
+              value: '3000'
+            - name: SAMPLE_PROJECT_SOCKETS_HOST
+              value: sample-project-sockets
+            - name: SAMPLE_PROJECT_SOCKETS_PORT
+              value: '8999'
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: sample-project-web-volume
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: web-nginx-config
+      volumes:
+      - name: sample-project-web-volume
+        configMap:
+          name: sample-project-web

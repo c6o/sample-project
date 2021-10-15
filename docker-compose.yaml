@@ -1,14 +1,14 @@
 version: "3.7"
 services:
-  halyard-backend:
-    image: c6oio/halyard-demo-backend:$USER
+  sample-project-server:
+    image: c6oio/sample-project-server:$USER
     build:
-      context: ./halyard-backend
-  halyard-sockets:
-    image: c6oio/halyard-demo-sockets:$USER
+      context: ./sample-project-server
+  sample-project-sockets:
+    image: c6oio/sample-project-sockets:$USER
     build:
-      context: ./halyard-sockets
-  halyard-frontend:
-    image: c6oio/halyard-demo-frontend:$USER
+      context: ./sample-project-sockets
+  sample-project-web:
+    image: c6oio/sample-project-web:$USER
     build:
-      context: ./halyard-frontend
+      context: ./sample-project-web
