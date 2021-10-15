@@ -5,31 +5,31 @@ metadata:
   name: prod
 spec:
   services:
-    halyard-database:
-      fromConnectionString: "mongodb://halyard-database:27017"
-      fromIAMToken: halyard-database-IAM-access
-      fromCredentials: halyard-database-credentials
-      fromSecret: halyard-database-secret
-      fromConfig: halyard-database-config
+    sample-project-database:
+      fromConnectionString: "mongodb://sample-project-database:27017"
+      fromIAMToken: sample-project-database-IAM-access
+      fromCredentials: sample-project-database-credentials
+      fromSecret: sample-project-database-secret
+      fromConfig: sample-project-database-config
       fromContainer: 'mongo:4.4.5'
         connection: 'alksdfjaldfsjalkdfjaldfjalsdfjlaksdfjlaksdfjlaksdfjlkjalkfsdj'
-      fromFile: '../apps/halyard-database.yaml'
+      fromFile: '../apps/sample-project-database.yaml'
 
-    halyard-echo:
+    sample-project-echo:
       fromRepo: git@github.com:robblovell/echo-server.git
       fromContainer: 'robblovell/echo-server:2.2'
-      fromFile: '../apps/halyard-echo.yaml'
+      fromFile: '../apps/sample-project-echo.yaml'
 
-    halyard-backend:
-      fromFile: ../apps/halyard-backend.yaml
-      await: [ halyard-echo, halyard-database ]
+    sample-project-server:
+      fromFile: ../apps/sample-project-server.yaml
+      await: [ sample-project-echo, sample-project-database ]
 
-    halyard-frontend:
-      fromFile: ../apps/halyard-frontend.yaml
-      await: halyard-backend
+    sample-project-web:
+      fromFile: ../apps/sample-project-web.yaml
+      await: sample-project-server
 
     halyard_wikijs:
       fromContainer: 'wikijs:3.5.6'
-        CONNECTION_TO_DATABASE: halyard-database
+        CONNECTION_TO_DATABASE: sample-project-database
         PORT:
         HOST:

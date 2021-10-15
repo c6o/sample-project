@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+    <!--This file is not used within the docker container, see index.html.template.-->
+
+    <head>
+        <meta charset="utf-8" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <style>
+            body {
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            }
+        </style>
+    </head>
+
+    <body>
+        <p>Hello there - The sample-project-web is here.</p>
+        <div></div>
+        <h3>Server</h3>
+        <p id="api-info">...</p>
+        <p id="api-response">...</p>
+        <h3>Socket</h3>
+        <p id="ws-info">...</p>
+        <p id="ws-support">...</p>
+        <p id="ws-messages">...</p>
+        <p id="ws-ping-messages">...</p>
+        <p id="ws-sent">...</p>
+        <p id="ws-closed">...</p>
+        <script>
+            let counter = 0
+            function WebSocketTest() {
+                if ("WebSocket" in window) {
+                    //const url = "ws://localhost:8002" // for docker build local run
+                    const loc = window.location
+                    const protocol = (loc.protocol === "https:") ? "wss:" : "ws:"
+                    const socket_uri = `${protocol}//${loc.host}${loc.pathname}sockets/`
+
+                    $('#ws-info').html("Communicating with WebSockets at: " + socket_uri)
+                    $('#ws-support').html("WebSocket is supported by this Browser!")
+                    const ws = new WebSocket(socket_uri)
+                    ws.onopen = function() {
+                        // Web Socket is connected, send data using send()
+                        $('#ws-sent').html("Sent Message:\"Hello World\"")
+                        ws.send(`Hello World ${counter}`)
+                    };
+                    ws.onmessage = function (evt) {
+                        const received_msg = evt.data
+                        if (received_msg.includes('PING'))
+                            $('#ws-ping-messages').html("Ping received: "+received_msg)
+
+                        else
+                            $('#ws-messages').html("Message received: "+received_msg)
+
+                    };
+                    ws.onclose = function() {
+                        $('#ws-closed').html(`Closed connection ${counter}...`)
+                    };
+                } else {
+                    $('#ws-support').html("Error: WebSocket NOT supported by this Browser!")
+                }
+            }
+
+            function main() {
+                const url = "/api"
+                $('#api-info').html(`Calling server ${url} count ${counter}`)
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    data: {
+                        "Content-Type": undefined
+                    },
+                    success: (result) => {
+                        console.log(result)
+                        $('#api-response').html(`API result from (${url}):${JSON.stringify(result)}`)
+                    },
+                    error: (err) => {
+                        console.log(err)
+                        $('#api-response').html(`API  error from (${url}): ${JSON.stringify(err)}`)
+                    }
+                })
+                WebSocketTest()
+                counter++
+            }
+
+            $(document).ready(() => setInterval(main, 1000))
+        </script>
+    </body>
+
+</html>

@@ -2,8 +2,8 @@
 // eslint-disable-next-line no-undef
 module.exports = {
     projects: [
-        '<rootDir>/halyard-backend/jest.config.unittest.js',
-        '<rootDir>/halyard-sockets/jest.config.unittest.js',
+        '<rootDir>/sample-project-server/jest.config.unittest.js',
+        '<rootDir>/sample-project-sockets/jest.config.unittest.js',
     ],
     'reporters': [
         'default',

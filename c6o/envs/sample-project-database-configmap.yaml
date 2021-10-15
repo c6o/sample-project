@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sample-project-database
+  labels:
+    name: sample-project-database
+    system.codezero.io/app: sample-project
+data:
+  user: testUser
+  password: password
+  roles: readWrite
+  secretKey: SAMPLE_PROJECT_DATABASE

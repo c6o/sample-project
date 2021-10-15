@@ -4,16 +4,16 @@ metadata:
   name: dev
 spec:
   services:
-    halyard-database:
-      fromFile: ../apps/halyard-database.yaml
+    sample-project-database:
+      fromFile: ../apps/sample-project-database.yaml
 
-    halyard-echo:
-      fromFile: ../apps/halyard-echo.yaml
+    sample-project-echo:
+      fromFile: ../apps/sample-project-echo.yaml
 
-    halyard-backend:
-      fromFile: ../apps/halyard-backend.yaml
-      dependsOn: [ halyard-echo, halyard-database ]
+    sample-project-server:
+      fromFile: ../apps/sample-project-server.yaml
+      dependsOn: [ sample-project-echo, sample-project-database ]
 
-    halyard-frontend:
-      fromFile: ../apps/halyard-frontend.yaml
-      dependsOn: halyard-backend
+    sample-project-web:
+      fromFile: ../apps/sample-project-web.yaml
+      dependsOn: sample-project-server
