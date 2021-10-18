@@ -1,0 +1,13 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sample-project-ingress
+spec:
+  entryPoints:
+    - web # This is traefik's endpoint
+  routes:
+    - kind: Rule
+      match: PathPrefix(`/`)
+      services:
+        - name: sample-project-web
+          port: 80
