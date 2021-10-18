@@ -5,5 +5,5 @@ metadata:
 data:
   SAMPLE1_KEY: VALUE1
   SAMPLE2_KEY: VALUE2
-  SAMPLE_PROJECT_VERSION: "version argos"
+  SAMPLE_PROJECT_VERSION: "Version Production"
   SAMPLE_PROJECT_API_PORT: "3000"
