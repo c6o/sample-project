@@ -22,7 +22,7 @@ let mongodbState = 'Not connected to the Sample Project database yet'
 
 const databaseConnectCallback = (error) => {
     if (error) {
-        mongodbState = 'Bummer - unable to connected to the Sample Project database: ' + mongoURL
+        mongodbState = 'Warning - unable to connected to the Sample Project database: ' + mongoURL
         console.log(mongodbState)
         mongodbState = `${mongodbState}, Connect Error: ${error.message}.`
     } else {
@@ -83,8 +83,8 @@ app.put('/ping', pingHandler)
 app.delete('/ping', pingHandler)
 
 const serviceHandler = function () {
-    console.log('listening on ' + serverAPIPort)
-    console.log('version ', version)
+    console.log('Listening on ' + serverAPIPort)
+    console.log(`Version ${version}`)
 }
 
 // app.listen(serverAPIPort, serverAPIHost, serviceHandler)
