@@ -9,9 +9,12 @@ A minimum set of features for CI/CD experimentation:
 * 3 Back Ends
   * sample-project-server
   * sample-project-sockets
-  * echo-server from git@github.com:robblovell/echo-server.git that builds the docker container: robblovell/echo-server:2.2
+  * echo-server from git@github.com:c6oio/echo-server.git that builds the docker container: c6oio/echo-server:2.2
 * Database
   * sample-project-database from a mongodb container
+* Ingress: use one of the following
+  * k8s/loadbalance
+  * k8s/traefik
 
 Technologies:
 
@@ -22,11 +25,27 @@ Technologies:
 ## Running the code locally
 
 To run the code locally, you can start each server individually. Each backend service uses environment
-variables with useful defaults if you don't specifiy anything. These should be started up in the following
+variables with useful defaults if you don't specify anything.
+
+```bash
+kubectl -n <namespace> apply -f ./k8s
+```
+
+These should be started up in the following
 order:
 
-```
-sample-project-database | sample-project-echo | sample-project-server | sample-project-sockets | sample-project-web
+1. sample-project-database
+1. sample-project-echo
+1. sample-project-server
+1. sample-project-sockets
+1. sample-project-web
+
+You then need to pick your ingress method:
+
+```bash
+kubectl -n <namespace> apply -f ./k8s/loadbalance
+# OR
+kubectl -n <namespace> apply -f ./k8s/traefik
 ```
 
 ### sample-project-database
@@ -39,7 +58,7 @@ error that it could not connect and report this in any responses to requests to 
 
 ### sample-project-echo
 
-The code for sample-project-echo is in git@github.com:robblovell/echo-server.git. This can be run in a docker container locally
+The code for sample-project-echo is in git@github.com:c6oio/echo-server.git. This can be run in a docker container locally
 or you can checkout the echo server project and run it.  
 
 The backend server in this project is setup to talk to echo server on port 8080 by
@@ -70,7 +89,7 @@ SAMPLE_PROJECT_VERSION || 'Version 1.0'
 
 The halyard sockets is a server that is used to test websocket connectivity between internal kubernetes pods and 
 external local development environments. It's purpose is to interact with the frontend through web sockets. The
-code has implemented a broadcast mechanism when any messages is prefixed with 'boradcast:' all connected sockets
+code has implemented a broadcast mechanism when any messages is prefixed with 'broadcast:' all connected sockets
 receive the message.  A socket, once opened, is pinged periodically with a message with "PING" in it.
 
 Environment Variables:
@@ -83,7 +102,7 @@ SAMPLE_PROJECT_SOCKETS_PORT || 8999
 ### sample-project-web
 
 The halyard frontend is a webpage that makes requests to the halyard backend /api endpoint and reports back the results
-to a browswer window. It also opens a websocket connection to halyard sockets and prints out the messages it received.
+to a browser window. It also opens a websocket connection to halyard sockets and prints out the messages it received.
 
 The halyard frontend proxies http and websocket connections to the sample-project-server and sample-project-sockets backend servers
 through an NGINX proxy. Requests to websockets go to sample-project-sockets, requests to `/api` go to sample-project-server. `/`
@@ -110,18 +129,18 @@ docker-compose push
 
 #### manual builds:
 ```bash
-docker build --tag sample-project-database ./sample-project-database:1.3
-docker build --tag sample-project-server ./sample-project-server:1.3
-docker build --tag sample-project-sockets ./sample-project-sockets:1.3
-docker build --tag sample-project-web ./sample-project-web:1.3
+docker build --tag sample-project-database ./sample-project-database
+docker build --tag sample-project-server ./sample-project-server
+docker build --tag sample-project-sockets ./sample-project-sockets
+docker build --tag sample-project-web ./sample-project-web
 ```
 
 #### M1 build for remote systems:
 ```bash
-docker build --tag robblovell/sample-project-server:1.5 --platform linux/amd64 ./sample-project-server --no-cache
-docker build --tag robblovell/sample-project-sockets:1.3 --platform linux/amd64 ./sample-project-sockets --no-cache
-docker build --tag robblovell/sample-project-web:1.5 --platform linux/amd64 ./sample-project-web -f ./sample-project-web/Dockerfile.confgMap
-docker build --tag robblovell/sample-project-web:1.4 --platform linux/amd64 ./sample-project-web -f ./sample-project-web/Dockerfile.confgMap
+docker build --tag c6oio/sample-project-server --platform linux/amd64 ./sample-project-server --no-cache
+docker build --tag c6oio/sample-project-sockets --platform linux/amd64 ./sample-project-sockets --no-cache
+docker build --tag c6oio/sample-project-web --platform linux/amd64 ./sample-project-web -f ./sample-project-web/Dockerfile.confgMap
+docker build --tag c6oio/sample-project-web --platform linux/amd64 ./sample-project-web -f ./sample-project-web/Dockerfile.confgMap
 ```
 Other architectures:
 ```bash
@@ -131,21 +150,18 @@ Other architectures:
 ### Publishing
 
 ```bash
-docker push robblovell/sample-project-server:1.5
-docker push robblovell/sample-project-sockets:1.3
-docker push robblovell/sample-project-web:1.3
-docker push robblovell/sample-project-web:1.4
-docker push robblovell/sample-project-web2:1.3
-docker push robblovell/sample-project-web:1.5
+docker push c6oio/sample-project-server
+docker push c6oio/sample-project-sockets
+docker push c6oio/sample-project-web
 ```
 
 ### publish to docker hub
 
 ```bash
-docker tag e3053bf8c609 robblovell/sample-project-server:1.1
-docker tag f2cf0963cccd robblovell/sample-project-web:1.1
-docker push robblovell/sample-project-server:1.1
-docker push robblovell/sample-project-web:1.1
+docker tag e3053bf8c609 c6oio/sample-project-server
+docker tag f2cf0963cccd c6oio/sample-project-web
+docker push c6oio/sample-project-server
+docker push c6oio/sample-project-web
 ```
 
 ## Running
@@ -153,21 +169,20 @@ docker push robblovell/sample-project-web:1.1
 
 #### Database and echo server
 
-This can be started in a docker container and made available to localhost.  Note, echo server cannot run on port 80 
-locally because of operating system level protection of ports < 1024.
+This can be started in a docker container and made available to localhost.  Note, echo server cannot run on port 80 locally because of operating system level protection of ports < 1024.
 
 Running echo server:
 
-docker run -p 8000:8080 --detach --name sample-project-echo robblovell/echo-server:2.2
-
+docker run -p 8000:8080 --detach --name sample-project-echo c6oio/echo-server
 
 MongoDB:
 
 ```bash
-docker run --name mongodb -d mongo:latest
+docker run --name mongodb -d mongo
 ```
 
 or
+
 ```bash
 docker run --name mongodb -d mongo:4.0.25
 ```
@@ -199,8 +214,8 @@ run this service locally on port 80 as this port is < 1024 and is protected by y
 
 You can also run this in a docker container to use NGINX forwarding.
 
-docker run 8888:80 --detach --name sample-project-web --env SAMPLE_PROJECT_API_HOST='localhost' --env SAMPLE_PROJECT_API_PORT='3010' robblovell/sample-project-web:1.3
-docker run 8889:80 --detach --name sample-project-web --env SAMPLE_PROJECT_API_HOST='localhost' --env SAMPLE_PROJECT_API_PORT='3020' robblovell/sample-project-web:1.3
+docker run 8888:80 --detach --name sample-project-web --env SAMPLE_PROJECT_API_HOST='localhost' --env SAMPLE_PROJECT_API_PORT='3010' c6oio/sample-project-web
+docker run 8889:80 --detach --name sample-project-web --env SAMPLE_PROJECT_API_HOST='localhost' --env SAMPLE_PROJECT_API_PORT='3020' c6oio/sample-project-web
 
 ```bash
 yarn start-frontend
@@ -213,10 +228,10 @@ To run with docker, a local network needs to be created and all containers start
 ```bash
 docker network create halyard
 docker run --network halyard -p 27017:27017 --name sample-project-database -d mongo:4.4.5
-docker run --network halyard -p 8000:8080 --detach --name sample-project-echo robblovell/echo-server:2.2
-docker run --network halyard -p 8001:3000 --detach --name sample-project-server --env SAMPLE_PROJECT_API_PORT='3000' --env SAMPLE_PROJECT_ECHO='http://sample-project-echo:8080' --env SAMPLE_PROJECT_DATABASE='mongodb://sample-project-database:27017' robblovell/sample-project-server:1.3
-docker run --network halyard -p 8002:8999 --detach --name sample-project-sockets --env SAMPLE_PROJECT_SOCKETS_PORT='8999' robblovell/sample-project-sockets:1.3
-docker run --network halyard -p 8003:80 --detach --name sample-project-web --env SAMPLE_PROJECT_API_HOST='sample-project-server' --env SAMPLE_PROJECT_API_PORT='8001' --env SAMPLE_PROJECT_SOCKETS_HOST='sample-project-sockets' --env SAMPLE_PROJECT_SOCKETS_PORT='8002' robblovell/sample-project-web:1.3
+docker run --network halyard -p 8000:8080 --detach --name sample-project-echo c6oio/echo-server
+docker run --network halyard -p 8001:3000 --detach --name sample-project-server --env SAMPLE_PROJECT_API_PORT='3000' --env SAMPLE_PROJECT_ECHO='http://sample-project-echo:8080' --env SAMPLE_PROJECT_DATABASE='mongodb://sample-project-database:27017' c6oio/sample-project-server
+docker run --network halyard -p 8002:8999 --detach --name sample-project-sockets --env SAMPLE_PROJECT_SOCKETS_PORT='8999' c6oio/sample-project-sockets
+docker run --network halyard -p 8003:80 --detach --name sample-project-web --env SAMPLE_PROJECT_API_HOST='sample-project-server' --env SAMPLE_PROJECT_API_PORT='8001' --env SAMPLE_PROJECT_SOCKETS_HOST='sample-project-sockets' --env SAMPLE_PROJECT_SOCKETS_PORT='8002' c6oio/sample-project-web
 ```
 
 Now open `https://localhost:8003`
@@ -229,12 +244,13 @@ docker container prune -f && docker image prune -f
 docker network rm halyard
 ```
 
-#### For a public echo server: 
+#### For a public echo server
+
 ```bash
-docker run --network halyard -p 8080:8080 --detach --name echo echo-server:2.2
+docker run --network halyard -p 8080:8080 --detach --name echo echo-server
 ```
 
-#### Docker crib notes:
+#### Docker crib notes
 
 Helpful Docker information:
 
@@ -290,6 +306,7 @@ czctl install ./c6o/apps/sample-project-web.yaml --local -n halyard
 ```
 
 New command (not working yet):
+
 ```bash
 czctl app install ./c6o/apps/sample-project-database.yaml --local --namespace=halyard
 czctl app install ./c6o/apps/sample-project-echo.yaml --local --namespace=halyard
@@ -298,15 +315,16 @@ czctl app install ./c6o/apps/sample-project-sockets.yaml --local --namespace=hal
 czctl app install ./c6o/apps/sample-project-web.yaml --local --namespace=halyard
 ```
 
-Cleaning up 
-```
+Cleaning up
+
+```bash
 kubectl delete app sample-project-database -n halyard
 kubectl delete app sample-project-echo -n halyard
 kubectl delete app sample-project-server -n halyard
 kubectl delete app sample-project-web -n halyard
 ```
 
-#### useful kubernetes commands:
+#### useful kubernetes commands
 
 ```bash
 kubectl rollout restart deployment sample-project-server -n halyard
@@ -317,6 +335,7 @@ kubectl logs -n <pod>
 kubectl get namespaces --show-labels
 kubectl rollout restart deployment -n
 ```
+
 ## Halyard Deployment process
 
 ### Teleport
