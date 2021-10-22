@@ -28,3 +28,11 @@ spec:
               value: sample-project-database
           ports:
             - containerPort: 27017
+          volumeMounts:
+            - name: data
+              mountPath: /data/db
+      
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: sample-project-database-data
