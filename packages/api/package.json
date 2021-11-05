@@ -1,13 +1,12 @@
 {
   "name": "sample-project-server",
   "version": "1.0.0",
-  "description": "Simple Nodeserver",
-  "main": "server.js",
+  "description": "Simple API Server",
+  "type": "module",
+  "main": "index.js",
   "scripts": {
-    "test": "jest --config=\"./jest.config.unittest.js\" --maxWorkers=3"
+    "start": "nodemon index.js"
   },
-  "author": "Vidhyanshu Jain",
-  "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",

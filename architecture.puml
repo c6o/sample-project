@@ -1,0 +1,36 @@
+@startuml
+!theme cerulean-outline
+skinparam linetype ortho
+
+' Kubernetes
+!define KubernetesPuml https://raw.githubusercontent.com/dcasati/kubernetes-PlantUML/master/dist
+
+!includeurl KubernetesPuml/kubernetes_Context.puml
+!includeurl KubernetesPuml/kubernetes_Simplified.puml
+
+!includeurl KubernetesPuml/OSS/KubernetesApi.puml
+!includeurl KubernetesPuml/OSS/KubernetesIng.puml
+!includeurl KubernetesPuml/OSS/KubernetesPod.puml
+
+left to right direction
+
+' Kubernetes Components
+Cluster_Boundary(cluster, "Kubernetes Cluster") {
+    KubernetesApi(KubernetesApi, "Kubernetes API", "")
+
+    Namespace_Boundary(nsFrontEnd, "Front End") {
+        KubernetesIng(ingress, "API Gateway", "")
+    }
+
+    Namespace_Boundary(nsBackEnd, "Back End") {
+        KubernetesPod(KubernetesBE1, "", "")
+        KubernetesPod(KubernetesBE2, "", "")
+        KubernetesPod(KubernetesBE3, "", "")
+    }
+
+    Namespace_Boundary(nsUtil, "Utiliy Services") {
+        KubernetesPod(KubernetesUtil1, "", "")
+        KubernetesPod(KubernetesUtil2, "","")
+    }
+}
+@enduml

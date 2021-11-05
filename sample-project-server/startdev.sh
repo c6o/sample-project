@@ -1,2 +1,0 @@
-export SAMPLE_PROJECT_VERSION='Local workstation'
-export SAMPLE_PROJECT_API_PORT=3010

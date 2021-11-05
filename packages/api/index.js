@@ -1,22 +1,17 @@
-const express = require('express')
-const cors = require('cors')
-const http = require('http')
-const { MongoClient, Server } = require('mongodb')
+import express from 'express'
+import cors from 'cors'
+import http from 'http'
+import mongoPkg from 'mongodb'
+const { MongoClient, Server } = mongoPkg
 
-// To route to Echo Server: Same namespace: servicename:port, Different namespace: servicename.namespace:port
 const echoURL = process.env.SAMPLE_PROJECT_ECHO || 'http://localhost:8000'
 const mongoURL = process.env.SAMPLE_PROJECT_DATABASE || 'mongodb://localhost:27017'
 const serverAPIPort = process.env.SAMPLE_PROJECT_API_PORT || 3000
-const serverAPIHost = process.env.SAMPLE_PROJECT_API_HOST || 'localhost'
 const mongoDB = new URL(mongoURL)
-const version = process.env.SAMPLE_PROJECT_VERSION || 'Version 1.0'
+const version = 'In Cluster Version'
 
-const mongoClient = new MongoClient(new Server(mongoDB.hostname, mongoDB.port));
+const mongoClient = new MongoClient(new Server(mongoDB.hostname, mongoDB.port))
 
-const app = express()
-app.use(cors({
-    origin: '*'
-}))
 
 let mongodbState = 'Not connected to the Sample Project database yet'
 
@@ -67,13 +62,17 @@ const getHandler = (req, res) => {
     return {readHandler, readErrorHandler}
 }
 
-pingHandler = (req, res) => {
+const pingHandler = (req, res) => {
     console.log("Request: ", req.headers)
-    retVal = `Sample-Project-Server: ${version}`
+    const retVal = `Sample-Project-Server: ${version}`
     res.send({
         'data': retVal
     })
 }
+
+
+const app = express()
+app.use(cors({ origin: '*'}))
 
 app.get('/api', getHandler)
 app.get('/', pingHandler)
@@ -82,13 +81,6 @@ app.post('/ping', pingHandler)
 app.put('/ping', pingHandler)
 app.delete('/ping', pingHandler)
 
-const serviceHandler = function () {
-    console.log('Listening on ' + serverAPIPort)
-    console.log(`Version ${version}`)
-}
-
-// app.listen(serverAPIPort, serverAPIHost, serviceHandler)
-app.listen(serverAPIPort, serviceHandler)
-
-// export for unit tests.
-module.exports = { app, databaseConnectCallback, getHandler, serviceHandler, echoURL, version, mongoURL }  // Exported for unit testing.
+app.listen(serverAPIPort, () => {
+    console.log(`API version ${version} listening on http://localhost:${serverAPIPort}`)
+})

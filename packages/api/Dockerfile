@@ -3,14 +3,17 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN yarn install
 COPY . .
-#RUN yarn test
+#RUN yarn test --coverage
 
 FROM node:14.0.0-alpine3.10 as noderun
 
 WORKDIR /usr/src/app
 
-COPY package*json ./
-EXPOSE 8999
-RUN yarn install --only=production
-COPY --from=nodebuild /usr/src/app/server.js ./
-CMD ["npm","run","start"]
+COPY package.json ./
+
+RUN yarn install --production
+COPY --from=nodebuild /usr/src/app/index.js ./
+
+EXPOSE 3000
+
+CMD ["node", "index.js"]

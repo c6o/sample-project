@@ -3,12 +3,12 @@ services:
   sample-project-server:
     image: c6oio/sample-project-server:$USER
     build:
-      context: ./sample-project-server
+      context: ./packages/api
   sample-project-sockets:
     image: c6oio/sample-project-sockets:$USER
     build:
-      context: ./sample-project-sockets
+      context: ./packages/sockets
   sample-project-web:
     image: c6oio/sample-project-web:$USER
     build:
-      context: ./sample-project-web
+      context: ./packages/frontend

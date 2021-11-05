@@ -1,6 +1,15 @@
-# CodeZero Halyard
+# Sample CodeZero Kubernetes Project
 
-A project for experimenting with developer productivity.
+This is a sample Kubernetes Project. The purpose of this project is to learn CodeZero and how various features help you greatly accelerate and enhance your Kubernetes development experience. This project may not contain all possible Kubernetes scenarios and may not illustrate all CodeZero features. If there is anything not covered in these samples, please feel free to submit a pull request and reach out to us on our [discussion forums](https://github.com/c6o/roadmap/discussions). We welcome new feature requests!
+
+While the project is written in NodeJS, CodeZero and Kubernetes are language agnostic. We chose JavaScript for it's simplicity and in order to support a wide audience.
+
+## Architecture
+
+The project comprises of the following services:
+
+
+
 
 A minimum set of features for CI/CD experimentation:
 
