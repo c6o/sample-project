@@ -5,20 +5,17 @@ metadata:
   labels:
     app: sample-project
     component: database
-
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: sample-project
       component: database
-
   template:
     metadata:
       labels:
         app: sample-project
         component: database
-
     spec:
       containers:
         - name: mongodb-container
@@ -28,11 +25,19 @@ spec:
               value: sample-project-database
           ports:
             - containerPort: 27017
-          volumeMounts:
-            - name: data
-              mountPath: /data/db
-      
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: sample-project-database-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-project-database
+  labels:
+    app: sample-project
+    component: database
+spec:
+  ports:
+    - protocol: TCP
+      port: 27017
+      targetPort: 27017
+  selector:
+    app: sample-project
+    component: database

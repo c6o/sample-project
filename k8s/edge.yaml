@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-project-edge
+  labels:
+    app: sample-project
+    component: edge
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-project
+      component: edge
+  template:
+    metadata:
+      labels:
+        app: sample-project
+        component: edge
+    spec:
+      containers:
+        - name: sample-project-edge
+          image: c6oio/sample-project-edge
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3010
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-project-edge
+  labels:
+    app: sample-project
+    component: edge
+spec:
+  ports:
+    - name: unsecure
+      protocol: TCP
+      port: 3010
+      targetPort: 3010
+  selector:
+    app: sample-project
+    component: edge

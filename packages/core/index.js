@@ -4,13 +4,16 @@ import cors from 'cors'
 import mongoPkg from 'mongodb'
 const { MongoClient } = mongoPkg
 
+const port = 3000
+
 // These are overridden when running in cluster
-const mongoURL = process.env.SP_DATABASE || 'mongodb://localhost:27017'
-const edgeURL = process.env.SP_EDGE || 'http://localhost:3010'
-const port = process.env.SP_CORE_API_PORT || 3000
+// They default to running locally
+const mongoURL = process.env.SP_DB_URL || 'mongodb://localhost:27017'
+const edgeURL = process.env.SP_EDGE_URL || 'http://localhost:3010'
 
 // This is here to demo intercept
 // Intercept this service and replace this message
+// when running locally
 const where = 'cluster'
 
 // Attempt to connect to mongodb and return success or error

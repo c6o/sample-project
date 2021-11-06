@@ -1,11 +1,11 @@
 import express from 'express'
 import cors from 'cors'
 
-// These are overridden when running in cluster
-const port = process.env.SP_EDGE_API_PORT || 3010
+const port = 3010
 
 // This is here to demo intercept
 // Intercept this service and replace this message
+// when running locally
 const where = 'cluster'
 
 // Set up the express app and handle the /api endpoint

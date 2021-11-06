@@ -1,5 +1,4 @@
 FROM nginx:1.17.10-alpine
-# RUN apk add nano && apk add curl
 
 # Bundle up the front end.
 COPY ./index.html /usr/share/nginx/html

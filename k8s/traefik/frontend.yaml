@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-project-frontend
+  labels:
+    app: sample-project
+    component: frontend
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    app: sample-project
+    component: frontend
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: sample-project-ingress
+spec:
+  entryPoints:
+    - web # This is traefik's endpoint
+  routes:
+    - kind: Rule
+      match: PathPrefix(`/`)
+      services:
+        - name: sample-project-frontend
+          port: 80

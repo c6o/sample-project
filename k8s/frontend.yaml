@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-project-frontend
+  labels:
+    app: sample-project
+    component: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-project
+      component: frontend
+
+  template:
+    metadata:
+      labels:
+        app: sample-project
+        component: frontend
+    spec:
+      containers:
+        - name: sample-project-frontend
+          image: c6oio/sample-project-frontend:latest
+          imagePullPolicy: Always
+          env:
+            - name: SAMPLE_PROJECT_API_HOST
+              value: sample-project-server
+            - name: SAMPLE_PROJECT_API_PORT
+              value: '3000'
+            - name: SAMPLE_PROJECT_SOCKETS_HOST
+              value: sample-project-sockets
+            - name: SAMPLE_PROJECT_SOCKETS_PORT
+              value: '8999'
+          ports:
+            - containerPort: 80
