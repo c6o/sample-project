@@ -15,7 +15,7 @@
     <body>
         <p>Hello there - The sample-project-web is here.</p>
         <div></div>
-        <h3>Server</h3>
+        <h3>Core API</h3>
         <p id="api-info">...</p>
         <p id="api-response">...</p>
         <h3>Socket</h3>
@@ -26,6 +26,13 @@
         <p id="ws-sent">...</p>
         <p id="ws-closed">...</p>
         <script>
+            const isLocal = window.location.hostname === 'localhost'
+            // URL's depend if we are running in cluster or not
+            // We can use the hostname to determine configuration
+            const apiURL = isLocal ?
+                'http://localhost:3000/api' :
+                '/api'
+
             let counter = 0
             function WebSocketTest() {
                 if ("WebSocket" in window) {
@@ -60,24 +67,19 @@
             }
 
             function main() {
-                const url = "/api"
-                $('#api-info').html(`Calling server ${url} count ${counter}`)
+                $('#api-info').html(`API is at ${apiURL} count ${counter}`)
                 $.ajax({
-                    url: url,
+                    url: apiURL,
                     type: "GET",
-                    data: {
-                        "Content-Type": undefined
-                    },
+                    data: { "Content-Type": undefined },
                     success: (result) => {
-                        console.log(result)
-                        $('#api-response').html(`API result from (${url}):${JSON.stringify(result)}`)
+                        console.log('RESULT', result)
+                        $('#api-response').html(`API result from (${apiURL}):${JSON.stringify(result)}`)
                     },
-                    error: (err) => {
-                        console.log(err)
-                        $('#api-response').html(`API  error from (${url}): ${JSON.stringify(err)}`)
-                    }
+                    error: (err) =>
+                        $('#api-response').html(`API  error from (${apiURL}): ${JSON.stringify(err)}`)
                 })
-                WebSocketTest()
+                //WebSocketTest()
                 counter++
             }
 

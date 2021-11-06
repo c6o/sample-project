@@ -1,0 +1,17 @@
+{
+    "packages": [
+      "packages/*"
+    ],
+    "version": "1.0.0",
+    "npmClient": "yarn",
+    "useWorkspaces": true,
+    "ignoreChanges": [
+      "**/changelog.md",
+      "**/CHANGELOG.md",
+      "**/package-lock.json",
+      "**/yarn.lock",
+      "**/test/**",
+      "lerna.json",
+      "readme.md"
+    ]
+  }
