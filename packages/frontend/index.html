@@ -4,18 +4,40 @@
 
     <head>
         <meta charset="utf-8" />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
         <style>
-            body {
-                font-family: Verdana, Geneva, Tahoma, sans-serif;
+            .c60-panel {
+                background-color: lightgrey;
             }
         </style>
     </head>
-
     <body>
-        <p>Hello there - The sample-project-web is here.</p>
+        <div class="ui centered aligned container" style="margin: 50px;">
+            <div class="ui segment">
+                <h1 class='border-1'>Sample Kubernetes Project</h1>
+                <p>
+                    This project has a frontend that talks to a core back end service
+                    that is exposed to the world at the /api endpoint. The API is called every second.
+                    The results are presented below.
+                </p>
+
+                <div class="ui divider"></div>
+
+                <div class="ui statistic">
+                    <div id="counter" class="value"></div>
+                    <div class="label">requests</div>
+                </div>
+
+                <div id="data-dump"></div>
+
+            </div>
+        </div>
+
         <div></div>
-        <h3>Core API</h3>
+        <h1>Core API</h1>
         <p id="api-info">...</p>
         <p id="api-response">...</p>
         <h3>Socket</h3>
@@ -67,6 +89,35 @@
                 }
             }
 
+            function renderSection(section, success, payload) {
+                return `<div class="ui divider"></div>
+                <div class="ui two column grid">
+                    <div class="row">
+                      <div class="column">
+                        <h2>${section}</h2>
+                        <table class="ui celled table">
+                            <thead>
+                              <tr><th>Field</th>
+                              <th>Value</th>
+                            </tr></thead>
+                            <tbody>
+                              ${Object.keys(payload).map(key => `
+                                <tr>
+                                    <td>${key}</td>
+                                    <td>${payload[key]}</td>
+                                </tr>
+                                `)}
+                            </tbody>
+                          </table>
+                      </div>
+                      <div class="column c60-panel">
+                        <h2>Raw</h2>
+                        <pre>${JSON.stringify(payload, null, 4)}</pre>
+                      </div>
+                    </div>
+                </div>`
+            }
+
             function main() {
                 $('#api-info').html(`API is at ${coreAPIURL} count ${counter}`)
                 $.ajax({
@@ -74,14 +125,20 @@
                     type: "GET",
                     data: { "Content-Type": undefined },
                     success: (result) => {
-                        console.log('RESULT', result)
+                        const { mongo, edge, file, ...core } = result
+                        core.url = coreAPIURL
+                        let dump = renderSection('Core', false, core)
+                        dump += renderSection('Edge', false, edge)
+                        dump += renderSection('Mongo', false, mongo)
+                        dump += renderSection('File', false, file)
+                        $('#data-dump').html(dump)
                         $('#api-response').html(`API result from (${coreAPIURL}):${JSON.stringify(result)}`)
                     },
                     error: (err) =>
                         $('#api-response').html(`API  error from (${coreAPIURL}): ${JSON.stringify(err)}`)
                 })
-                //WebSocketTest()
                 counter++
+                $('#counter').html(counter)
             }
 
             $(document).ready(() => setInterval(main, 1000))
