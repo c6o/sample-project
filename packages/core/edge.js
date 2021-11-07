@@ -25,7 +25,7 @@ export const edgeResult = async (inHeaders) => {
             url,
             headers
         })
-        return { edge: { url, data: result.data, 'propagated-headers': headers } }
+        return { edge: { url, ...result.data, 'propagated-headers': headers } }
     }
     catch (error) {
         return { edge: { error: error.message } }

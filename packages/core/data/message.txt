@@ -1,17 +1,4 @@
-Hi there traveller. Here are some of the error messages produced by Apple's MPW C compiler.
-
-"String literal too long (I let you have 512 characters, that's 3 more than ANSI said I should)"
-"...And the lord said, 'lo, there shall only be case or default labels inside a switch statement'"
-"a typedef name was a complete surprise to me at this point in your program"
-"'Volatile' and 'Register' are not miscible"
-"You can't modify a constant, float upstream, win an argument with the IRS, or satisfy this compiler"
-"This struct already has a perfectly good definition"
-"type in (cast) must be scalar; ANSI 3.3.4; page 39, lines 10-11 (I know you don't care, I'm just trying to annoy you)"
-"Can't cast a void type to type void (because the ANSI spec. says so, that's why)"
-"Huh ?"
-"can't go mucking with a 'void *'"
-"we already did this function"
-"This label is the target of a goto from outside of the block containing this label AND this block has an automatic variable with an initializer AND your window wasn't wide enough to read this whole error message"
-"Call me paranoid but finding '/*' inside this comment makes me suspicious"
-"Too many errors on one line (make fewer)"
-"Symbol table full - fatal heap error; please go buy a RAM upgrade from your local Apple dealer"
+99 bugs in the code<br />
+99 bugs in the code<br />
+clone the repo, patched it around<br />
+129 bugs in the code<br />
