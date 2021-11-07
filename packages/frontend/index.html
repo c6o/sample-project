@@ -8,8 +8,14 @@
         <style>
             .c60-panel {
                 background-color: lightgrey;
-                display: flex;  
-                flex-wrap: wrap;
+            }
+            .logo {
+                width: 40px;
+                height: 40px;
+            }
+            body {
+                margin-top: 50px;
+                margin-bottom: 50px;
             }
             pre {
                 white-space: pre-wrap;       /* Since CSS 2.1 */
@@ -21,26 +27,29 @@
         </style>
     </head>
     <body>
-        <div class="ui centered aligned container" style="margin: 50px;">
-            <div class="ui segment">
-                <h1 class='border-1'>Sample Kubernetes Project</h1>
-
-                <div class="ui divider"></div>
-
-                <div class="ui statistic">
-                    <div id="counter" class="value"></div>
-                    <div class="label">requests</div>
-                </div>
-
-                <div id="data-dump"></div>
-
-                <div class="ui divider"></div>
-                <div class="footer">
-                    <div class="ui label">
-                        <a href="https://github.com/c6o/sample-project" target="_blank"><i class="github icon"></i>https://github.com/c6o/sample-project</a>
+        <div class="ui centered aligned container">
+            <div class="ui grid">
+                <div class="two column row">
+                    <div class="left floated middle aligned column">
+                    <h1 class='border-1'><img src='c6o.png' class='logo'> Sample Kubernetes Project</h1>
                     </div>
-                    Made with ❤️ and 🍻 in 🇨🇦
+                    <div class="right floated right aligned column">
+                    <div class="ui statistic">
+                        <div id="counter" class="value"></div>
+                        <div class="label">requests</div>
+                    </div>
+                    </div>
                 </div>
+            </div>
+
+            <div id="data-dump"></div>
+
+            <div class="ui divider"></div>
+            <div class="footer">
+                <div class="ui label">
+                    <a href="https://github.com/c6o/sample-project" target="_blank"><i class="github icon"></i>https://github.com/c6o/sample-project</a>
+                </div>
+                Made with ❤️ and 🍻 in 🇨🇦
             </div>
         </div>
 
@@ -90,8 +99,12 @@
                 return `<div class="ui divider"></div>
                 <div class="ui two column grid">
                     <div class="row">
+                        <div class="column">
+                            <h2>${section}</h2>
+                        </div>
+                    </div>
+                    <div class="row">
                       <div class="column">
-                        <h2>${section}</h2>
                         <table class="ui celled table">
                             <thead>
                               <tr>
@@ -108,7 +121,7 @@
                           </table>
                       </div>
                       <div class="column c60-panel">
-                        <h2>Raw</h2>
+                        <h2>&nbsp;</h2>
                         <pre>${JSON.stringify(payload, null, 4)}</pre>
                       </div>
                     </div>
