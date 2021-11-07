@@ -11,6 +11,15 @@
         <style>
             .c60-panel {
                 background-color: lightgrey;
+                display: flex;  
+                flex-wrap: wrap;
+            }
+            pre {
+                white-space: pre-wrap;       /* Since CSS 2.1 */
+                white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+                white-space: -pre-wrap;      /* Opera 4-6 */
+                white-space: -o-pre-wrap;    /* Opera 7 */
+                word-wrap: break-word;       /* Internet Explorer 5.5+ */
             }
         </style>
     </head>
@@ -18,11 +27,6 @@
         <div class="ui centered aligned container" style="margin: 50px;">
             <div class="ui segment">
                 <h1 class='border-1'>Sample Kubernetes Project</h1>
-                <p>
-                    This project has a frontend that talks to a core back end service
-                    that is exposed to the world at the /api endpoint. The API is called every second.
-                    The results are presented below.
-                </p>
 
                 <div class="ui divider"></div>
 
@@ -33,20 +37,16 @@
 
                 <div id="data-dump"></div>
 
+                <div class="ui divider"></div>
+                <div class="footer">
+                    <div class="ui label">
+                        <a href="https://github.com/c6o/sample-project" target="_blank"><i class="github icon"></i>https://github.com/c6o/sample-project</a>
+                    </div>
+                    Made with ❤️ and 🍻 in 🇨🇦
+                </div>
             </div>
         </div>
 
-        <div></div>
-        <h1>Core API</h1>
-        <p id="api-info">...</p>
-        <p id="api-response">...</p>
-        <h3>Socket</h3>
-        <p id="ws-info">...</p>
-        <p id="ws-support">...</p>
-        <p id="ws-messages">...</p>
-        <p id="ws-ping-messages">...</p>
-        <p id="ws-sent">...</p>
-        <p id="ws-closed">...</p>
         <script>
             const isLocal = window.location.hostname === 'localhost'
             // URL's depend if we are running in cluster or not
@@ -119,7 +119,6 @@
             }
 
             function main() {
-                $('#api-info').html(`API is at ${coreAPIURL} count ${counter}`)
                 $.ajax({
                     url: coreAPIURL,
                     type: "GET",
@@ -132,16 +131,17 @@
                         dump += renderSection('Mongo', false, mongo)
                         dump += renderSection('File', false, file)
                         $('#data-dump').html(dump)
-                        $('#api-response').html(`API result from (${coreAPIURL}):${JSON.stringify(result)}`)
                     },
-                    error: (err) =>
-                        $('#api-response').html(`API  error from (${coreAPIURL}): ${JSON.stringify(err)}`)
+                    // error: (err) =>
+                    //     $('#api-response').html(`API  error from (${coreAPIURL}): ${JSON.stringify(err)}`)
                 })
                 counter++
                 $('#counter').html(counter)
             }
 
             $(document).ready(() => setInterval(main, 1000))
+            // Comment out the above and use below if you want a single call
+            // $(document).ready(main)
         </script>
     </body>
 
