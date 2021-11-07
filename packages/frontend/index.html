@@ -118,6 +118,19 @@
                 </div>`
             }
 
+            function renderError(title, error) {
+                return `<div class="ui divider"></div>
+                <div class="ui icon message">
+                    <i class="exclamation triangle icon" style="color: red;"></i>
+                    <div class="content">
+                        <div class="header">
+                        ${title}
+                        </div>
+                        <p>${error}</p>
+                    </div>
+                </div>`
+            }
+
             function main() {
                 $.ajax({
                     url: coreAPIURL,
@@ -132,8 +145,10 @@
                         dump += renderSection('File', false, file)
                         $('#data-dump').html(dump)
                     },
-                    // error: (err) =>
-                    //     $('#api-response').html(`API  error from (${coreAPIURL}): ${JSON.stringify(err)}`)
+                    error: (err) => {
+                        const dump = renderError('Core', `Failed to reach ${coreAPIURL}`)
+                        $('#data-dump').html(dump)
+                    }
                 })
                 counter++
                 $('#counter').html(counter)
