@@ -1,6 +1,14 @@
-@startuml
+@startuml sample-project
 !theme cerulean-outline
 skinparam linetype ortho
+
+left to right direction
+
+' Azure
+!define AzurePuml https://raw.githubusercontent.com/RicardoNiepel/Azure-PlantUML/release/2-1/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/AzureSimplified.puml
+!includeurl AzurePuml/Networking/AzureLoadBalancer.puml
 
 ' Kubernetes
 !define KubernetesPuml https://raw.githubusercontent.com/dcasati/kubernetes-PlantUML/master/dist
@@ -9,28 +17,48 @@ skinparam linetype ortho
 !includeurl KubernetesPuml/kubernetes_Simplified.puml
 
 !includeurl KubernetesPuml/OSS/KubernetesApi.puml
+!includeurl KubernetesPuml/OSS/KubernetesSvc.puml
 !includeurl KubernetesPuml/OSS/KubernetesIng.puml
 !includeurl KubernetesPuml/OSS/KubernetesPod.puml
+!includeurl KubernetesPuml/OSS/KubernetesDeploy.puml
 
-left to right direction
+actor "User" as user
 
 ' Kubernetes Components
 Cluster_Boundary(cluster, "Kubernetes Cluster") {
-    KubernetesApi(KubernetesApi, "Kubernetes API", "")
 
-    Namespace_Boundary(nsFrontEnd, "Front End") {
-        KubernetesIng(ingress, "API Gateway", "")
-    }
+    Namespace_Boundary(nsBackEnd, "sample-project") {
+	
+	    KubernetesIng(traefik, "Ingress", "")
 
-    Namespace_Boundary(nsBackEnd, "Back End") {
-        KubernetesPod(KubernetesBE1, "", "")
-        KubernetesPod(KubernetesBE2, "", "")
-        KubernetesPod(KubernetesBE3, "", "")
-    }
+		KubernetesSvc(svcFront, "frontend", "")
+        KubernetesSvc(svcCore, "core", "")
+        KubernetesSvc(svcEdge, "edge", "")
+        KubernetesSvc(svcDb, "database", "")
+        KubernetesSvc(svcSoc, "sockets", "")
 
-    Namespace_Boundary(nsUtil, "Utiliy Services") {
-        KubernetesPod(KubernetesUtil1, "", "")
-        KubernetesPod(KubernetesUtil2, "","")
+        KubernetesDeploy(depFront, "frontend", "")
+        KubernetesDeploy(depCore, "core", "")
+        KubernetesDeploy(depEdge, "edge", "")
+        KubernetesDeploy(depDb, "database", "")
+		KubernetesDeploy(depSoc, "sockets", "")
     }
 }
+
+AzureLoadBalancer(alb, "Load\nBalancer", "")
+Rel(svcFront, depFront, " ")
+Rel(svcCore, depCore, " ")
+Rel(svcEdge, depEdge, " ")
+Rel(svcDb, depDb, " ")
+Rel(svcSoc, depSoc, " ")
+
+Rel(traefik, svcFront, " ")
+Rel(depFront, svcCore, "REST")
+Rel(depFront, svcSoc, "WS")
+Rel(depCore, svcEdge, "REST")
+Rel(depCore, svcDb, "mongo")
+
+Rel(alb, traefik, " ")
+Rel(user, alb, " ")
+
 @enduml
