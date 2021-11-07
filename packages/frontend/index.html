@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-    <!--This file is not used within the docker container, see index.html.template.-->
-
     <head>
         <meta charset="utf-8" />
         <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
-
         <style>
             .c60-panel {
                 background-color: lightgrey;
@@ -97,16 +94,16 @@
                         <h2>${section}</h2>
                         <table class="ui celled table">
                             <thead>
-                              <tr><th>Field</th>
-                              <th>Value</th>
-                            </tr></thead>
+                              <tr>
+                                <th>Field</th>
+                                <th>Value</th>
+                              </tr>
+                            </thead>
                             <tbody>
-                              ${Object.keys(payload).map(key => `
-                                <tr>
+                              ${Object.keys(payload).map(key => `<tr>
                                     <td>${key}</td>
                                     <td>${payload[key]}</td>
-                                </tr>
-                                `)}
+                                </tr>`).join('')}
                             </tbody>
                           </table>
                       </div>
@@ -145,11 +142,10 @@
                         dump += renderSection('File', false, file)
                         $('#data-dump').html(dump)
                     },
-                    error: (err) => {
-                        const dump = renderError('Core', `Failed to reach ${coreAPIURL}`)
-                        $('#data-dump').html(dump)
-                    }
+                    error: (err) =>
+                        $('#data-dump').html(renderError('Core', `Failed to reach ${coreAPIURL}. The deployment may have failed or is still starting up.`))
                 })
+
                 counter++
                 $('#counter').html(counter)
             }
