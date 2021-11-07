@@ -71,7 +71,7 @@ metadata:
     component: core
 spec:
   ports:
-    - name: unsecure
+    - name: http
       protocol: TCP
       port: 3000
       targetPort: 3000
