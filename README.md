@@ -1,10 +1,10 @@
 # Sample Kubernetes Project
 
-This is a sample Kubernetes Project. The purpose of this project is to learn CodeZero and how various features help you greatly accelerate and enhance your Kubernetes development experience
+This project is here to help you explore and learn CodeZero and how various features can help greatly accelerate and enhance the Kubernetes development experience
 
 This project may not contain all possible Kubernetes scenarios and may not illustrate all CodeZero features. If there is anything not covered in these samples, please feel free to submit a pull request and reach out to us on our [discussion forums](https://github.com/c6o/roadmap/discussions). We welcome new feature requests!
 
-While the project is written in NodeJS, CodeZero and Kubernetes are language agnostic. We chose JavaScript given its familiarity among a wide range of developers.
+While the services in this project are written in NodeJS, CodeZero and Kubernetes are language agnostic. We chose JavaScript given its familiarity among a wide range of developers.
 
 ## Architecture
 
@@ -12,7 +12,7 @@ The project comprises of the following services and their equivalent deployments
 
 * Frontend
 * Core
-* Edge
+* Leaf
 * Database
 * Sockets
 
@@ -40,7 +40,7 @@ yarn start
 open http://localhost:3000
 ```
 
-If you're not on a Mac, instead of the open command, you simly need to launch a browser to [http://localhost:3000](http://localhost:3000).
+If you're not on a Mac, instead of the open command, you will need to launch a browser to [http://localhost:3000](http://localhost:3000).
 
 Hit Ctrl-C to exit.
 
@@ -69,4 +69,4 @@ If you're on k8s and have a LoadBalancer controller, run the following:
 kubectl -n sample project apply -f ./k8s/loadbalance
 ```
 
-You will then need to obtain the TraefikV2 ingress IP address or the LoadBalancer IP address and go to http://<IP ADDRESS> in a browser.
+You will then need to obtain the TraefikV2 ingress IP address or the LoadBalancer IP address and go to http://IP-ADDRESS in a browser.

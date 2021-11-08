@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sample-project-edge
+  name: sample-project-leaf
   labels:
     app: sample-project
-    component: edge
+    component: leaf
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: sample-project
-      component: edge
+      component: leaf
   template:
     metadata:
       labels:
         app: sample-project
-        component: edge
+        component: leaf
     spec:
       containers:
-        - name: sample-project-edge
-          image: c6oio/sample-project-edge
+        - name: sample-project-leaf
+          image: c6oio/sample-project-leaf
           imagePullPolicy: Always
           ports:
             - containerPort: 3010
@@ -27,10 +27,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: sample-project-edge
+  name: sample-project-leaf
   labels:
     app: sample-project
-    component: edge
+    component: leaf
 spec:
   ports:
     - name: unsecure
@@ -39,4 +39,4 @@ spec:
       targetPort: 3010
   selector:
     app: sample-project
-    component: edge
+    component: leaf

@@ -45,8 +45,8 @@ spec:
           image: c6oio/sample-project-core
           imagePullPolicy: Always
           env:
-            - name: SP_EDGE_URL
-              value: http://sample-project-edge:3010
+            - name: SP_LEAF_URL
+              value: http://sample-project-leaf:3010
             - name: SP_DB_URL
               value: mongodb://sample-project-database:27017/sample-project-database
           envFrom:

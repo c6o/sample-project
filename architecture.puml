@@ -33,13 +33,13 @@ Cluster_Boundary(cluster, "Kubernetes Cluster") {
 
 		KubernetesSvc(svcFront, "frontend", "")
         KubernetesSvc(svcCore, "core", "")
-        KubernetesSvc(svcEdge, "edge", "")
+        KubernetesSvc(svcLeaf, "leaf", "")
         KubernetesSvc(svcDb, "database", "")
         KubernetesSvc(svcSoc, "sockets", "")
 
         KubernetesDeploy(depFront, "frontend", "")
         KubernetesDeploy(depCore, "core", "")
-        KubernetesDeploy(depEdge, "edge", "")
+        KubernetesDeploy(depLeaf, "leaf", "")
         KubernetesDeploy(depDb, "database", "")
 		KubernetesDeploy(depSoc, "sockets", "")
     }
@@ -48,14 +48,14 @@ Cluster_Boundary(cluster, "Kubernetes Cluster") {
 AzureLoadBalancer(alb, "Load\nBalancer", "")
 Rel(svcFront, depFront, " ")
 Rel(svcCore, depCore, " ")
-Rel(svcEdge, depEdge, " ")
+Rel(svcLeaf, depLeaf, " ")
 Rel(svcDb, depDb, " ")
 Rel(svcSoc, depSoc, " ")
 
 Rel(traefik, svcFront, " ")
 Rel(depFront, svcCore, "REST")
 Rel(depFront, svcSoc, "WS")
-Rel(depCore, svcEdge, "REST")
+Rel(depCore, svcLeaf, "REST")
 Rel(depCore, svcDb, "mongo")
 
 Rel(alb, traefik, " ")

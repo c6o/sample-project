@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import { mongoResult } from './mongo.js'
-import { edgeResult } from './edge.js'
+import { leafResult } from './leaf.js'
 import { fileResult } from './file.js'
 
 const port = 3000
@@ -20,7 +20,7 @@ app.get('/api', async (req, res) => {
         who: 'core',
         where,
         ...await mongoResult(),
-        ...await edgeResult(headers),
+        ...await leafResult(headers),
         ...await fileResult()
         // Helpful for diagnostic
         // method,

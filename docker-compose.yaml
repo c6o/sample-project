@@ -4,10 +4,10 @@ services:
     image: c6oio/sample-project-core:$USER
     build:
       context: ./packages/core
-  sample-project-edge:
-    image: c6oio/sample-project-edge:$USER
+  sample-project-leaf:
+    image: c6oio/sample-project-leaf:$USER
     build:
-      context: ./packages/edge
+      context: ./packages/leaf
   sample-project-sockets:
     image: c6oio/sample-project-sockets:$USER
     build:

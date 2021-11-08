@@ -147,10 +147,10 @@
                     type: "GET",
                     data: { "Content-Type": undefined },
                     success: (result) => {
-                        const { mongo, edge, file, ...core } = result
+                        const { mongo, leaf, file, ...core } = result
                         core.url = coreAPIURL
                         let dump = renderSection('Core', false, core)
-                        dump += renderSection('Edge', false, edge)
+                        dump += renderSection('Leaf', false, leaf)
                         dump += renderSection('Mongo', false, mongo)
                         dump += renderSection('File', false, file)
                         $('#data-dump').html(dump)

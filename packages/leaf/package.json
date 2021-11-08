@@ -1,7 +1,7 @@
 {
-  "name": "sample-project-edge",
+  "name": "sample-project-leaf",
   "version": "1.0.0",
-  "description": "Simple Edge API Server",
+  "description": "Simple Leaf API Server",
   "type": "module",
   "main": "index.js",
   "scripts": {
