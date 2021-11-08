@@ -95,7 +95,9 @@
                 }
             }
 
-            function renderSection(section, success, payload) {
+            function renderSection(section, payload) {
+                if (payload.error)
+                    return renderError(section, 'Error', payload.error)
                 return `<div class="ui divider"></div>
                 <div class="ui two column grid">
                     <div class="row">
@@ -128,17 +130,24 @@
                 </div>`
             }
 
-            function renderError(title, error) {
+            function renderError(section, title, error) {
                 return `<div class="ui divider"></div>
-                <div class="ui icon message">
-                    <i class="exclamation triangle icon" style="color: red;"></i>
-                    <div class="content">
-                        <div class="header">
-                        ${title}
+                <div class="ui two column grid">
+                    <div class="row">
+                        <div class="column">
+                            <h2>${section}</h2>
                         </div>
-                        <p>${error}</p>
                     </div>
-                </div>`
+                    <div class="ui icon message">
+                        <i class="exclamation triangle icon" style="color: red;"></i>
+                        <div class="content">
+                            <div class="header">
+                            ${title}
+                            </div>
+                            <p>${error}</p>
+                        </div>
+                    </div>
+                </div><p>&nbsp;</p>`
             }
 
             function main() {
@@ -149,14 +158,14 @@
                     success: (result) => {
                         const { mongo, leaf, file, ...core } = result
                         core.url = coreAPIURL
-                        let dump = renderSection('Core', false, core)
-                        dump += renderSection('Leaf', false, leaf)
-                        dump += renderSection('Database', false, mongo)
-                        dump += renderSection('File', false, file)
+                        let dump = renderSection('Core', core)
+                        dump += renderSection('Leaf', leaf)
+                        dump += renderSection('Database', mongo)
+                        dump += renderSection('File', file)
                         $('#data-dump').html(dump)
                     },
                     error: (err) =>
-                        $('#data-dump').html(renderError(`Failed to reach ${coreAPIURL}`, `The sample-project-core service may have failed to start or is still spinning up.`))
+                        $('#data-dump').html(renderError('Frontend', `Failed to reach ${coreAPIURL}`, `The sample-project-core service may have failed to start or is still spinning up.`))
                 })
 
                 counter++
