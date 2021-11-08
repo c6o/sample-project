@@ -7,6 +7,7 @@
     "start-frontend": "(cd ./packages/frontend && yarn start)",
     "start-core": "(cd ./packages/core && yarn start)",
     "start-sockets": "(cd ./packages/sockets && yarn start)",
+    "start-leaf": "(cd ./packages/leaf && yarn start)",
     "start": "lerna run start --stream",
     "test": "echo \"No tests implemented\""
   },

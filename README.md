@@ -37,7 +37,7 @@ yarn install
 yarn start
 
 # On MacOS
-open http://localhost:3000
+open http://localhost:3030
 ```
 
 If you're not on a Mac, instead of the open command, you will need to launch a browser to [http://localhost:3000](http://localhost:3000).
@@ -52,7 +52,7 @@ Once your cluster is set up, you can install the sample project in cluster using
 
 ```bash
 kubectl create ns sample-project
-kubectl -n sample project apply -f ./k8s
+kubectl -n sample-project apply -f ./k8s
 ```
 
 This will install all the services and deployment but will not set up ingress.
@@ -60,13 +60,13 @@ This will install all the services and deployment but will not set up ingress.
 If you're on k3s, install TraefikV2 and run the following:
 
 ```bash
-kubectl -n sample project apply -f ./k8s/traefik
+kubectl -n sample-project apply -f ./k8s/traefik
 ```
 
 If you're on k8s and have a LoadBalancer controller, run the following:
 
 ```bash
-kubectl -n sample project apply -f ./k8s/loadbalance
+kubectl -n sample-project apply -f ./k8s/loadbalance
 ```
 
 You will then need to obtain the TraefikV2 ingress IP address or the LoadBalancer IP address and go to http://IP-ADDRESS in a browser.

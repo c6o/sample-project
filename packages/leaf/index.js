@@ -14,7 +14,7 @@ app.use(cors({ origin: '*'}))
 app.get('/api', async (req, res) => {
     const { method, headers } = req
     res.send({
-        who: 'edge',
+        who: 'leaf',
         where,
         // Helpful for diagnostic
         // method,
@@ -24,5 +24,5 @@ app.get('/api', async (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Edge API ${where} listening on http://localhost:${port}`)
+    console.log(`Leaf API ${where} listening on http://localhost:${port}`)
 })
