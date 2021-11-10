@@ -60,7 +60,6 @@ wss.on('connection', (client) => {
                     client.send(`${broadcastReceivedPrompt} ${message}`)
             }
 
-            console.log('CLIENTS', wss.clients)
             client.send(broadcastSentPrompt(message, wss.clients.size - 1))
         }
         else
