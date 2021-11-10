@@ -1,4 +1,6 @@
 const isLocal = window.location.hostname === 'localhost'
+const wsSupported = 'WebSocket' in window
+
 // URL's depend if we are running in cluster or not
 // We can use the hostname to determine configuration
 // When localhost, we are doing local development
@@ -9,6 +11,12 @@ const coreURL = isLocal ?
 const socketsURL = isLocal ?
     'ws://localhost:8999' :
     `ws://${window.location.host}/sockets`
+
+// State
+let coreCounter = 0
+let wsOpened = false
+let wsClient
+let wsLastMessage
 
 const sectionTemplate = (section, payload) => {
     if (payload.error)
@@ -47,61 +55,88 @@ const sectionTemplate = (section, payload) => {
     `
 }
 
-const errorTemplate = (section, title, error) =>
-(`<div class="ui divider"></div>
+const socketTemplate = () => {
+    if (!wsSupported)
+        return errorTemplate('Sockets', 'Sockets not supported')
+    if (!wsOpened)
+        return errorTemplate('Sockets', 'Socket is closed')
+
+    return `
+        <div class="ui divider"></div>
         <div class="ui two column grid">
             <div class="row">
                 <div class="column">
-                    <h2>${section}</h2>
+                    <h2>Sockets</h2>
                 </div>
             </div>
-            <div class="ui icon message">
-                <i class="exclamation triangle icon" style="color: red;"></i>
-                <div class="content">
-                    <div class="header">
-                    ${title}
-                    </div>
-                    <p>${error}</p>
+            <div class="row">
+                <div class="column">
+                ${wsLastMessage}
                 </div>
             </div>
-        </div><p>&nbsp;</p>`)
+        </div>
+    `
+}
 
-// State
-let counter = 0
-let wsOpened = false
-let wsSupported = 'WebSocket' in window
-let wsClient
-const hitSockets = () => {
+const errorTemplate = (section, title, error = '') => (`
+    <div class="ui divider"></div>
+    <div class="ui two column grid">
+        <div class="row">
+            <div class="column">
+                <h2>${section}</h2>
+            </div>
+        </div>
+        <div class="ui icon message">
+            <i class="exclamation triangle icon" style="color: red;"></i>
+            <div class="content">
+                <div class="header">
+                ${title}
+                </div>
+                <p>${error}</p>
+            </div>
+        </div>
+    </div><p>&nbsp;</p>
+`)
+
+const beginSockets = () => {
     if (!wsSupported) return
     if (wsClient) return
 
+    console.log('beginSockets')
+
     wsClient = new WebSocket(socketsURL)
     wsClient.onopen = () => {
-        // Web Socket is connected, send data using send()
-        // $('#ws-sent').html("Sent Message:\"Hello World\"")
-        console.log('WS Opened')
         wsOpened = true
-        wsClient.send(`Hello World ${counter}`)
-    }
+        $('#socket-send').removeClass('disabled')
+        $('#socket-toggle').html('Disconnect')
 
+    }
     wsClient.onclose = () => {
-        console.log('WS closed')
+        $('#socket-send').addClass('disabled')
         delete wsClient
-        wsOpened = true
-        // $('#ws-closed').html(`Closed connection ${counter}...`)
+        wsClient = null
+        wsOpened = false
+        $('#socket-toggle').html('Connect')
     }
 
-    wsClient.onmessage = (evt) => {
-        const received_msg = evt.data
-        console.log('ws onmessage', received_msg)
-        // if (received_msg.includes('PING'))
-        //     $('#ws-ping-messages').html("Ping received: "+received_msg)
-        // else
-        //     $('#ws-messages').html("Message received: "+received_msg)
+    wsClient.onmessage = (evt) => wsLastMessage = evt.data
+}
+
+socketToggleClicked = () => {
+    console.log('I be clieced', wsClient)
+    wsClient ?
+        wsClient.close() :
+        beginSockets()
+}
+
+socketInputKeydown = (e) =>  {
+    if (e.keyCode === 13) {
+        wsClient.send(e.target.value)
+        e.target.value = ''
     }
 }
 
-const hitCore = () => {
+const callCore = () => {
     $.ajax({
         url: coreURL,
         type: "GET",
@@ -109,25 +144,28 @@ const hitCore = () => {
         success: (result) => {
             const { mongo, leaf, file, ...core } = result
             core.url = coreURL
-            let dump = sectionTemplate('Core', core)
-            dump += sectionTemplate('Leaf', leaf)
-            dump += sectionTemplate('Database', mongo)
-            dump += sectionTemplate('File', file)
-            $('#data-dump').html(dump)
+            const content =
+                socketTemplate() +
+                sectionTemplate('Core', core) +
+                sectionTemplate('Leaf', leaf) +
+                sectionTemplate('Database', mongo) +
+                sectionTemplate('File', file)
+            $('#data-dump').html(content)
         },
         error: (err) =>
             $('#data-dump').html(errorTemplate('Frontend', `Failed to reach ${coreURL}`, `The sample-project-core service may have failed to start or is still spinning up.`))
     })
+
+    $('#coreCounter').html(++coreCounter)
 }
 
-const main = () => {
-    hitCore()
-    hitSockets()
 
-    counter++
-    $('#counter').html(counter)
-}
 
-$(document).ready(() => setInterval(main, 1000))
+$(document).ready(() => {
+    $(document).on('click', "#socket-toggle", socketToggleClicked)
+    $(document).on('keydown', '#socket-input', socketInputKeydown)
+    setInterval(callCore, 1000)
+    beginSockets()
+})
 // Comment out the above and use below if you want a single call
 // $(document).ready(main)
