@@ -62,38 +62,9 @@
                 'http://localhost:3000/api' :
                 '/api'
 
-            let counter = 0
-            function WebSocketTest() {
-                if ("WebSocket" in window) {
-                    //const url = "ws://localhost:8002" // for docker build local run
-                    const loc = window.location
-                    const protocol = (loc.protocol === "https:") ? "wss:" : "ws:"
-                    const socket_uri = `${protocol}//${loc.host}${loc.pathname}sockets/`
-
-                    $('#ws-info').html("Communicating with WebSockets at: " + socket_uri)
-                    $('#ws-support').html("WebSocket is supported by this Browser!")
-                    const ws = new WebSocket(socket_uri)
-                    ws.onopen = function() {
-                        // Web Socket is connected, send data using send()
-                        $('#ws-sent').html("Sent Message:\"Hello World\"")
-                        ws.send(`Hello World ${counter}`)
-                    };
-                    ws.onmessage = function (evt) {
-                        const received_msg = evt.data
-                        if (received_msg.includes('PING'))
-                            $('#ws-ping-messages').html("Ping received: "+received_msg)
-
-                        else
-                            $('#ws-messages').html("Message received: "+received_msg)
-
-                    };
-                    ws.onclose = function() {
-                        $('#ws-closed').html(`Closed connection ${counter}...`)
-                    };
-                } else {
-                    $('#ws-support').html("Error: WebSocket NOT supported by this Browser!")
-                }
-            }
+            const socketsURL = isLocal ?
+                'ws://localhost:8999' :
+                `ws://${window.location.host}/sockets`
 
             function renderSection(section, payload) {
                 if (payload.error)
@@ -150,6 +121,39 @@
                 </div><p>&nbsp;</p>`
             }
 
+            // State
+            let counter = 0
+            let wsOpened = false
+            let wsSupported = 'WebSocket' in window
+            function WebSocketTest() {
+                if (wsSupported) {
+
+                    //$('#ws-info').html("Communicating with WebSockets at: " + socket_uri)
+                    //$('#ws-support').html("WebSocket is supported by this Browser!")
+
+                    const ws = new WebSocket(socketsURL)
+                    ws.onopen = () => {
+                        // Web Socket is connected, send data using send()
+                        // $('#ws-sent').html("Sent Message:\"Hello World\"")
+                        wsOpened = true
+                        ws.send(`Hello World ${counter}`)
+                    }
+                    ws.onclose = () => {
+                        // $('#ws-closed').html(`Closed connection ${counter}...`)
+                    }
+
+                    ws.onmessage = function (evt) {
+                        const received_msg = evt.data
+                        console.log('ws onmessage', received_msg)
+                        // if (received_msg.includes('PING'))
+                        //     $('#ws-ping-messages').html("Ping received: "+received_msg)
+                        // else
+                        //     $('#ws-messages').html("Message received: "+received_msg)
+
+                    }
+                }
+            }
+
             function main() {
                 $.ajax({
                     url: coreAPIURL,
@@ -167,6 +171,8 @@
                     error: (err) =>
                         $('#data-dump').html(renderError('Frontend', `Failed to reach ${coreAPIURL}`, `The sample-project-core service may have failed to start or is still spinning up.`))
                 })
+
+                WebSocketTest()
 
                 counter++
                 $('#counter').html(counter)
