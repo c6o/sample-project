@@ -14,7 +14,6 @@ const socketsURL = isLocal ?
 
 // State
 let coreCounter = 0
-let wsOpened = false
 let wsClient
 let wsLastMessage
 
@@ -57,8 +56,8 @@ const sectionTemplate = (section, payload) => {
 
 const socketTemplate = () => {
     if (!wsSupported)
-        return errorTemplate('Sockets', 'Sockets not supported')
-    if (!wsOpened)
+        return errorTemplate('Sockets', 'Browser issue', 'WebSockets are not supported')
+    if (!wsClient)
         return errorTemplate('Sockets', 'Socket is closed')
 
     return `
@@ -102,11 +101,8 @@ const beginSockets = () => {
     if (!wsSupported) return
     if (wsClient) return
 
-    console.log('beginSockets')
-
     wsClient = new WebSocket(socketsURL)
     wsClient.onopen = () => {
-        wsOpened = true
         $('#socket-send').removeClass('disabled')
         $('#socket-toggle').html('Disconnect')
 
@@ -115,7 +111,6 @@ const beginSockets = () => {
         $('#socket-send').addClass('disabled')
         delete wsClient
         wsClient = null
-        wsOpened = false
         $('#socket-toggle').html('Connect')
     }
 
@@ -123,7 +118,6 @@ const beginSockets = () => {
 }
 
 socketToggleClicked = () => {
-    console.log('I be clieced', wsClient)
     wsClient ?
         wsClient.close() :
         beginSockets()
@@ -159,13 +153,13 @@ const callCore = () => {
     $('#coreCounter').html(++coreCounter)
 }
 
-
-
 $(document).ready(() => {
     $(document).on('click', "#socket-toggle", socketToggleClicked)
     $(document).on('keydown', '#socket-input', socketInputKeydown)
+
+    // Call the core API every second
     setInterval(callCore, 1000)
+
+    // Start a sockets connection
     beginSockets()
 })
-// Comment out the above and use below if you want a single call
-// $(document).ready(main)

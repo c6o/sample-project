@@ -8,6 +8,7 @@
     "start": "nodemon --inspect=9449 index.js"
   },
   "dependencies": {
+    "dayjs": "^1.10.7",
     "express": "^4.17.1",
     "uuid": "^8.3.2",
     "ws": "^7.4.6"
