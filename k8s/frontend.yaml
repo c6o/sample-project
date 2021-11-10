@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: sample-project-frontend
-          image: c6oio/sample-project-frontend:latest
+          image: c6oio/sample-project-frontend
           imagePullPolicy: Always
           env:
             - name: SAMPLE_PROJECT_API_HOST

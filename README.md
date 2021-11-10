@@ -40,7 +40,7 @@ yarn start
 open http://localhost:3030
 ```
 
-If you're not on a Mac, instead of the open command, you will need to launch a browser to [http://localhost:3000](http://localhost:3000).
+If you're not on a Mac, instead of the open command, you will need to launch a browser to [http://localhost:3030](http://localhost:3030).
 
 Hit Ctrl-C to exit.
 
