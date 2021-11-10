@@ -109,6 +109,7 @@ const beginSockets = () => {
     }
     wsClient.onclose = () => {
         $('#socket-send').addClass('disabled')
+        $('#socket-broadcast').addClass('disabled')
         delete wsClient
         wsClient = null
         $('#socket-toggle').html('Connect')
@@ -123,10 +124,20 @@ socketToggleClicked = () => {
         beginSockets()
 }
 
+socketBroadcastClicked = () => {
+    const element = $('#socket-input')[0]
+    wsClient.send(`broadcast: ${element.value}`)
+    element.value = ''
+    $('#socket-broadcast').addClass('disabled')
+}
+
 socketInputKeydown = (e) =>  {
+    if (e.target.value.length)
+        $('#socket-broadcast').removeClass('disabled')
     if (e.keyCode === 13) {
         wsClient.send(e.target.value)
         e.target.value = ''
+        $('#socket-broadcast').addClass('disabled')
     }
 }
 
@@ -155,6 +166,7 @@ const callCore = () => {
 
 $(document).ready(() => {
     $(document).on('click', "#socket-toggle", socketToggleClicked)
+    $(document).on('click', "#socket-broadcast", socketBroadcastClicked)
     $(document).on('keydown', '#socket-input', socketInputKeydown)
 
     // Call the core API every second

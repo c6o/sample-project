@@ -9,7 +9,8 @@ dayjs.extend(relativeTime)
 
 // Prompts. You can intercept this service and change these
 const ackPrompt = 'Received: '
-const broadcastHelloPrompt = 'Hello, broadcast message ->'
+const broadcastSentPrompt = (m, c) => `You sent "${m} to ${c} people!`
+const broadcastReceivedPrompt = 'You received a broadcast message ->'
 const startupPrompt =  'Hi there, I am a WebSocket server. Send me something!'
 const desperatePleas = [
     'Are you alive?',
@@ -26,26 +27,24 @@ const desperatePleas = [
     'If you love something let it go - I can\'t seem to do that'
 ]
 
-const pingInterval = process.env.SP_PING_INTERVAL || 5000
-const failInterval = process.env.SP_PING_FAIL_INTERVAL || 10000
+const pesterInterval = process.env.SP_SOCKET_INTERVAL || 5000
 const port = 8999
 
 const app = express()
 const server = http.createServer(app)
 const wss = new WebSocket.Server({ server })
 
-wss.on('connection', (ws) => {
+wss.on('connection', (client) => {
 
-    ws.isAlive = true
-    ws.id = uuidv4()
-    ws.lastMessageTime = new Date()
+    client.isAlive = true
+    client.id = uuidv4()
+    client.lastMessageTime = new Date()
 
-    ws.on('error', () => console.log('Cannot start server'))
+    client.on('error', () => console.log('Cannot start server'))
 
-    ws.on('message', (message) => {
-        ws.lastMessageTime = new Date()
-        ws.lastMessage = message
-        ws.send(`${ackPrompt} ${message}`)
+    client.on('message', (message) => {
+        client.lastMessageTime = new Date()
+        client.lastMessage = message
 
         // Check to see if this is a message to
         // be broadcasted to all clients
@@ -57,47 +56,37 @@ wss.on('connection', (ws) => {
 
             // Broadcast the message to the other clients
             for(const client of wss.clients) {
-                if (client != ws)
-                    client.send(`${broadcastHelloPrompt} ${message}`)
+                if (client != client)
+                    client.send(`${broadcastReceivedPrompt} ${message}`)
             }
+
+            console.log('CLIENTS', wss.clients)
+            client.send(broadcastSentPrompt(message, wss.clients.size - 1))
         }
+        else
+            client.send(`${ackPrompt} ${message}`)
     })
 
     // Stop pestering on close
-    ws.on('close', (code, message) => clearInterval(ws.timer))
+    client.on('close', (code, message) => clearInterval(client.timer))
 
-    ws.on('pong', () => {
-        //console.log(`pong: ${ws.id}`)
-        ws.isAlive = true
-        clearInterval(ws.timerPingPong)
-    })
-
-    ws.send(startupPrompt)
-
-    ws.timer = setInterval(pingpong, parseInt(pingInterval), ws)
-    return ws
+    client.send(startupPrompt)
+    client.timer = setInterval(pester, parseInt(pesterInterval), client)
+    return client
 })
 
-const pingpongclose = (ws) => {
-    clearInterval(ws.timerPingPong)
-    ws.isAlive = false
-}
-
-const pingpong = (ws) => {
-    if (ws?.id) {
-        ws.timerPingPong = setInterval(pingpongclose, failInterval, ws)
-        ws.ping('coucou', false, 'utf8')
-
-        const since = dayjs().to(ws.lastMessageTime)
+const pester = (client) => {
+    if (client?.id) {
+        const since = dayjs().to(client.lastMessageTime)
         const randomPlea = desperatePleas[Math.floor(Math.random() * desperatePleas.length)]
 
-        if (ws.lastMessage)
-            ws.send(`Your last message ${since} was: ${ws.lastMessage}. ${randomPlea}`)
+        if (client.lastMessage)
+            client.send(`Your last message ${since} was: ${client.lastMessage}. ${randomPlea}`)
         else
-            ws.send(`I've been waiting to hear from you since ${since}. ${randomPlea}`)
+            client.send(`I've been waiting to hear from you since ${since}. ${randomPlea}`)
 
     } else {
-        console.log('Web socket is undefined?', ws)
+        console.log('Web socket is undefined?', client)
     }
 }
 
