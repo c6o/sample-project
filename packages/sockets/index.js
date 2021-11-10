@@ -11,6 +11,20 @@ dayjs.extend(relativeTime)
 const ackPrompt = 'Received: '
 const broadcastHelloPrompt = 'Hello, broadcast message ->'
 const startupPrompt =  'Hi there, I am a WebSocket server. Send me something!'
+const desperatePleas = [
+    'Are you alive?',
+    'Would love to hear from you soon.',
+    'You don\'t come around here no more.',
+    'Was it something I said?',
+    'It\'s not me it\'s you.',
+    'On second thoughts, it\'s probably me.',
+    'Hey now, hey now don\'t dream it\'s over.',
+    'Fine. Be that way.',
+    'I really just need to work on myself don\'t I.',
+    'It seems we\'re just on two different paths right now.',
+    'You\'ve lost that friendly feeling.',
+    'If you love something let it go - I can\'t seem to do that'
+]
 
 const pingInterval = process.env.SP_PING_INTERVAL || 5000
 const failInterval = process.env.SP_PING_FAIL_INTERVAL || 10000
@@ -75,10 +89,12 @@ const pingpong = (ws) => {
         ws.ping('coucou', false, 'utf8')
 
         const since = dayjs().to(ws.lastMessageTime)
+        const randomPlea = desperatePleas[Math.floor(Math.random() * desperatePleas.length)]
+
         if (ws.lastMessage)
-            ws.send(`Your last message ${since} was: ${ws.lastMessage}`)
+            ws.send(`Your last message ${since} was: ${ws.lastMessage}. ${randomPlea}`)
         else
-            ws.send(`I've been waiting to hear from you since ${since}`)
+            ws.send(`I've been waiting to hear from you since ${since}. ${randomPlea}`)
 
     } else {
         console.log('Web socket is undefined?', ws)

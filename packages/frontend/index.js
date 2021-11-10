@@ -15,7 +15,7 @@ const socketsURL = isLocal ?
 // State
 let coreCounter = 0
 let wsClient
-let wsLastMessage
+let wsLastMessage = 'Pending connection...'
 
 const sectionTemplate = (section, payload) => {
     if (payload.error)
@@ -62,7 +62,7 @@ const socketTemplate = () => {
 
     return `
         <div class="ui divider"></div>
-        <div class="ui two column grid">
+        <div class="ui grid">
             <div class="row">
                 <div class="column">
                     <h2>Sockets</h2>
