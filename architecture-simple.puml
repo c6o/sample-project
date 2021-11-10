@@ -1,9 +1,9 @@
-@startuml sample-project
+@startuml
 !theme cerulean-outline
-skinparam linetype ortho
 
 left to right direction
-footer All resources start with sample-project (e.g. sample-project-core)
+
+caption All resource names start with sample-project (e.g. sample-project-core). Deployments omitted for simplicity.
 
 ' Azure
 !define AzurePuml https://raw.githubusercontent.com/RicardoNiepel/Azure-PlantUML/release/2-1/dist
@@ -37,29 +37,17 @@ Cluster_Boundary(cluster, "Kubernetes Cluster") {
         KubernetesSvc(svcLeaf, "leaf", "")
         KubernetesSvc(svcDb, "database", "")
         KubernetesSvc(svcSoc, "sockets", "")
-
-        KubernetesDeploy(depFront, "frontend", "")
-        KubernetesDeploy(depCore, "core", "")
-        KubernetesDeploy(depLeaf, "leaf", "")
-        KubernetesDeploy(depDb, "database", "")
-		KubernetesDeploy(depSoc, "sockets", "")
     }
 }
 
 AzureLoadBalancer(alb, "Load\nBalancer", "")
-Rel(svcFront, depFront, " ")
-Rel(svcCore, depCore, " ")
-Rel(svcLeaf, depLeaf, " ")
-Rel(svcDb, depDb, " ")
-Rel(svcSoc, depSoc, " ")
 
 Rel(traefik, svcFront, " ")
-Rel(depFront, svcCore, "REST")
-Rel(depFront, svcSoc, "WS")
-Rel(depCore, svcLeaf, "REST")
-Rel(depCore, svcDb, "mongo")
+Rel(svcFront, svcCore, "REST")
+Rel(svcFront, svcSoc, "WS")
+Rel(svcCore, svcLeaf, "REST")
+Rel(svcCore, svcDb, "mongo")
 
 Rel(alb, traefik, " ")
 Rel(user, alb, " ")
-
 @enduml
