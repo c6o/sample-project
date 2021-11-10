@@ -57,16 +57,18 @@ kubectl -n sample-project apply -f ./k8s
 
 This will install all the services and deployment but will not set up ingress.
 
-If you're on k3s, install TraefikV2 and run the following:
+If you're using TraefikV2, run the following:
 
 ```bash
 kubectl -n sample-project apply -f ./k8s/traefik
 ```
 
-If you're on k8s and have a LoadBalancer controller, run the following:
+To use a generic LoadBalance service, run the following:
 
 ```bash
 kubectl -n sample-project apply -f ./k8s/loadbalance
 ```
 
-You will then need to obtain the TraefikV2 ingress IP address or the LoadBalancer IP address and go to http://IP-ADDRESS in a browser.
+The above assumes port 80 is avaiable. If you'd like an alternative port, edit the port in `k8s/loadbalance/frontend.yaml`
+
+You will then need to obtain the appropriate ingress service IP address or the LoadBalancer IP address and go to http://IP-ADDRESS in a browser.
