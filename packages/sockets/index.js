@@ -53,6 +53,7 @@ wss.on('connection', (client) => {
             // Strip out the broadcast part or it's CHAOS
             // Sheer chaos I tell you!
             message = message.replace(broadcastRegex, '')
+            client.lastMessage = message
 
             // Broadcast the message to the other clients
             for(const client of wss.clients) {

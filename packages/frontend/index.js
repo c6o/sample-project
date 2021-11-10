@@ -157,8 +157,12 @@ const callCore = () => {
                 sectionTemplate('File', file)
             $('#data-dump').html(content)
         },
-        error: (err) =>
-            $('#data-dump').html(errorTemplate('Frontend', `Failed to reach ${coreURL}`, `The sample-project-core service may have failed to start or is still spinning up.`))
+        error: (err) => {
+            const content =
+                socketTemplate() +
+                errorTemplate('Frontend', `Failed to reach ${coreURL}`, `The sample-project-core service may have failed to start or is still spinning up.`)
+            $('#data-dump').html(content)
+        }
     })
 
     $('#coreCounter').html(++coreCounter)
