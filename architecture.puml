@@ -1,6 +1,8 @@
-@startuml sample-project
-!theme cerulean-outline
-skinparam linetype ortho
+@startuml
+' Include the theme explicitly as it changes
+!includeurl https://raw.githubusercontent.com/plantuml/plantuml/10aa96e31d9be66e7c103bac011cc5effae33421/themes/puml-theme-cerulean-outline.puml
+' !theme cerulean-outline
+
 
 left to right direction
 footer All resources start with sample-project (e.g. sample-project-core)
@@ -21,6 +23,7 @@ footer All resources start with sample-project (e.g. sample-project-core)
 !includeurl KubernetesPuml/OSS/KubernetesSvc.puml
 !includeurl KubernetesPuml/OSS/KubernetesIng.puml
 !includeurl KubernetesPuml/OSS/KubernetesPod.puml
+!includeurl KubernetesPuml/OSS/KubernetesDeploy.puml
 
 
 actor "User" as user
@@ -42,7 +45,7 @@ Cluster_Boundary(cluster, "Kubernetes Cluster") {
         KubernetesDeploy(depCore, "core", "")
         KubernetesDeploy(depLeaf, "leaf", "")
         KubernetesDeploy(depDb, "database", "")
-		KubernetesDeploy(depSoc, "sockets", "")
+        KubernetesDeploy(depSoc, "sockets", "")
     }
 }
 
@@ -54,6 +57,9 @@ Rel(svcDb, depDb, " ")
 Rel(svcSoc, depSoc, " ")
 
 Rel(traefik, svcFront, " ")
+Rel(traefik, svcCore, " ")
+Rel(traefik, svcSoc, " ")
+
 Rel(depFront, svcCore, "REST")
 Rel(depFront, svcSoc, "WS")
 Rel(depCore, svcLeaf, "REST")
@@ -62,4 +68,7 @@ Rel(depCore, svcDb, "mongo")
 Rel(alb, traefik, " ")
 Rel(user, alb, " ")
 
+note left of svcFront
+edge
+end note
 @enduml

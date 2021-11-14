@@ -1,5 +1,7 @@
 @startuml
-!theme cerulean-outline
+' Include the theme explicitly as it changes
+!includeurl https://raw.githubusercontent.com/plantuml/plantuml/10aa96e31d9be66e7c103bac011cc5effae33421/themes/puml-theme-cerulean-outline.puml
+' !theme cerulean-outline
 
 left to right direction
 
@@ -43,6 +45,8 @@ Cluster_Boundary(cluster, "Kubernetes Cluster") {
 AzureLoadBalancer(alb, "Load\nBalancer", "")
 
 Rel(traefik, svcFront, " ")
+Rel(traefik, svcCore, " ")
+Rel(traefik, svcSoc, " ")
 Rel(svcFront, svcCore, "REST")
 Rel(svcFront, svcSoc, "WS")
 Rel(svcCore, svcLeaf, "REST")
@@ -50,4 +54,8 @@ Rel(svcCore, svcDb, "mongo")
 
 Rel(alb, traefik, " ")
 Rel(user, alb, " ")
+
+note left of svcFront
+edge
+end note
 @enduml

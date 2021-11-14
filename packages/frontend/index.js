@@ -1,15 +1,21 @@
-const isLocal = window.location.hostname === 'localhost'
 const wsSupported = 'WebSocket' in window
+const params = new URLSearchParams(window.location.search)
+const isLocal = window.location.hostname === 'localhost'
+const isTeleported = params.get('t') || params.get('teleport')
 
 // URL's depend if we are running in cluster or not
 // We can use the hostname to determine configuration
 // When localhost, we are doing local development
+const localServiceHost = svcName => isTeleported ?
+    svcName :
+    'localhost'
+
 const coreURL = isLocal ?
-    'http://localhost:3000/api' :
+    `http://${localServiceHost('sample-project-core')}:3000/api` :
     '/api'
 
 const socketsURL = isLocal ?
-    'ws://localhost:8999' :
+    `ws://${localServiceHost('sample-project-sockets')}:8999` :
     `ws://${window.location.host}/sockets`
 
 // State
@@ -160,7 +166,7 @@ const callCore = () => {
         error: (err) => {
             const content =
                 socketTemplate() +
-                errorTemplate('Frontend', `Failed to reach ${coreURL}`, `The sample-project-core service may have failed to start or is still spinning up.`)
+                errorTemplate('Core', `Failed to reach ${coreURL}`, `The sample-project-core service may have failed to start or is still spinning up.`)
             $('#data-dump').html(content)
         }
     })
