@@ -1,0 +1,17 @@
+{
+  "name": "sample-project-core",
+  "version": "1.0.0",
+  "description": "Simple Core API Server",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --inspect index.js"
+  },
+  "dependencies": {
+    "axios": "^0.24.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongodb": "^3.6.5",
+    "nodemon": "^2.0.14"
+  }
+}

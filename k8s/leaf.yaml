@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-project-leaf
+  labels:
+    app: sample-project
+    component: leaf
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sample-project
+      component: leaf
+  template:
+    metadata:
+      labels:
+        app: sample-project
+        component: leaf
+    spec:
+      containers:
+        - name: sample-project-leaf
+          image: c6oio/sample-project-leaf
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3010
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-project-leaf
+  labels:
+    app: sample-project
+    component: leaf
+spec:
+  ports:
+    - name: unsecure
+      protocol: TCP
+      port: 3010
+      targetPort: 3010
+  selector:
+    app: sample-project
+    component: leaf

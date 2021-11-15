@@ -1,20 +1,15 @@
 {
   "name": "sample-project",
   "workspaces": [
-    "sample-project-server",
-    "sample-project-sockets"
+    "packages/*"
   ],
   "scripts": {
-    "build": "",
-    "package": "",
-    "publish": "",
-    "start-web": "node sample-project-web/server.js",
-    "start-server": "node sample-project-server/server.js",
-    "start-sockets": "node sample-project-sockets/server.js",
-    "test": "jest --config=\"./jest.config.unit.js\"",
-    "unit-tests": "jest --config=\"./jest.config.unit.js\" --maxWorkers=3 --coverage",
-    "functional-tests": "NODE_ENV=test jest --config=\"./jest.config.spec.js\" --forceExit --maxWorkers=1",
-    "integration-tests": "NODE_ENV=test jest --forceExit --maxWorkers=1"
+    "start-frontend": "(cd ./packages/frontend && yarn start)",
+    "start-core": "(cd ./packages/core && yarn start)",
+    "start-sockets": "(cd ./packages/sockets && yarn start)",
+    "start-leaf": "(cd ./packages/leaf && yarn start)",
+    "start": "lerna run start --stream",
+    "test": "echo \"No tests implemented\""
   },
   "version": "1.0.0",
   "description": "Sample project",
@@ -25,9 +20,6 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
-    "javascript-obfuscator": "^1.10.2",
-    "jest": "^26.0.1",
-    "jest-html-reporters": "^2.0.3",
-    "typescript": "^4.3.2"
+    "nodemon": "^2.0.14"
   }
 }

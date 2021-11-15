@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+        <style>
+            #socket-input {
+                width: 450px;
+            }
+            #socket-send { margin-right: 20px; }
+            #socket-broadcast { margin-right: 20px; }
+            .c60-panel {
+                background-color: lightgrey;
+            }
+            .logo {
+                width: 40px;
+                height: 40px;
+            }
+            body {
+                margin-top: 50px;
+                margin-bottom: 50px;
+            }
+            pre {
+                white-space: pre-wrap;       /* Since CSS 2.1 */
+                white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+                white-space: -pre-wrap;      /* Opera 4-6 */
+                white-space: -o-pre-wrap;    /* Opera 7 */
+                word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            }
+        </style>
+    </head>
+    <body>
+        <div class="ui centered aligned container">
+            <div class="ui grid">
+                <div class="two column row">
+                    <div class="left floated middle aligned column">
+                    <h1 class='border-1'><img src='c6o.png' class='logo'> Sample Kubernetes Project</h1>
+                    </div>
+                    <div class="right floated right aligned column">
+                    <div class="ui statistic">
+                        <div id="coreCounter" class="value"></div>
+                        <div class="label">requests</div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui divider"></div>
+            <div class="ui segment">
+                <div id="socket-send" class="ui icon input">
+                    <input id="socket-input" type="text" placeholder="Send message...">
+                    <i class="caret square right icon"></i>
+                </div>
+                <button id="socket-broadcast" class="ui disabled button" type="button">Broadcast</button>
+                <button id="socket-toggle" class="ui secondary button" type="button">Waiting...</button>
+            </div>
+
+            <div id="data-dump"></div>
+
+            <div class="ui divider"></div>
+            <div class="footer">
+                <div class="ui label">
+                    <a href="https://github.com/c6o/sample-project" target="_blank"><i class="github icon"></i>https://github.com/c6o/sample-project</a>
+                </div>
+                <div style="float:right;">
+                    Made with ❤️ and 🍻 in 🇨🇦
+                </div>
+            </div>
+        </div>
+
+        <script src='/index.js'></script>
+    </body>
+
+</html>

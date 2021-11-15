@@ -1,0 +1,10 @@
+{
+    "files.exclude": {
+        "**/node_modules/**": true,
+        "**/lib/**": true,
+        "**/.nyc_output/**": true,
+        "**/package-lock.json/**": true
+    },
+    "typescript.preferences.quoteStyle": "single",
+    "typescript.format.semicolons": "remove",
+}

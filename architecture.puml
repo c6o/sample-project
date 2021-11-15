@@ -1,0 +1,74 @@
+@startuml
+' Include the theme explicitly as it changes
+!includeurl https://raw.githubusercontent.com/plantuml/plantuml/10aa96e31d9be66e7c103bac011cc5effae33421/themes/puml-theme-cerulean-outline.puml
+' !theme cerulean-outline
+
+
+left to right direction
+footer All resources start with sample-project (e.g. sample-project-core)
+
+' Azure
+!define AzurePuml https://raw.githubusercontent.com/RicardoNiepel/Azure-PlantUML/release/2-1/dist
+!includeurl AzurePuml/AzureCommon.puml
+!includeurl AzurePuml/AzureSimplified.puml
+!includeurl AzurePuml/Networking/AzureLoadBalancer.puml
+
+' Kubernetes
+!define KubernetesPuml https://raw.githubusercontent.com/dcasati/kubernetes-PlantUML/master/dist
+
+!includeurl KubernetesPuml/kubernetes_Context.puml
+!includeurl KubernetesPuml/kubernetes_Simplified.puml
+
+!includeurl KubernetesPuml/OSS/KubernetesApi.puml
+!includeurl KubernetesPuml/OSS/KubernetesSvc.puml
+!includeurl KubernetesPuml/OSS/KubernetesIng.puml
+!includeurl KubernetesPuml/OSS/KubernetesPod.puml
+!includeurl KubernetesPuml/OSS/KubernetesDeploy.puml
+
+
+actor "User" as user
+
+' Kubernetes Components
+Cluster_Boundary(cluster, "Kubernetes Cluster") {
+
+    Namespace_Boundary(nsBackEnd, "sample-project") {
+	
+	    KubernetesIng(traefik, "Ingress", "")
+
+		KubernetesSvc(svcFront, "frontend", "")
+        KubernetesSvc(svcCore, "core", "")
+        KubernetesSvc(svcLeaf, "leaf", "")
+        KubernetesSvc(svcDb, "database", "")
+        KubernetesSvc(svcSoc, "sockets", "")
+
+        KubernetesDeploy(depFront, "frontend", "")
+        KubernetesDeploy(depCore, "core", "")
+        KubernetesDeploy(depLeaf, "leaf", "")
+        KubernetesDeploy(depDb, "database", "")
+        KubernetesDeploy(depSoc, "sockets", "")
+    }
+}
+
+AzureLoadBalancer(alb, "Load\nBalancer", "")
+Rel(svcFront, depFront, " ")
+Rel(svcCore, depCore, " ")
+Rel(svcLeaf, depLeaf, " ")
+Rel(svcDb, depDb, " ")
+Rel(svcSoc, depSoc, " ")
+
+Rel(traefik, svcFront, " ")
+Rel(traefik, svcCore, " ")
+Rel(traefik, svcSoc, " ")
+
+Rel(depFront, svcCore, "REST")
+Rel(depFront, svcSoc, "WS")
+Rel(depCore, svcLeaf, "REST")
+Rel(depCore, svcDb, "mongo")
+
+Rel(alb, traefik, " ")
+Rel(user, alb, " ")
+
+note left of svcFront
+edge
+end note
+@enduml
