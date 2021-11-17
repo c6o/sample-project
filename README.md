@@ -63,6 +63,12 @@ If you're using TraefikV2, run the following:
 kubectl -n sample-project apply -f ./k8s/traefik
 ```
 
+Or, if you use an Ingress Controller that supports [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), run the following:
+
+```bash
+kubectl -n sample-project apply -f ./k8s/ingress
+```
+
 To use a generic LoadBalance service, run the following:
 
 ```bash
