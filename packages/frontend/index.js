@@ -3,6 +3,9 @@ const params = new URLSearchParams(window.location.search)
 const isLocal = window.location.hostname === 'localhost'
 const isTeleported = params.get('t') || params.get('teleport')
 
+// Polling time
+const requestInterval = 3000
+
 // URL's depend if we are running in cluster or not
 // We can use the hostname to determine configuration
 // When localhost, we are doing local development
@@ -180,7 +183,7 @@ $(document).ready(() => {
     $(document).on('keydown', '#socket-input', socketInputKeydown)
 
     // Call the core API every second
-    setInterval(callCore, 1000)
+    setInterval(callCore, requestInterval)
 
     // Start a sockets connection
     beginSockets()
