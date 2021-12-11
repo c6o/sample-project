@@ -49,6 +49,7 @@ const getGitName = () => {
 
 const updateRef = (branch) => {
     const { revision, hash } = getGitRevision()
+    //TODO: Investigate using git fast forward
     const command = `git update-ref -m "${branch} to ${hash}" refs/heads/${branch} ${revision}`
     return execer(command, dryRun())
 }

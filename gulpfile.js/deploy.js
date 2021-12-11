@@ -20,7 +20,15 @@ const POINTER_BRANCH_LOOKUP = {
 const apply = async (environment) => {
     if (dryRun())
         console.log(`\x1b[1m\x1b[35mThis is a dry run\x1b[0m`)
-    console.log(`\x1b[1m\x1b[35mTODO: Deployer\x1b[0m`)
+    console.log(`\x1b[1m\x1b[33mApplying kubernetes resources\x1b[0m`)
+    if (!process.env.KUBECONFIG) {
+        throw new GulpError('apply', new Error('Error: A KUBECONFIG environment variable must be set that points to a vailid kubeconfig yaml'))
+    }
+    try {
+        await spawner(`kubectl create ns ${environment}`)
+    } finally {
+        await spawner(`kubectl apply -f ./k8s -n ${environment}`)
+    }
 }
 
 // General Steps
