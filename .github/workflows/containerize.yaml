@@ -1,0 +1,30 @@
+name: anvil-containerize
+on:
+  push:
+    branches:
+      - chore/2450-containerize
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the codebase
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TRAXITT_NARAYAN_PAT }}
+          submodules: true
+      # Set the node version
+      - name: Build on nodejs 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      # Login to Docker Hub
+      - name: Log in to docker registry
+        run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+      # Dependencies.
+      - name: Install dependencies
+        run: yarn install --unsafe-perm
+      # Containerize the code and push to docker hub
+      - name: Build the container image for this git sha and push to docker hub
+        run: |
+          gulp containerize

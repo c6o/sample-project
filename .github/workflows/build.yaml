@@ -1,0 +1,28 @@
+name: anvil-build
+on: pull_request
+jobs:
+  build:
+    if: "!contains(github.event.commits[0].message, '[skip ci]') && !contains(github.event.commits[0].message, '[skip]')"
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the codebase
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TRAXITT_NARAYAN_PAT }}
+          fetch-depth: 2
+          submodules: true
+      # Set the node version
+      - name: Build on nodejs 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      # Dependencies
+      - name: Install dependencies
+      - run: yarn install --unsafe-perm
+      # Compile the code
+      - name: Build the repo and test it.
+        run: |
+          export NODE_OPTIONS="--max_old_space_size=8192" |
+          gulp compile
+          gulp test

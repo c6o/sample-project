@@ -1,0 +1,10 @@
+apiVersion: system.codezero.io/v1alpha1
+kind: DevelopmentProfile
+metadata:
+  name: teleport-namespace-sample-project
+spec:
+  commands:
+    - command: Teleport
+      params:
+        kind: Namespace
+        resourceName: sample-project

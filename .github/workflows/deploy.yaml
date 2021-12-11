@@ -1,0 +1,54 @@
+# Parameters: Environment, google project name
+name: anvil-deploy
+on:
+  push:
+    branches:
+      - chore/2450-deploy-develop
+#on:
+#  workflow_dispatch:
+#    inputs:
+#      environment:
+#        description: Environment to publish, 'production', 'develop'
+#        default: develop
+#        required: true
+#      bump:
+#        description: Increment by 'major', 'minor', 'patch', 'premajor', 'preminor', 'prepatch', 'prerelease'
+#        default: patch
+#        required: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the codebase
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.TRAXITT_NARAYAN_PAT }}
+          fetch-depth: 2
+          submodules: false
+      # Set the node version
+      - name: Build on nodejs 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      # Install a minimal amount of dependencies: gulp and error-plugin for gulp
+      - name: Install Deployer Dependencies
+      - run: cp -rf runner-deploy.json package.json
+      - run: yarn install --unsafe-perm
+      # Login into Docker Hub
+      - name: Log in to docker registry
+        run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      # DEPLOY
+      # Deploy to develop if the environment is develop (default)
+      - name: develop deploy
+        if: ${{ github.event.inputs.environment == 'develop' }}
+        env:
+          GCLOUD_KEY: $${{ secrets.GCLOUD_DEVELOP_KEY }}
+        run: gulp deploy --develop --dryrun
+      # Deploy to production if the environment is production
+      - name: production deploy
+        if: ${{ github.event.inputs.environment == 'production' }}
+        env:
+          GCLOUD_KEY: ${{ secrets.GCLOUD_PRODUCTION_KEY }}
+        run: gulp deploy --production github.event.inputs.bump --dryrun
