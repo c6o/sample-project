@@ -18,11 +18,9 @@ jobs:
         with:
           node-version: '16'
       # Dependencies
-      - name: Install dependencies
-        run: yarn install --unsafe-perm
+      - run: yarn install --unsafe-perm
       # Compile the code
-      - name: Build the repo and test it.
-        run: |
+      - run: |
           export NODE_OPTIONS="--max_old_space_size=8192" |
           gulp compile
           gulp test
