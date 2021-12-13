@@ -31,7 +31,6 @@ jobs:
         with:
           node-version: '16'
       # Install a minimal amount of dependencies: gulp and error-plugin for gulp
-      - name: Install Deployer Dependencies
       - run: cp -rf runner-deploy.json package.json
       - run: yarn install --unsafe-perm
       # Login into Docker Hub
