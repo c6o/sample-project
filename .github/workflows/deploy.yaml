@@ -35,19 +35,12 @@ jobs:
       - run: cp -rf runner-deploy.json package.json
       - run: yarn install --unsafe-perm
       # Login into Docker Hub
-      - name: Log in to docker registry
-        run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+      - run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+      # Deploy to the given environment. A bump must be given if the environment is production
+      - run: gulp --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
+        env:
+          KUBECONFIG_CERT_AUTH_DATA: $${{ secrets.KUBECONFIG_CERT_AUTH_DATA }}
+          KUBECONFIG_SERVER: $${{ secrets.KUBECONFIG_SERVER }}
+          KUBECONFIG_USER_TOKEN: $${{ secrets.KUBECONFIG_USER_TOKEN }}
 
-      # DEPLOY
-      # Deploy to develop if the environment is develop (default)
-      - name: develop deploy
-        if: ${{ github.event.inputs.environment == 'develop' }}
-        env:
-          GCLOUD_KEY: $${{ secrets.GCLOUD_DEVELOP_KEY }}
-        run: gulp deploy --develop --dryrun
-      # Deploy to production if the environment is production
-      - name: production deploy
-        if: ${{ github.event.inputs.environment == 'production' }}
-        env:
-          GCLOUD_KEY: ${{ secrets.GCLOUD_PRODUCTION_KEY }}
-        run: gulp deploy --production github.event.inputs.bump --dryrun
+
