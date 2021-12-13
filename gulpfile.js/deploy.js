@@ -24,7 +24,7 @@ const apply = async (environment) => {
 
     // Authentication
     let kubectlArgs
-    if (!onBuildServer()) {
+    if (onBuildServer()) {
         if (!process.env.KUBECONFIG_CERT_AUTH_DATA || !process.env.KUBECONFIG_SERVER || !process.env.KUBECONFIG_USER_TOKEN) {
             throw new GulpError('apply', new Error('Error: Three environment variables are required for build server deployments from a valid kubeconfig.yaml file:\n' +
                 'KUBECONFIG_CERT_AUTH_DATA (from clusters:- cluster: certificate-authority-data:),\n' +
