@@ -2,8 +2,7 @@
   "name": "root",
   "private": true,
   "scripts": {
-    "assurance-tests": "NODE_ENV=test jest --config=\"./jest.config.assurance.js\" --maxWorkers=3",
-    "smoke-tests": "NODE_ENV=test jest --config=\"./jest.config.smoke.js\" --maxWorkers=3"
+    "smoke-tests": "echo \"No smoke tests implemented\""
   },
   "devDependencies": {
     "gulp": "^4.0.2",
