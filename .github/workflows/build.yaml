@@ -19,7 +19,7 @@ jobs:
           node-version: '16'
       # Dependencies
       - name: Install dependencies
-      - run: yarn install --unsafe-perm
+        run: yarn install --unsafe-perm
       # Compile the code
       - name: Build the repo and test it.
         run: |
