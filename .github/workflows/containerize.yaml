@@ -2,7 +2,7 @@ name: anvil-containerize
 on:
   push:
     branches:
-      - chore/2450-containerize
+      - feat/containerize
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,8 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.TRAXITT_NARAYAN_PAT }}
-          submodules: true
+          submodules: false
       # Set the node version
       - name: Build on nodejs 16.x
         uses: actions/setup-node@v1

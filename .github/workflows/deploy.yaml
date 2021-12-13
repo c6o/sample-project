@@ -3,7 +3,7 @@ name: anvil-deploy
 on:
   push:
     branches:
-      - chore/2450-deploy-develop
+      - feat/deploy-develop
 #on:
 #  workflow_dispatch:
 #    inputs:
@@ -23,7 +23,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          token: ${{ secrets.TRAXITT_NARAYAN_PAT }}
           fetch-depth: 2
           submodules: false
       # Set the node version
