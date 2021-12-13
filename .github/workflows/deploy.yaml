@@ -38,8 +38,8 @@ jobs:
       # Deploy to the given environment. A bump must be given if the environment is production
       - run: gulp deploy # --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
         env:
-          KUBECONFIG_CERT_AUTH_DATA: $${{ secrets.KUBECONFIG_CERT_AUTH_DATA }}
-          KUBECONFIG_SERVER: $${{ secrets.KUBECONFIG_SERVER }}
-          KUBECONFIG_USER_TOKEN: $${{ secrets.KUBECONFIG_USER_TOKEN }}
+          KUBECONFIG_CERT_AUTH_DATA: ${{ secrets.KUBECONFIG_CERT_AUTH_DATA }}
+          KUBECONFIG_SERVER: ${{ secrets.KUBECONFIG_SERVER }}
+          KUBECONFIG_USER_TOKEN: ${{ secrets.KUBECONFIG_USER_TOKEN }}
 
 
