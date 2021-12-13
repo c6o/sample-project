@@ -36,7 +36,7 @@ jobs:
       # Login into Docker Hub
       - run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
       # Deploy to the given environment. A bump must be given if the environment is production
-      - run: gulp --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
+      - run: gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
         env:
           KUBECONFIG_CERT_AUTH_DATA: $${{ secrets.KUBECONFIG_CERT_AUTH_DATA }}
           KUBECONFIG_SERVER: $${{ secrets.KUBECONFIG_SERVER }}
