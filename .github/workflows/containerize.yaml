@@ -27,5 +27,5 @@ jobs:
       - name: Build the container image for this git sha and push to docker hub
         run: |
           gulp containerize
-          env:
-            DOCKER_ORG: robblovell
+        env:
+          DOCKER_ORG: robblovell
