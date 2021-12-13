@@ -1,5 +1,5 @@
 # Parameters: Environment, google project name
-name: anvil-deploy
+name: deploy
 on:
   workflow_dispatch:
     inputs:
