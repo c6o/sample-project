@@ -2,7 +2,7 @@ name: anvil-containerize
 on:
   push:
     branches:
-      - feat/containerize
+      - develop
 jobs:
   build:
     runs-on: ubuntu-latest
