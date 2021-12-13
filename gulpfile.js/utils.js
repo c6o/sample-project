@@ -1,3 +1,4 @@
+const GulpError = require("plugin-error");
 const execSync = require('child_process').execSync
 const spawn = require('child_process').spawn
 
@@ -5,10 +6,10 @@ const dryRun = () => {
     return process.argv.some(arg => arg === '--dryrun')
 }
 
-const spawner = async (commandString) => {
+const spawner = async (commandString, noThrow = false) => {
     const args = commandString.split(' ')
     const command = args.shift()
-    const argsString = args.reduce((acc, arg) => acc+arg+' ', '')
+    const argsString = args.reduce((acc, arg) => acc+arg+' ', '').trim()
     if (dryRun()) {
         console.log(`\x1b[31m${command} ${argsString}\x1b[0m`)
         return await new Promise((resolve, reject) => {
@@ -16,11 +17,22 @@ const spawner = async (commandString) => {
         })
     }
     console.log(`\x1b[33m${command} ${argsString}\x1b[0m`)
-    const child = spawn(command, args, {stdio: "inherit"})
+
+    const child = spawn(command, args, { stdio: 'inherit' })
 
     return await new Promise( (resolve, reject) => {
-        child.on('close', resolve)
-        child.on('error',reject)
+        child.on('close', (result) => {
+            if (result !== 0) {
+                if (noThrow) {
+                    console.log(`\x1b[35mSafely ignoring error in ${command} ${argsString}\x1b[0m`)
+                    resolve(result)
+                } else {
+                    throw new GulpError(`run command`,
+                        new Error(`\x1b[31m\x1b[40m"${command} ${argsString}" failed, see output of command above.\x1b[0m`))
+                }
+            }
+            resolve(result)
+        })
     })
 }
 
