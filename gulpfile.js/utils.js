@@ -66,9 +66,19 @@ const updateRef = (branch) => {
     return execer(command, dryRun())
 }
 
+const setGitUser = () => {
+    process.env.GIT_DEPLOYER_EMAIL = process.env.GIT_DEPLOYER_EMAIL || "github-actions-bot@codezero.io"
+    process.env.GIT_DEPLOYER_USER = process.env.GIT_DEPLOYER_USER || "github-actions-bot"
+    execer(`git config --global user.email "${process.env.GIT_DEPLOYER_USER || "deployer"}"`, dryRun())
+    execer(`git config --global user.name "${process.env.GIT_DEPLOYER_USER || "deployer"}"`, dryRun())
+}
+
 const tagRef = (version) => {
-    const command = `git tag -a ${version} -m "${version}"`
-    return execer(command, dryRun())
+    return execer(`git tag -a ${version} -m "${version}"`, dryRun())
+}
+
+const pushTags = () => {
+    return execer(`git push origin --tags`, dryRun())
 }
 
 const codeVersions = (tagFilter = (ele) => ele.startsWith('v')) => {
@@ -129,7 +139,9 @@ module.exports = {
     lastVersion,
     nextVersion,
     onBuildServer,
+    pushTags,
     setContainerName,
+    setGitUser,
     spawner,
     tagRef,
     updateRef,

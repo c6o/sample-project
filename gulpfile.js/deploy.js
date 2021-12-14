@@ -14,7 +14,7 @@ const {
     setContainerName,
     spawner,
     tagRef,
-    updateRef,
+    updateRef, setGitUser, pushTags,
 } = require('./utils')
 const { postDeployTests } = require("./tests");
 
@@ -22,10 +22,6 @@ const VALID_ENVIRONMENT_ARGS = ['develop', 'production']
 const DEFAULT_ENVIRONMENT = 'develop'
 const VALID_SEMVER_CHANGE_ARG = ['patch', 'minor', 'major']
 const DEFAULT_SEMVER_CHANGE = 'patch'
-const POINTER_BRANCH_LOOKUP = {
-    develop: 'candidate',
-    production: 'production',
-}
 const ZONE = process.env.ORGANIZATION_ZONE || 'us-central1-c'
 const PROJECT_LOOKUP = {
     develop: process.env.DEVELOP_PROJECT || 'traxitt-development',
@@ -136,17 +132,15 @@ const promote = async () => {
 
     await apply(environment)
 
-    const branch = POINTER_BRANCH_LOOKUP[environment]
-    console.log(`Update ref for environment pointer branch: \x1b[33m${branch}\x1b[0m`)
-    await updateRef(branch)
-
     if (environment === 'production') {
         // Update the repo semver tags for production.
         const versions = codeVersions()
         const version = nextVersion(versions, semver)
         const last = lastVersion(versions)
-        console.log(`Bump Level: \x1b[33m${semver}\x1b[0m Version: \x1b[33m${version}\x1b[0m, Last Version: \x1b[33m${last}\x1b[0m, Pointer branch: \x1b[33m${branch}\x1b[0m`)
+        console.log(`Bump Level: \x1b[33m${semver}\x1b[0m Version: \x1b[33m${version}\x1b[0m, Last Version: \x1b[33m${last}\x1b[0m`)
+        await setGitUser()
         await tagRef(version)
+        await pushTags()
     }
 }
 
