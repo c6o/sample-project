@@ -27,7 +27,7 @@ jobs:
       - name: Install dependencies
         run: yarn install --unsafe-perm
       # Containerize the code and push to docker hub
-      - name: Build the container image for this git sha and push to docker hub
+      - name: Build and Push the container images for this git SHA to docker hub
         run: |
           gulp containerize
         env:
