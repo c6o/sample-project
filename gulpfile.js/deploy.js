@@ -23,8 +23,8 @@ const DEFAULT_ENVIRONMENT = 'develop'
 const VALID_SEMVER_CHANGE_ARG = ['patch', 'minor', 'major']
 const DEFAULT_SEMVER_CHANGE = 'patch'
 const POINTER_BRANCH_LOOKUP = {
-    develop: 'develop',
-    production: 'main',
+    develop: 'candidate',
+    production: 'production',
 }
 const ZONE = process.env.ORGANIZATION_ZONE || 'us-central1-c'
 const PROJECT_LOOKUP = {
@@ -34,10 +34,10 @@ const PROJECT_LOOKUP = {
 const DEPLOYMENTS = ['core', 'frontend', 'leaf', 'sockets']
 
 const setImages = async (environment, kubectlArgs) => {
-    const result = await spawner(`kubectl create ns ${environment} ${kubectlArgs}`, true)
+    const result = await spawner(`kubectl create ns ${environment}${kubectlArgs}`, true)
     if (result === 0) {
         // This executes only the first time the namespace is created, subsequent times through, the create ns rejects with non-zero result.
-        await spawner(`kubectl apply -f ./k8s -n ${environment} ${kubectlArgs}`)
+        await spawner(`kubectl apply -f ./k8s -n ${environment}${kubectlArgs}`)
     }
     setContainerName()
     console.log(`Deploying to ${getDeploymentName('')}, ${getImageName('')}`)
@@ -45,7 +45,7 @@ const setImages = async (environment, kubectlArgs) => {
         console.log(`\x1b[33mSet image for ${getDeploymentName(deployment)}, ${getImageName(deployment)}\x1b[0m`)
         await spawner(`kubectl -n ${environment} ` +
             `set image deploy/${getDeploymentName(deployment)} ` +
-            `${getDeploymentName(deployment)}=${getImageName(deployment)} ${kubectlArgs}`, false, true)
+            `${getDeploymentName(deployment)}=${getImageName(deployment)}${kubectlArgs}`, false, false)
     }
 }
 
@@ -58,10 +58,11 @@ const apply_gcloud = async (environment) => {
     let data = `${process.env.GCLOUD_KEY}`
     let buff = Buffer.from(data, 'base64')
     let text = buff.toString('ascii')
+    const keyFile = process.env.GCLOUD_KEY_FILE || `${process.env.HOME}/gcloud.json`
     // write the key to the home directory's gcloud.json file.
-    writeFileSync(`${process.env.HOME}/gcloud.json`, text)
+    writeFileSync(keyFile, text)
     // authenticate to gcloud
-    await spawner(`gcloud auth activate-service-account --key-file=${process.env.HOME}/gcloud.json`, false, true)
+    await spawner(`gcloud auth activate-service-account --key-file=${keyFile}`, false, true)
     await spawner(`gcloud container clusters get-credentials hub --zone ${ZONE} --project ${project}`, false, true)
     // deploy to kubernetes in gcloud
     await setImages(environment, '')
@@ -71,13 +72,13 @@ const apply_kubernetes = async (environment) => {
     console.log('Applying using kubeconfig')
     let kubectlArgs
     if (onBuildServer()) {
-        kubectlArgs = `--server ${process.env.KUBECONFIG_SERVER} --token ${process.env.KUBECONFIG_USER_TOKEN} --client-key 'ca_file.cert' --insecure-skip-tls-verify`
+        kubectlArgs = ` --server ${process.env.KUBECONFIG_SERVER} --token ${process.env.KUBECONFIG_USER_TOKEN} --client-key 'ca_file.cert' --insecure-skip-tls-verify`
         writeFileSync(`${process.env.HOME}/ca_file.cert`, process.env.KUBECONFIG_CERT_AUTH_DATA)
     } else {
         if (!process.env.KUBECONFIG) {
             throw new GulpError('apply', new Error('Error: A KUBECONFIG environment variable must be set that points to a vailid kubeconfig yaml file.'))
         }
-        kubectlArgs = `--kubeconfig ${process.env.KUBECONFIG}`
+        kubectlArgs = ` --kubeconfig ${process.env.KUBECONFIG}`
     }
 
     // create a namespace and deploy the containers to the cluster.
