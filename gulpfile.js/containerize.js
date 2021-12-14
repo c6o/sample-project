@@ -1,11 +1,8 @@
 const { series } = require('gulp')
-const { spawner, getGitHash, getGitName } = require('./utils')
+const { spawner, setContainerName } = require('./utils')
 
 const container = async () => {
-    process.env.REPO_HASH = getGitHash()
-    process.env.REPO_NAME = process.env.REPO_NAME || getGitName()
-    process.env.DOCKER_ORG = process.env.DOCKER_ORG || 'c6oio'
-
+    setContainerName()
     console.log(`Composing images for: ${process.env.DOCKER_ORG}/${process.env.REPO_NAME} hash:${process.env.REPO_HASH}`)
     await spawner('docker-compose build')
 }

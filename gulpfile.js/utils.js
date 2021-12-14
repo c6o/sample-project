@@ -9,7 +9,7 @@ const dryRun = () => {
 const spawner = async (commandString, noThrow = false, hide = false) => {
     const args = commandString.split(' ')
     const command = args.shift()
-    const argsString = hide ? args.reduce((acc, arg) => acc+arg+' ', '').trim() : ''
+    const argsString = hide ? '' : args.reduce((acc, arg) => acc+arg+' ', '').trim()
     if (dryRun()) {
         console.log(`\x1b[31m${command} ${argsString}\x1b[0m`)
         return await new Promise((resolve, reject) => {
@@ -25,7 +25,7 @@ const spawner = async (commandString, noThrow = false, hide = false) => {
             if (result !== 0) {
                 if (noThrow) {
                     console.log(`\x1b[35mSafely ignoring error in ${command} ${argsString}\x1b[0m`)
-                    resolve(result)
+                    resolve(new Error(result))
                 } else {
                     throw new GulpError(`run command`,
                         new Error(`\x1b[31m\x1b[40m"${command} ${argsString}" failed, see output of command above.\x1b[0m`))
@@ -99,6 +99,38 @@ const onBuildServer = () => {
     return process.platform === 'linux'
 }
 
+const setContainerName = () => {
+    process.env.REPO_HASH = getGitHash()
+    process.env.REPO_NAME = process.env.REPO_NAME || getGitName()
+    process.env.DOCKER_ORG = process.env.DOCKER_ORG || 'c6oio'
+}
+
+const getImageName = (which) => {
+    if (!process.env.REPO_NAME) {
+        setContainerName()
+    }
+    return `${process.env.DOCKER_ORG}/${process.env.REPO_NAME}-${which}:${process.env.REPO_HASH}`
+}
+
+const getDeploymentName = (which) => {
+    if (!process.env.REPO_NAME) {
+        setContainerName()
+    }
+    return `${process.env.REPO_NAME}-${which}`
+}
+
 module.exports = {
-    dryRun, getGitHash, getGitName, spawner, updateRef, codeVersions, lastVersion, nextVersion, onBuildServer, tagRef
+    codeVersions,
+    dryRun,
+    getDeploymentName,
+    getGitHash,
+    getGitName,
+    getImageName,
+    lastVersion,
+    nextVersion,
+    onBuildServer,
+    setContainerName,
+    spawner,
+    tagRef,
+    updateRef,
 }
