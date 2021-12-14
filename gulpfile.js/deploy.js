@@ -29,7 +29,7 @@ const POINTER_BRANCH_LOOKUP = {
 const ZONE = process.env.ORGANIZATION_ZONE || 'us-central1-c'
 const PROJECT_LOOKUP = {
     develop: process.env.DEVELOP_PROJECT || 'traxitt-development',
-    production: process.env.PRODUCTION_PROJECT || 'c6o-production',
+    production: process.env.PRODUCTION_PROJECT || 'traxitt-development',
 }
 const DEPLOYMENTS = ['core', 'frontend', 'leaf', 'sockets']
 
