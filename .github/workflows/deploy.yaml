@@ -34,10 +34,11 @@ jobs:
       # Deploy to the given environment. A bump must be given if the environment is production
 # Deploy to one environment, multiple namespaces
       - run: |
-          echo "${{ secrets.GCLOUD_DEVELOP_KEY }}" | base64 --decode > ${HOME}/gcloud.json
+          echo "$GCLOUD_KEY" | base64 --decode > ${HOME}/gcloud.json
           gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
         env:
-          GCLOUD_KEY: ${HOME}/gcloud.json
+          GCLOUD_KEY: ${{ secrets.GCLOUD_DEVELOP_KEY }}
+          GCLOUD_KEY_FILE: ${HOME}/gcloud.json
 
 # Example of deploying to multiple environments.
 #      # DEPLOY
