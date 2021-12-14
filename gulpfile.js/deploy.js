@@ -54,14 +54,9 @@ const apply_gcloud = async (environment) => {
     const project = PROJECT_LOOKUP[environment]
     if (dryRun())
         console.log(`\x1b[1m\x1b[35mThis is a dry run\x1b[0m`)
-    // base64 decode the GCLOUD KEY = require(the environment variable set in the CICD job runner.
-    let data = `${process.env.GCLOUD_KEY}`
-    let buff = Buffer.from(data, 'base64')
-    let text = buff.toString('ascii')
-    // write the key to the home directory's gcloud.json file.
-    writeFileSync(`${process.env.HOME}/gcloud.json`, text)
+
     // authenticate to gcloud
-    await spawner(`gcloud auth activate-service-account --key-file=${process.env.HOME}/gcloud.json`, false, true)
+    await spawner(`gcloud auth activate-service-account --key-file=${process.env.GCLOUD_KEY}`, false, true)
     await spawner(`gcloud container clusters get-credentials hub --zone ${ZONE} --project ${project}`, false, true)
     // deploy to kubernetes in gcloud
     await setImages(environment, '')
