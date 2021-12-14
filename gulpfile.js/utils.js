@@ -1,4 +1,4 @@
-const GulpError = require("plugin-error");
+const GulpError = require("plugin-error")
 const execSync = require('child_process').execSync
 const spawn = require('child_process').spawn
 

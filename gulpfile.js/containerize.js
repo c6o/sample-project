@@ -1,5 +1,5 @@
 const { series } = require('gulp')
-const { spawner, getGitHash, getGitName, codeVersions, nextVersion } = require('./utils')
+const { spawner, getGitHash, getGitName } = require('./utils')
 
 const container = async () => {
     process.env.REPO_HASH = getGitHash()
