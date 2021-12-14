@@ -22,7 +22,6 @@ jobs:
       # Compile the code
       - name: Compile and Test the Code
         run: |
-          gulp compile
-          gulp test
+          gulp build
         env:
           NODE_OPTIONS: --max_old_space_size=8192
