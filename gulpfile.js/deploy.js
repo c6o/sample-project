@@ -117,12 +117,12 @@ const promote = async () => {
 
     const args = process.argv.slice(2) // remove first two elements
     // Get the environment to deploy to and the project in google that corresponds to this environment.
-    const environment = args.find(arg => VALID_ENVIRONMENT_ARGS.some(env => env === arg)) || DEFAULT_ENVIRONMENT
+    const environment = VALID_ENVIRONMENT_ARGS.find(env => args.some(arg => env === arg.substring(2))) || DEFAULT_ENVIRONMENT
     if (!VALID_ENVIRONMENT_ARGS.some(env => env === environment)) {
         throw new GulpError('promote', new Error('Error: argument there must be a valid environment: --develop, or --production.'))
     }
     // for production deploy, a semver bump is needed.
-    const semver = args.find(arg => VALID_SEMVER_CHANGE_ARG.some(env => env === arg)) || DEFAULT_SEMVER_CHANGE
+    const semver = VALID_SEMVER_CHANGE_ARG.find(env => args.some(arg => env === arg.substring(2))) || DEFAULT_SEMVER_CHANGE
     if (!VALID_SEMVER_CHANGE_ARG.some(sem => sem === semver)) {
         throw new GulpError('promote', new Error('Error: argument there must be a valid semantic version increment: --patch, --minor or --major.'))
     }
@@ -136,15 +136,16 @@ const promote = async () => {
 
     await apply(environment)
 
-    // Update the repo semver tags for production.
+    const branch = POINTER_BRANCH_LOOKUP[environment]
+    console.log(`Update ref for environment pointer branch: \x1b[33m${branch}\x1b[0m`)
+    await updateRef(branch)
+
     if (environment === 'production') {
+        // Update the repo semver tags for production.
         const versions = codeVersions()
         const version = nextVersion(versions, semver)
         const last = lastVersion(versions)
-        const branch = POINTER_BRANCH_LOOKUP[environment]
-
         console.log(`Bump Level: \x1b[33m${semver}\x1b[0m Version: \x1b[33m${version}\x1b[0m, Last Version: \x1b[33m${last}\x1b[0m, Pointer branch: \x1b[33m${branch}\x1b[0m`)
-        await updateRef(branch)
         await tagRef(version)
     }
 }
