@@ -126,25 +126,24 @@ const promote = async () => {
         throw new GulpError('promote', new Error('Error: argument there must be a valid semantic version increment: --patch, --minor or --major.'))
     }
 
-    const versions = codeVersions()
-    const version = nextVersion(versions, semver)
-    const last = lastVersion(versions)
-    const branch = POINTER_BRANCH_LOOKUP[environment]
     const hash = getGitHash()
-
     process.env.REPO_HASH = hash
     process.env.REPO_NAME = process.env.REPO_NAME || getGitName()
     process.env.DOCKER_ORG = process.env.DOCKER_ORG || 'c6oio'
 
     console.log(`Deploying org/repo:hash --> \x1b[33m"${process.env.DOCKER_ORG}/${process.env.REPO_NAME}:${hash}"\x1b[0m into environment \x1b[33m"${environment}"\x1b[0m `)
-    console.log(`Bump Level: \x1b[33m${semver}\x1b[0m Version: \x1b[33m${version}\x1b[0m, Last Version: \x1b[33m${last}\x1b[0m, Pointer branch: \x1b[33m${branch}\x1b[0m`)
 
     await apply(environment)
 
-    if (branch) {
-        await updateRef(branch)
-    }
+    // Update the repo semver tags for production.
     if (environment === 'production') {
+        const versions = codeVersions()
+        const version = nextVersion(versions, semver)
+        const last = lastVersion(versions)
+        const branch = POINTER_BRANCH_LOOKUP[environment]
+
+        console.log(`Bump Level: \x1b[33m${semver}\x1b[0m Version: \x1b[33m${version}\x1b[0m, Last Version: \x1b[33m${last}\x1b[0m, Pointer branch: \x1b[33m${branch}\x1b[0m`)
+        await updateRef(branch)
         await tagRef(version)
     }
 }
