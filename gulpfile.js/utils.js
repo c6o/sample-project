@@ -6,10 +6,10 @@ const dryRun = () => {
     return process.argv.some(arg => arg === '--dryrun')
 }
 
-const spawner = async (commandString, noThrow = false) => {
+const spawner = async (commandString, noThrow = false, hide = false) => {
     const args = commandString.split(' ')
     const command = args.shift()
-    const argsString = args.reduce((acc, arg) => acc+arg+' ', '').trim()
+    const argsString = hide ? args.reduce((acc, arg) => acc+arg+' ', '').trim() : ''
     if (dryRun()) {
         console.log(`\x1b[31m${command} ${argsString}\x1b[0m`)
         return await new Promise((resolve, reject) => {
