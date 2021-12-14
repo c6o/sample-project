@@ -23,8 +23,8 @@ const DEFAULT_ENVIRONMENT = 'develop'
 const VALID_SEMVER_CHANGE_ARG = ['patch', 'minor', 'major']
 const DEFAULT_SEMVER_CHANGE = 'patch'
 const POINTER_BRANCH_LOOKUP = {
-    develop: 'develop',
-    production: 'main',
+    develop: 'candidate',
+    production: 'production',
 }
 const ZONE = process.env.ORGANIZATION_ZONE || 'us-central1-c'
 const PROJECT_LOOKUP = {
