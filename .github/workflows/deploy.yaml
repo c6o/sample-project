@@ -33,12 +33,13 @@ jobs:
       - run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
       # Deploy to the given environment. A bump must be given if the environment is production
 # Deploy to one environment, multiple namespaces
-      - run: |
-          echo "$GCLOUD_KEY" | base64 --decode > ${HOME}/gcloud.json
-          gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
-        env:
+      - env:
           GCLOUD_KEY: ${{ secrets.GCLOUD_DEVELOP_KEY }}
           GCLOUD_KEY_FILE: ${HOME}/gcloud.json
+        run: |
+          echo "$GCLOUD_KEY" | base64 --decode > ${HOME}/gcloud.json
+          gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
+
 
 # Example of deploying to multiple environments.
 #      # DEPLOY
