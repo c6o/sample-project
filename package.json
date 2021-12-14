@@ -9,7 +9,16 @@
     "start-sockets": "(cd ./packages/sockets && yarn start)",
     "start-leaf": "(cd ./packages/leaf && yarn start)",
     "start": "lerna run start --stream",
-    "test": "echo \"No tests implemented\""
+    "test": "echo \"No tests implemented\"",
+    "clean": "echo \"Clean not required\"",
+    "clean-all": "echo \"Clean-all not required\"",
+    "build": "echo \"Compile not required\"",
+    "develop": "echo \"Compiles are not required\"",
+    "functional-tests": "echo \"No functional tests implemented\"",
+    "integration-tests": "echo \"No integration tests implemented\"",
+    "smoke-tests": "echo \"No smoke tests implemented\"",
+    "unit-tests": "echo \"No unit tests implemented\"",
+    "ui-tests": "echo \"No ui tests implemented\""
   },
   "version": "1.0.0",
   "description": "Sample project",
@@ -20,6 +29,8 @@
   "devDependencies": {
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.10.0",
-    "nodemon": "^2.0.14"
+    "gulp": "^4.0.2",
+    "nodemon": "^2.0.14",
+    "plugin-error": "^1.0.1"
   }
 }

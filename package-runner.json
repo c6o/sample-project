@@ -1,0 +1,11 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "smoke-tests": "echo \"No smoke tests implemented\""
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "plugin-error": "^1.0.1"
+  }
+}

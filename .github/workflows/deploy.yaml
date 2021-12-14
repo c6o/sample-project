@@ -1,0 +1,41 @@
+# Parameters: Environment, google project name
+name: deploy
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to publish, 'production', 'develop'
+        default: develop
+        required: true
+      bump:
+        description: Increment by 'major', 'minor', 'patch', 'premajor', 'preminor', 'prepatch', 'prerelease'
+        default: patch
+        required: false
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      # Checkout the codebase
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+          submodules: false
+      # Set the node version
+      - name: Build on nodejs 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      # Install a minimal amount of dependencies: gulp and error-plugin for gulp
+      - run: cp -rf package-runner.json package.json
+      - run: yarn install --unsafe-perm
+      # Login into Docker Hub
+      - run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+      # Deploy to the given environment. A bump must be given if the environment is production
+      - run: gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
+        env:
+          KUBECONFIG_CERT_AUTH_DATA: ${{ secrets.KUBECONFIG_CERT_AUTH_DATA }}
+          KUBECONFIG_SERVER: ${{ secrets.KUBECONFIG_SERVER }}
+          KUBECONFIG_USER_TOKEN: ${{ secrets.KUBECONFIG_USER_TOKEN }}
+
+

@@ -1,0 +1,34 @@
+name: containerize
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      # Checkout the codebase
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      # Set the node version
+      - name: Build on nodejs 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      # Login to Docker Hub
+      - name: Log in to docker registry
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      # Dependencies.
+      - name: Install dependencies
+        run: yarn install --unsafe-perm
+      # Containerize the code and push to docker hub
+      - name: Build and Push the container images for this git SHA to docker hub
+        run: |
+          gulp containerize
+        env:
+          DOCKER_ORG: c6oio

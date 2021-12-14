@@ -1,0 +1,11 @@
+apiVersion: system.codezero.io/v1alpha1
+kind: DevelopmentProfile
+metadata:
+  name: intercept-sample-project
+spec:
+  commands:
+    - command: Intercept
+      params:
+        kind: Service
+        remoteService: sample-project-leaf
+        namespace: sample-project
