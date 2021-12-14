@@ -58,10 +58,11 @@ const apply_gcloud = async (environment) => {
     let data = `${process.env.GCLOUD_KEY}`
     let buff = Buffer.from(data, 'base64')
     let text = buff.toString('ascii')
+    const keyFile = process.env.GCLOUD_KEY_FILE || `${process.env.HOME}/gcloud.json`
     // write the key to the home directory's gcloud.json file.
-    writeFileSync(`${process.env.GCLOUD_KEY_FILE}`, text)
+    writeFileSync(keyFile, text)
     // authenticate to gcloud
-    await spawner(`gcloud auth activate-service-account --key-file=${process.env.GCLOUD_KEY_FILE}`, false, true)
+    await spawner(`gcloud auth activate-service-account --key-file=${keyFile}`, false, true)
     await spawner(`gcloud container clusters get-credentials hub --zone ${ZONE} --project ${project}`, false, true)
     // deploy to kubernetes in gcloud
     await setImages(environment, '')

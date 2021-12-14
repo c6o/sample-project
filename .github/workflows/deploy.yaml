@@ -34,15 +34,10 @@ jobs:
       # Deploy to the given environment. A bump must be given if the environment is production
 # Deploy to one environment, multiple namespaces
       - name: Deploy to a cluster
+        run: |
+          gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
         env:
           GCLOUD_KEY: ${{ secrets.GCLOUD_DEVELOP_KEY }}
-          GCLOUD_KEY_FILE: ${HOME}/gcloud.json
-        run: |
-#          echo "$GCLOUD_KEY" | base64 --ignore-garbage --decode > ${HOME}/gcloud.json
-#          gcloud auth activate-service-account --key-file=${HOME}/gcloud.json
-#          gcloud container clusters get-credentials hub --zone us-central1-c --project traxitt-development
-
-          gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
 # Example of deploying to multiple environments.
 #      # DEPLOY
 #      # Deploy to develop if the environment is develop (default)
