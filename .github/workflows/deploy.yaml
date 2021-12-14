@@ -32,29 +32,29 @@ jobs:
       # Login into Docker Hub
       - run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
       # Deploy to the given environment. A bump must be given if the environment is production
-# Deploy to one environment, multiple namespaces
+      # Deploy to one environment, multiple namespaces
       - name: Deploy to a cluster
         run: |
           gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
         env:
           GCLOUD_KEY: ${{ secrets.GCLOUD_DEVELOP_KEY }}
-# Example of deploying to multiple environments.
-#      # DEPLOY
-#      # Deploy to develop if the environment is develop (default)
-#      - name: develop deploy
-#        if: ${{ github.event.inputs.environment == 'develop' }}
-#        env:
-#          GCLOUD_KEY: $${{ secrets.GCLOUD_DEVELOP_KEY }}
-#        run: gulp deploy --${{ github.event.inputs.environment }}
-#      # Deploy to production if the environment is production
-#      - name: production deploy
-#        if: ${{ github.event.inputs.environment == 'production' }}
-#        env:
-#          GCLOUD_KEY: ${{ secrets.GCLOUD_PRODUCTION_KEY }}
-#        run: gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
-# Example of how to deploy using a kubeconfig file
-#      - run: gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
-#        env:
-#          KUBECONFIG_CERT_AUTH_DATA: ${{ secrets.KUBECONFIG_CERT_AUTH_DATA }}
-#          KUBECONFIG_SERVER: ${{ secrets.KUBECONFIG_SERVER }}
-#          KUBECONFIG_USER_TOKEN: ${{ secrets.KUBECONFIG_USER_TOKEN }}
+      # Example of deploying to multiple environments.
+      #      # DEPLOY
+      #      # Deploy to develop if the environment is develop (default)
+      #      - name: develop deploy
+      #        if: ${{ github.event.inputs.environment == 'develop' }}
+      #        env:
+      #          GCLOUD_KEY: $${{ secrets.GCLOUD_DEVELOP_KEY }}
+      #        run: gulp deploy --${{ github.event.inputs.environment }}
+      #      # Deploy to production if the environment is production
+      #      - name: production deploy
+      #        if: ${{ github.event.inputs.environment == 'production' }}
+      #        env:
+      #          GCLOUD_KEY: ${{ secrets.GCLOUD_PRODUCTION_KEY }}
+      #        run: gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
+      # Example of how to deploy using a kubeconfig file
+      #      - run: gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
+      #        env:
+      #          KUBECONFIG_CERT_AUTH_DATA: ${{ secrets.KUBECONFIG_CERT_AUTH_DATA }}
+      #          KUBECONFIG_SERVER: ${{ secrets.KUBECONFIG_SERVER }}
+      #          KUBECONFIG_USER_TOKEN: ${{ secrets.KUBECONFIG_USER_TOKEN }}

@@ -17,6 +17,7 @@ const spawner = async (commandString, noThrow = false, hide = false) => {
         })
     }
     console.log(`\x1b[33m${command} ${argsString}\x1b[0m`)
+    console.log(`\x1b[31m${command} ${args}\x1b[0m`)
 
     const child = spawn(command, args, { stdio: 'inherit' })
 
