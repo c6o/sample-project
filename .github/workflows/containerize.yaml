@@ -2,7 +2,7 @@ name: containerize
 on:
   push:
     branches:
-      - develop
+      - master
 jobs:
   build:
     runs-on: ubuntu-20.04
