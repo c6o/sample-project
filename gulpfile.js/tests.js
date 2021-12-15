@@ -35,8 +35,8 @@ const postContainerizeTests = async () => {
 }
 
 // Deploy Tests
-// If any tests are added to the postDeployTests, make sure to update the dependencies in the package-runner.json file.
-// TODO: add dependencies to package-runner.json if the tests require dependencies
+// If any tests are added to the postDeployTests, make sure to update the dependencies in the gulpfile.js/package.json file.
+// TODO: add dependencies to gulpfile.js/package.json if the tests require dependencies
 const postDeployTests = parallel(smokeTests)
 
 const test = series(postBuildTest, postContainerizeTests, postDeployTests)

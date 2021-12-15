@@ -73,12 +73,40 @@ const setGitUser = () => {
     execer(`git config --global user.name "${process.env.GIT_DEPLOYER_USER || "deployer"}"`, dryRun())
 }
 
-const tagRef = (version) => {
-    return execer(`git tag -a ${version} -m "${version}"`, dryRun())
+const getGitHashForTag = (tag) => {
+    const tagString = execer(`git show-ref --tags`)
+    const tagRefs = tagString.toString().trim().split('\n')
+    const tags = tagRefs.reduce((acc, tagref) => {
+        const reftag = tagref.split(' ')
+        acc[reftag[1]] = reftag[0]
+        return acc
+    }, {})
+    return tags[`refs/tags/${tag}`]?.slice(0,7)
+}
+
+const tagRef = (version, commit = '') => {
+    if (getGitHashForTag(version)) {
+        console.log(`\x1b[35mTag ${version} already exists, skipping tagging of version\x1b[0m`)
+        return
+    }
+    return execer(`git tag -a ${version} ${commit} -m "${version}"`, dryRun())
 }
 
 const pushTags = () => {
     return execer(`git push origin --tags`, dryRun())
+}
+
+const deleteTag = (tag) => {
+    try {
+        execer(`git tag --delete ${tag}`, dryRun())
+    } catch (error) {
+        console.log(`\x1b[35mTag ${tag} is already deleted.\x1b[0m`)
+    }
+    try {
+        execer(`git push origin :refs/tags/${tag}`, dryRun())
+    } catch (error) {
+        console.log(`\x1b[35mTag ${tag} is already deleted on the origin.\x1b[0m`)
+    }
 }
 
 const codeVersions = (tagFilter = (ele) => ele.startsWith('v')) => {
@@ -105,12 +133,16 @@ const nextVersion = (versions, level, semverParse = (str) => str.substring(1), t
     return tagCompile(semver.join('.'))
 }
 
+const previousVersion = (versions, backby) => {
+    return versions[versions.length-(Number(backby)+1)] || undefined
+}
+
 const onBuildServer = () => {
     return process.platform === 'linux'
 }
 
 const setContainerName = () => {
-    process.env.REPO_HASH = getGitHash()
+    process.env.REPO_HASH = process.env.REPO_HASH || getGitHash()
     process.env.REPO_NAME = process.env.REPO_NAME || getGitName()
     process.env.DOCKER_ORG = process.env.DOCKER_ORG || 'c6oio'
 }
@@ -131,14 +163,17 @@ const getDeploymentName = (which) => {
 
 module.exports = {
     codeVersions,
+    deleteTag,
     dryRun,
     getDeploymentName,
     getGitHash,
+    getGitHashForTag,
     getGitName,
     getImageName,
     lastVersion,
     nextVersion,
     onBuildServer,
+    previousVersion,
     pushTags,
     setContainerName,
     setGitUser,
