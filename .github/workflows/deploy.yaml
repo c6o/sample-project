@@ -1,0 +1,71 @@
+# Parameters: Environment, google project name
+name: deploy
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to publish, 'production', 'develop', If no parameters other than 'bump' are also given, deploy the most current commit. If production is specified, a new tag version is created.
+        default: develop
+        required: true
+      bump:
+        description: For production deploy only, create a new semantic version tag for a new deployment: bump=patch (Valid values are 'major', 'minor', 'patch', 'premajor', 'preminor', 'prepatch', 'prerelease'. No other parameters are allowed when using this)
+        default: patch
+        required: false
+      hash:
+        description: Deploy the container for the given hash, 7 characters or a full hash: hash=f48df29 (No other parameters are allowed when using this)
+        required: false
+      rollback:
+        description: Deploy counting back this many versions: rollback=3 (No other parameters are allowed when using this)
+        default: rollback=1
+        required: false
+      version:
+        description: Deploy the given version: version=0.0.1 (No other parameters are allowed when using this)
+        default: rollback=1
+        required: false
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      # Checkout the codebase
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
+          submodules: false
+      # Set the node version
+      - name: Build on nodejs 16.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16'
+      # Install a minimal amount of dependencies: gulp and error-plugin for gulp
+      - run: cp -rf gulpfile.js/package.json package.json
+      - run: yarn install --unsafe-perm
+      # Login into Docker Hub
+      - run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
+      # Deploy to the given environment. A bump must be given if the environment is production
+      # Deploy to one environment, multiple namespaces
+      - name: Deploy to a cluster
+        run: |
+          gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }} --${{ github.event.inputs.hash }} --${{ github.event.inputs.rollback }} --${{ github.event.inputs.version }}
+        env:
+          GCLOUD_KEY: ${{ secrets.GCLOUD_DEVELOP_KEY }}
+      # Example of deploying to multiple environments.
+      #      # DEPLOY
+      #      # Deploy to develop if the environment is develop (default)
+      #      - name: develop deploy
+      #        if: ${{ github.event.inputs.environment == 'develop' }}
+      #        env:
+      #          GCLOUD_KEY: $${{ secrets.GCLOUD_DEVELOP_KEY }}
+      #        run: gulp deploy --${{ github.event.inputs.environment }}
+      #      # Deploy to production if the environment is production
+      #      - name: production deploy
+      #        if: ${{ github.event.inputs.environment == 'production' }}
+      #        env:
+      #          GCLOUD_KEY: ${{ secrets.GCLOUD_PRODUCTION_KEY }}
+      #        run: gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
+      # Example of how to deploy using a kubeconfig file
+      #      - run: gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }}
+      #        env:
+      #          KUBECONFIG_CERT_AUTH_DATA: ${{ secrets.KUBECONFIG_CERT_AUTH_DATA }}
+      #          KUBECONFIG_SERVER: ${{ secrets.KUBECONFIG_SERVER }}
+      #          KUBECONFIG_USER_TOKEN: ${{ secrets.KUBECONFIG_USER_TOKEN }}

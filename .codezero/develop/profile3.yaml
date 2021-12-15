@@ -1,0 +1,16 @@
+apiVersion: system.codezero.io/v1alpha1
+kind: DevelopmentProfile
+metadata:
+  name: teleport-intercept-sample-project
+spec:
+  commands:
+    - command: Teleport
+      params:
+        kind: Deployment
+        resourceName: sample-project-core
+        namespace: sample-project
+    - command: Intercept
+      params:
+        kind: Service
+        remoteService: sample-project-leaf
+        namespace: sample-project

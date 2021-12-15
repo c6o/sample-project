@@ -1,18 +1,18 @@
 version: "3.7"
 services:
   sample-project-core:
-    image: c6oio/sample-project-core:$USER
+    image: $DOCKER_ORG/$REPO_NAME-core:$REPO_HASH
     build:
       context: ./packages/core
   sample-project-leaf:
-    image: c6oio/sample-project-leaf:$USER
+    image: $DOCKER_ORG/$REPO_NAME-leaf:$REPO_HASH
     build:
       context: ./packages/leaf
   sample-project-sockets:
-    image: c6oio/sample-project-sockets:$USER
+    image: $DOCKER_ORG/$REPO_NAME-sockets:$REPO_HASH
     build:
       context: ./packages/sockets
   sample-project-web:
-    image: c6oio/sample-project-frontend:$USER
+    image: $DOCKER_ORG/$REPO_NAME-frontend:$REPO_HASH
     build:
       context: ./packages/frontend
