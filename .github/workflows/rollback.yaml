@@ -7,7 +7,7 @@ on:
         description: Environment to publish, 'production', 'develop'
         default: develop
         required: true
-      gittag:
+      gitversiontag:
         description: The Git tag to deploy, either a specific tag in the form of 'v#.#.#' or a number to roll back by (default is '1' or back one)
         default: 1
         required: true
@@ -34,7 +34,7 @@ jobs:
       # Rollback to the given tag.
       - name: Rollback to a tag
         run: |
-          gulp rollback --"${{ github.event.inputs.gittag }}"
+          gulp rollback --"${{ github.event.inputs.environment }}" --"${{ github.event.inputs.gitversiontag }}"
         env:
           GCLOUD_KEY: ${{ secrets.GCLOUD_DEVELOP_KEY }}
 
