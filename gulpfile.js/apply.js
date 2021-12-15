@@ -1,4 +1,4 @@
-const { spawner, setContainerName, getDeploymentName, getImageName, dryRun, onBuildServer, deleteTag, tagRef, pushTags } = require("./utils")
+const { spawner, getDeploymentName, containerImageName, dryRun, onBuildServer, deleteTag, tagRef, pushTags } = require("./utils")
 const { writeFileSync } = require("fs")
 const GulpError = require("plugin-error")
 
@@ -15,13 +15,12 @@ const setImages = async (environment, kubectlArgs) => {
         // This executes only the first time the namespace is created, subsequent times through, the create ns rejects with non-zero result.
         await spawner(`kubectl apply -f ./k8s -n ${environment}${kubectlArgs}`)
     }
-    setContainerName()
-    console.log(`Deploying to ${getDeploymentName('')}, ${getImageName('')}`)
+    console.log(`Deploying to ${getDeploymentName('')}, ${containerImageName('')}`)
     for (const deployment of DEPLOYMENTS) {
-        console.log(`\x1b[33mSet image for ${getDeploymentName(deployment)}, ${getImageName(deployment)}\x1b[0m`)
+        console.log(`\x1b[33mSet image for ${getDeploymentName(deployment)}, ${containerImageName(deployment)}\x1b[0m`)
         await spawner(`kubectl -n ${environment} ` +
             `set image deploy/${getDeploymentName(deployment)} ` +
-            `${getDeploymentName(deployment)}=${getImageName(deployment)}${kubectlArgs}`, false, false)
+            `${getDeploymentName(deployment)}=${containerImageName(deployment)}${kubectlArgs}`, false, false)
     }
 }
 

@@ -74,7 +74,12 @@ const setGitUser = () => {
 }
 
 const tagExists = (tag) => {
-    return execer(`git rev-parse -q --verify "refs/tags/${tag}"`)
+    try {
+        console.log('Checking the existence of tag: ', tag)
+        return execer(`git rev-parse -q --verify "refs/tags/${tag}"`)
+    } catch {
+        return undefined
+    }
 }
 const getGitHashForTag = (tag) => {
     try {
@@ -82,7 +87,7 @@ const getGitHashForTag = (tag) => {
             return execer(`git rev-list -n 1 ${tag}`)?.toString().slice(0, 7)
         }
     } catch {
-        return undefined
+        return
     }
 }
 
@@ -147,35 +152,34 @@ const onBuildServer = () => {
     return process.platform === 'linux'
 }
 
-const setContainerName = () => {
-    process.env.REPO_HASH = process.env.REPO_HASH || getGitHash()
-    process.env.REPO_NAME = process.env.REPO_NAME || getGitName()
+const setContainerName = (hash = getGitHash(), name = getGitName(), org = 'c6oio') => {
+    process.env.REPO_HASH = process.env.REPO_HASH || hash
+    process.env.REPO_NAME = process.env.REPO_NAME || name
     process.env.DOCKER_ORG = process.env.DOCKER_ORG || 'c6oio'
 }
 
-const getImageName = (which) => {
-    if (!process.env.REPO_NAME) {
-        setContainerName()
-    }
-    return `${process.env.DOCKER_ORG}/${process.env.REPO_NAME}-${which}:${process.env.REPO_HASH}`
+const containerTag = (hash = process.env.REPO_HASH , name = process.env.REPO_NAME, org = process.env.DOCKER_ORG) => {
+    return `container/${org}-${name}-${hash}`
 }
 
-const getDeploymentName = (which) => {
-    if (!process.env.REPO_NAME) {
-        setContainerName()
-    }
+const containerImageName = (which, hash = process.env.REPO_HASH , name = process.env.REPO_NAME, org = process.env.DOCKER_ORG) => {
+    return `${org}/${name}-${which}:${hash}`
+}
+
+const getDeploymentName = (which, name = process.env.REPO_NAME ) => {
     return `${process.env.REPO_NAME}-${which}`
 }
 
 module.exports = {
     codeVersions,
+    containerTag,
     deleteTag,
     dryRun,
     getDeploymentName,
     getGitHash,
     getGitHashForTag,
     getGitName,
-    getImageName,
+    containerImageName,
     lastVersion,
     nextVersion,
     onBuildServer,
@@ -184,6 +188,7 @@ module.exports = {
     setContainerName,
     setGitUser,
     spawner,
+    tagExists,
     tagRef,
     updateRef,
 }

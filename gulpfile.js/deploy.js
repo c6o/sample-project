@@ -1,17 +1,11 @@
-const { series } = require('gulp')
 const GulpError = require('plugin-error')
 const {
-    codeVersions,
     getGitHash,
-    getGitHashForTag,
-    getGitName,
-    lastVersion,
-    nextVersion,
-    pushTags,
-    setGitUser,
-    tagRef,
+    getGitName, codeVersions, previousVersion, getGitHashForTag, lastVersion, nextVersion, setGitUser, tagRef, pushTags,
+    containerTag, setContainerName, tagExists,
 } = require('./utils')
-const { postDeployTests } = require("./tests");
+const { postDeployTests } = require("./tests")
+const { promote } = require("./deploy")
 const { apply } = require("./apply");
 
 const VALID_ENVIRONMENT_ARGS = ['develop', 'production']
@@ -19,51 +13,82 @@ const DEFAULT_ENVIRONMENT = 'develop'
 const VALID_SEMVER_CHANGE_ARG = ['patch', 'minor', 'major']
 const DEFAULT_SEMVER_CHANGE = 'patch'
 
-// General Steps
-const promote = async () => {
-
+const deploy = async () => {
     const args = process.argv.slice(2) // remove first two elements
+    console.log("args: ", args)
     // Get the environment to deploy to and the project in google that corresponds to this environment.
     const environment = VALID_ENVIRONMENT_ARGS.find(env => args.some(arg => env === arg.substring(2))) || DEFAULT_ENVIRONMENT
     if (!VALID_ENVIRONMENT_ARGS.some(env => env === environment)) {
-        throw new GulpError('promote', new Error('Error: argument there must be a valid environment: --develop, or --production.'))
+        throw new GulpError('deploy', new Error('Error: argument there must be a valid environment: --develop, or --production.'))
     }
-    // for production deploy, a semver bump is needed.
-    const semver = VALID_SEMVER_CHANGE_ARG.find(env => args.some(arg => env === arg.substring(2))) || DEFAULT_SEMVER_CHANGE
-    if (!VALID_SEMVER_CHANGE_ARG.some(sem => sem === semver)) {
-        throw new GulpError('promote', new Error('Error: argument there must be a valid semantic version increment: --patch, --minor or --major.'))
-    }
-
-    const hash = getGitHash()
-    process.env.REPO_HASH = hash
-    process.env.REPO_NAME = process.env.REPO_NAME || getGitName()
-    process.env.DOCKER_ORG = process.env.DOCKER_ORG || 'c6oio'
-
-    console.log(`Deploying org/repo:hash --> \x1b[33m"${process.env.DOCKER_ORG}/${process.env.REPO_NAME}:${hash}"\x1b[0m into environment \x1b[33m"${environment}"\x1b[0m `)
-
-    await apply(environment)
-
-    // tag with a semantic version things that go to production
-    if (environment === 'production') {
-        // Update the repo semver tags for production.
-        const versions = codeVersions()
-        const last = lastVersion(versions)
-        const lastHash = getGitHashForTag(last)
-        if (lastHash !== process.env.REPO_HASH) {
-            const version = nextVersion(versions, semver)
-            console.log(`Bump Level: \x1b[33m${semver}\x1b[0m Version: \x1b[33m${version}\x1b[0m, Last Version: \x1b[33m${last}\x1b[0m`)
-            await setGitUser()
-            await tagRef(version, hash)
-            await pushTags()
-        } else {
-            console.log(`\x1b[35mA tag for hash ${process.env.REPO_HASH} already exists (${last}), skipping creating and tagging of a new version\x1b[0m`)
+    // for production deploy, a semver bump can be given, '--bump=patch' is the default.
+    let semver
+    let bump = args.find(arg => arg.startsWith('--bump='))
+    if (bump) {
+        semver = bump.substring(7)
+        if (!VALID_SEMVER_CHANGE_ARG.some(sem => sem === semver)) {
+            throw new GulpError('deploy', new Error('Error: for --bump, a valid semantic version increment must be given: --patch, --minor or --major.'))
         }
-    } else {
-        console.log(`\x1b[35mSemantic versions are only assigned to production deployments, no version tags have been generated.\x1b[0m`)
     }
-}
+    let tag = args.find(arg => arg.startsWith('--version='))
+    if (tag) {
+        tag = `version/${tag.substring(10)}`
+    }
+    let numberBack = args.find(arg => arg.startsWith('--rollback='))
+    if (numberBack) {
+        numberBack = numberBack.substring(11)
+        const versions = codeVersions()
+        tag = previousVersion(versions, numberBack)
+    }
+    let hash = args.find(arg => arg.startsWith('--hash='))
+    if (hash) {
+        hash = hash.length > 14 ? hash.substring(7).slice(0,7) : hash.substring(7)
+        if (hash.length !== 7) {
+            throw new GulpError('deploy', new Error('Error: Hash must be 7 or more digits'))
+        }
+    }
+    const givenArgs = [numberBack, tag, bump, hash].filter(Boolean)
+    if (!givenArgs.length) {
+        semver = DEFAULT_SEMVER_CHANGE
+        givenArgs.push(semver)
+    }
+    if (givenArgs.length !== 1) {
+        throw new GulpError('deploy', new Error('Error: Only one parameter, --bump=[patch | minor | major] --rollback=# or --version=#.#.# may be given'))
+    }
 
-const deploy = series(promote, postDeployTests)
+    if (!hash) {
+        hash = tag ? getGitHashForTag(tag) : getGitHash()
+    }
+    setContainerName(hash)
+
+    console.log(`Deploying org/repo:hash --> \x1b[33m"${containerTag(process.env.DOCKER_ORG, process.env.REPO_NAME, hash)}"\x1b[0m into environment \x1b[33m"${environment}"\x1b[0m `)
+
+    // make sure the hash has a container:
+    if (!tagExists(containerTag(), hash)) {
+        throw new GulpError('deploy', new Error('Error: no container image has been built for this commit, please checkout this commit and run the containerize script.'))
+    }
+    await apply(environment)
+    if (semver) { // if this is a new deploy, not a rollback, version, or hash deploy
+        if (environment === 'production') { // if this is a production deploy
+            // Update the repo semver tags for production.
+            const versions = codeVersions()
+            const last = lastVersion(versions)
+            const lastHash = getGitHashForTag(last)
+            if (lastHash !== process.env.REPO_HASH) {
+                const version = nextVersion(versions, semver)
+                console.log(`Bump Level: \x1b[33m${semver}\x1b[0m Version: \x1b[33m${version}\x1b[0m, Last Version: \x1b[33m${last}\x1b[0m`)
+                await setGitUser()
+                await tagRef(version, hash)
+                await pushTags()
+            } else {
+                console.log(`\x1b[35mA tag for hash ${process.env.REPO_HASH} already exists (${last}), skipping creating and tagging of a new version\x1b[0m`)
+            }
+        } else { // if this is a non-production deploy
+            console.log(`\x1b[35mSemantic versions are only assigned to production deployments, no version tags have been generated.\x1b[0m`)
+        }
+    }
+    await postDeployTests()
+}
 
 module.exports = {
     deploy,
