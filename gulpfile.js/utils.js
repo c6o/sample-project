@@ -82,7 +82,6 @@ const getGitHashForTag = (tag) => {
             return execer(`git rev-list -n 1 ${tag}`)?.toString().slice(0, 7)
         }
     } catch {
-        console.log(`\x1b[35mHash for tag ${tag} not found, ignoring... \x1b[0m`)
         return undefined
     }
 }
