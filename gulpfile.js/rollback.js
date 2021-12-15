@@ -11,6 +11,7 @@ const { postDeployTests } = require("./tests")
 const { apply } = require("./apply")
 
 const VALID_ENVIRONMENT_ARGS = ['develop', 'production']
+const DEFAULT_ENVIRONMENT = 'develop'
 
 const demote = async () => {
 
