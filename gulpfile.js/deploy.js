@@ -5,7 +5,6 @@ const {
     containerTag, setContainerName, tagExists, fetchTags,
 } = require('./utils')
 const { postDeployTests } = require("./tests")
-const { promote } = require("./deploy")
 const { apply } = require("./apply");
 
 const VALID_ENVIRONMENT_ARGS = ['develop', 'production']
@@ -21,10 +20,13 @@ const deploy = async () => {
     if (environment) {
         environment = environment.substring(14)
     }
-    if (!environment) environment = VALID_ENVIRONMENT_ARGS.find(env => args.some(arg => env === arg.substring(2))) || DEFAULT_ENVIRONMENT
+    if (!environment) {
+        environment = VALID_ENVIRONMENT_ARGS.find(env => args.some(arg => env === arg.substring(2))) || DEFAULT_ENVIRONMENT
+    }
     if (!VALID_ENVIRONMENT_ARGS.some(env => env === environment)) {
         throw new GulpError('deploy', new Error('Error: argument there must be a valid environment: --develop, or --production.'))
     }
+
     // for production deploy, a semver bump can be given, '--bump=patch' is the default.
     let semver
     let bump = args.find(arg => arg.startsWith('--bump='))
@@ -53,7 +55,10 @@ const deploy = async () => {
     const givenArgs = [numberBack?`--rollback=${numberBack}`:undefined, tag, bump, hash? `hash=${hash}`: undefined].filter(Boolean)
     console.log('given args: ',givenArgs)
     if (!givenArgs.length) {
-        semver = DEFAULT_SEMVER_CHANGE
+        if (environment==='production')
+            semver = DEFAULT_SEMVER_CHANGE
+        else
+            semver = 'none'
         bump = 'bump='+semver
         givenArgs.push(bump)
     }
@@ -102,5 +107,4 @@ const deploy = async () => {
 
 module.exports = {
     deploy,
-    promote
 }
