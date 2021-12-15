@@ -9,7 +9,7 @@ const container = async () => {
 
 const publish = async () => {
     await spawner('docker-compose push')
-    tagRef(containerTag(process.env.DOCKER_ORG, process.env.REPO_NAME, process.env.REPO_HASH), process.env.REPO_HASH)
+    tagRef(containerTag(), process.env.REPO_HASH)
 }
 
 const containerize = series(container, publish)

@@ -1,8 +1,8 @@
 const GulpError = require('plugin-error')
 const {
     getGitHash,
-    getGitName, codeVersions, previousVersion, getGitHashForTag, lastVersion, nextVersion, setGitUser, tagRef, pushTags,
-    containerTag, setContainerName, tagExists,
+    codeVersions, previousVersion, getGitHashForTag, lastVersion, nextVersion, setGitUser, tagRef, pushTags,
+    containerTag, setContainerName, tagExists, fetchTags,
 } = require('./utils')
 const { postDeployTests } = require("./tests")
 const { promote } = require("./deploy")
@@ -15,9 +15,13 @@ const DEFAULT_SEMVER_CHANGE = 'patch'
 
 const deploy = async () => {
     const args = process.argv.slice(2) // remove first two elements
-    console.log("args: ", args)
+
     // Get the environment to deploy to and the project in google that corresponds to this environment.
-    const environment = VALID_ENVIRONMENT_ARGS.find(env => args.some(arg => env === arg.substring(2))) || DEFAULT_ENVIRONMENT
+    let environment = args.find(arg => arg.startsWith('--environment='))
+    if (environment) {
+        environment = environment.substring(14)
+    }
+    if (!environment) environment = VALID_ENVIRONMENT_ARGS.find(env => args.some(arg => env === arg.substring(2))) || DEFAULT_ENVIRONMENT
     if (!VALID_ENVIRONMENT_ARGS.some(env => env === environment)) {
         throw new GulpError('deploy', new Error('Error: argument there must be a valid environment: --develop, or --production.'))
     }
@@ -30,6 +34,7 @@ const deploy = async () => {
             throw new GulpError('deploy', new Error('Error: for --bump, a valid semantic version increment must be given: --patch, --minor or --major.'))
         }
     }
+    fetchTags()
     let tag = args.find(arg => arg.startsWith('--version='))
     if (tag) {
         tag = `version/${tag.substring(10)}`
@@ -37,8 +42,6 @@ const deploy = async () => {
     let numberBack = args.find(arg => arg.startsWith('--rollback='))
     if (numberBack) {
         numberBack = numberBack.substring(11)
-        const versions = codeVersions()
-        tag = previousVersion(versions, numberBack)
     }
     let hash = args.find(arg => arg.startsWith('--hash='))
     if (hash) {
@@ -47,13 +50,20 @@ const deploy = async () => {
             throw new GulpError('deploy', new Error('Error: Hash must be 7 or more digits'))
         }
     }
-    const givenArgs = [numberBack, tag, bump, hash].filter(Boolean)
+    const givenArgs = [numberBack?`--rollback=${numberBack}`:undefined, tag, bump, hash? `hash=${hash}`: undefined].filter(Boolean)
+    console.log('given args: ',givenArgs)
     if (!givenArgs.length) {
         semver = DEFAULT_SEMVER_CHANGE
-        givenArgs.push(semver)
+        bump = 'bump='+semver
+        givenArgs.push(bump)
     }
     if (givenArgs.length !== 1) {
         throw new GulpError('deploy', new Error('Error: Only one parameter, --bump=[patch | minor | major] --rollback=# or --version=#.#.# may be given'))
+    }
+    if (numberBack) {
+        const versions = codeVersions()
+        tag = previousVersion(versions, numberBack)
+        givenArgs.push('to '+tag)
     }
 
     if (!hash) {
@@ -61,7 +71,7 @@ const deploy = async () => {
     }
     setContainerName(hash)
 
-    console.log(`Deploying org/repo:hash --> \x1b[33m"${containerTag(process.env.DOCKER_ORG, process.env.REPO_NAME, hash)}"\x1b[0m into environment \x1b[33m"${environment}"\x1b[0m `)
+    console.log(`\x1b[35mDeploying org/repo:hash --> \x1b[31m"${containerTag(hash)}"\x1b[35m into environment \x1b[31m"${environment}"\x1b[35m with arguments: \x1b[31m${givenArgs.toString().replaceAll(',',' ')}\x1b[0m `)
 
     // make sure the hash has a container:
     if (!tagExists(containerTag(), hash)) {

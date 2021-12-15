@@ -99,6 +99,9 @@ const tagRef = (version, commit) => {
     return execer(`git tag -a ${version} ${commit} -m "${version}"`, dryRun())
 }
 
+const fetchTags = () => {
+    return execer('git fetch --all --tags', dryRun())
+}
 const pushTags = () => {
     return execer(`git push origin --tags`, dryRun())
 }
@@ -175,6 +178,7 @@ module.exports = {
     containerTag,
     deleteTag,
     dryRun,
+    fetchTags,
     getDeploymentName,
     getGitHash,
     getGitHashForTag,
