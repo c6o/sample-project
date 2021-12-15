@@ -1,5 +1,5 @@
 const { series } = require('gulp')
-const { spawner, setContainerName } = require('./utils')
+const { spawner, setContainerName, tagRef} = require('./utils')
 
 const container = async () => {
     setContainerName()
@@ -9,6 +9,7 @@ const container = async () => {
 
 const publish = async () => {
     await spawner('docker-compose push')
+    tagRef(`${process.env.DOCKER_ORG}/${process.env.REPO_NAME}-${process.env.REPO_HASH}`, process.env.REPO_HASH)
 }
 
 const containerize = series(container, publish)

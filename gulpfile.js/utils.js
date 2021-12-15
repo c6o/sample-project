@@ -88,7 +88,7 @@ const getGitHashForTag = (tag) => {
 
 const tagRef = (version, commit) => {
     if (getGitHashForTag(version)) {
-        console.log(`\x1b[35mVersion ${version} already exists, skipping tagging of version\x1b[0m`)
+        console.log(`\x1b[35mTag ${version} already exists, skipping creating of tag\x1b[0m`)
         return
     }
     return execer(`git tag -a ${version} ${commit} -m "${version}"`, dryRun())
@@ -111,7 +111,7 @@ const deleteTag = (tag) => {
     }
 }
 
-const codeVersions = (tagFilter = (ele) => ele.startsWith('v')) => {
+const codeVersions = (tagFilter = (ele) => ele.startsWith('versions/v')) => {
     const tagString = execer(`git tag`)
     const tags = tagString.toString().split('\n')
     const uniq = [...new Set(tags)]
@@ -123,9 +123,11 @@ const lastVersion = (versions) => {
     return versions[versions.length-1] || '0.0.0'
 }
 
-const nextVersion = (versions, level, semverParse = (str) => str.substring(1), tagCompile = ele => 'v' + ele) => {
+const nextVersion = (versions, level, semverParse = (str) => str.substring(10), tagCompile = ele => 'versions/v' + ele) => {
     const last = lastVersion(versions)
+    console.log("last: ", last)
     const digits = semverParse(last)
+    console.log("digets: ", last)
     const semver = digits.split('.')
     switch(level) {
         case 'major': semver[0] = (Number(semver[0]) + 1).toString(); break
@@ -133,6 +135,7 @@ const nextVersion = (versions, level, semverParse = (str) => str.substring(1), t
         case 'patch': semver[2] = (Number(semver[2]) + 1).toString(); break
     }
     const version = tagCompile(semver.join('.')).toString()
+    console.log("version", version)
     return version
 }
 
