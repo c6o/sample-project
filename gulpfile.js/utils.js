@@ -130,8 +130,8 @@ const nextVersion = (versions, level, semverParse = (str) => str.substring(8), t
     console.log("digets: ", last)
     const semver = digits.split('.')
     switch(level) {
-        case 'major': semver[0] = (Number(semver[0]) + 1).toString(); break
-        case 'minor': semver[1] = (Number(semver[1]) + 1).toString(); break
+        case 'major': semver[0] = (Number(semver[0]) + 1).toString(); semver[1] = '0'; semver[2] = '0';break
+        case 'minor': semver[1] = (Number(semver[1]) + 1).toString(); semver[2] = '0'; break
         case 'patch': semver[2] = (Number(semver[2]) + 1).toString(); break
     }
     const version = tagCompile(semver.join('.')).toString()
