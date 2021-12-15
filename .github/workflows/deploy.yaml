@@ -4,22 +4,22 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: Environment to publish, 'production', 'develop', If no parameters other than 'bump' are also given, deploy the most current commit. If production is specified, a new tag version is created.
+        description: "Environment to publish, 'production', 'develop', If no parameters other than 'bump' are also given, deploy the most current commit. If production is specified, a new tag version is created."
         default: develop
         required: true
       bump:
-        description: For production deploy only, create a new semantic version tag for a new deployment: bump=patch (Valid values are 'major', 'minor', 'patch', 'premajor', 'preminor', 'prepatch', 'prerelease'. No other parameters are allowed when using this)
+        description: "For production deploy only, create a new semantic version tag for a new deployment: bump=patch (Valid values are 'major', 'minor', 'patch', 'premajor', 'preminor', 'prepatch', 'prerelease'. No other parameters are allowed when using this)"
         default: patch
         required: false
       hash:
-        description: Deploy the container for the given hash, 7 characters or a full hash: hash=f48df29 (No other parameters are allowed when using this)
+        description: "Deploy the container for the given hash, 7 characters or a full hash: hash=f48df29 (No other parameters are allowed when using this)"
         required: false
       rollback:
-        description: Deploy counting back this many versions: rollback=3 (No other parameters are allowed when using this)
+        description: "Deploy counting back this many versions: rollback=3 (No other parameters are allowed when using this)"
         default: rollback=1
         required: false
       version:
-        description: Deploy the given version: version=0.0.1 (No other parameters are allowed when using this)
+        description: "Deploy the given version: version=0.0.1 (No other parameters are allowed when using this)"
         default: rollback=1
         required: false
 jobs:

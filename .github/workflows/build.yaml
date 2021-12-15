@@ -2,7 +2,7 @@ name: build
 on: pull_request
 jobs:
   build:
-    if: "!contains(github.event.commits[0].message, '[skip ci]') && !contains(github.event.commits[0].message, '[skip]')"
+    if: "!contains(github.event.commits[0].message, '[skip]')"
     runs-on: ubuntu-20.04
     steps:
       # Checkout the codebase
