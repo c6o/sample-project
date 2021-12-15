@@ -48,7 +48,15 @@ jobs:
         run: |
           gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }} --${{ github.event.inputs.hash }} --${{ github.event.inputs.rollback }} --${{ github.event.inputs.version }}
         env:
-          GCLOUD_KEY: ${{ secrets.GCLOUD_DEVELOP_KEY }}
+          KUBECONFIG_CERT_AUTH_DATA: ${{ secrets.KUBECONFIG_CERT_AUTH_DATA }}
+          KUBECONFIG_SERVER: ${{ secrets.KUBECONFIG_SERVER }}
+          KUBECONFIG_USER_TOKEN: ${{ secrets.KUBECONFIG_USER_TOKEN }}
+
+      #      - name: Deploy to a cluster
+      #        run: |
+      #          gulp deploy --${{ github.event.inputs.environment }} --${{ github.event.inputs.bump }} --${{ github.event.inputs.hash }} --${{ github.event.inputs.rollback }} --${{ github.event.inputs.version }}
+      #        env:
+      #          GCLOUD_KEY: ${{ secrets.GCLOUD_DEVELOP_KEY }}
       # Example of deploying to multiple environments.
       #      # DEPLOY
       #      # Deploy to develop if the environment is develop (default)

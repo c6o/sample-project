@@ -1,5 +1,5 @@
 const { series } = require('gulp')
-const { spawner, setContainerName, tagRef, containerTag, getGitHash, getGitName } = require('./utils')
+const { spawner, setContainerName, tagRef, containerTag } = require('./utils')
 
 const container = async () => {
     setContainerName()

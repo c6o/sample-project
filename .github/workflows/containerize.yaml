@@ -30,5 +30,3 @@ jobs:
       - name: Build and Push the container images for this git SHA to docker hub
         run: |
           gulp containerize
-        env:
-          DOCKER_ORG: c6oio

@@ -2,6 +2,8 @@ const GulpError = require("plugin-error")
 const execSync = require('child_process').execSync
 const spawn = require('child_process').spawn
 
+const DEFAULT_REPO_NAME = 'sample_project' /* TODO: getGitName() */
+const DEFAULT_ORG_NAME =  'robblovell' /* TODO: c6oio */
 const dryRun = () => {
     return process.argv.some(arg => arg === '--dryrun')
 }
@@ -12,7 +14,7 @@ const spawner = async (commandString, noThrow = false, hide = false) => {
     const argsString = hide ? '' : args.reduce((acc, arg) => acc+arg+' ', '').trim()
     if (dryRun()) {
         console.log(`\x1b[31m${command} ${argsString}\x1b[0m`)
-        return await new Promise((resolve, reject) => {
+        return await new Promise((resolve) => {
             resolve()
         })
     }
@@ -20,7 +22,7 @@ const spawner = async (commandString, noThrow = false, hide = false) => {
 
     const child = spawn(command, args, { stdio: 'inherit' })
 
-    return await new Promise( (resolve, reject) => {
+    return await new Promise( (resolve) => {
         child.on('close', (result) => {
             if (result !== 0) {
                 if (noThrow) {
@@ -51,19 +53,12 @@ const getGitRevision = () => {
 }
 
 const getGitHash = () => {
-    const { revision, hash } = getGitRevision()
+    const { hash } = getGitRevision()
     return hash
 }
 
 const getGitName = () => {
     return execer('basename `git rev-parse --show-toplevel`').toString().trim()
-}
-
-const updateRef = (branch) => {
-    const { revision, hash } = getGitRevision()
-    //TODO: Investigate using git fast forward
-    const command = `git update-ref -m "${branch} to ${hash}" refs/heads/${branch} ${revision}`
-    return execer(command, dryRun())
 }
 
 const setGitUser = () => {
@@ -75,20 +70,15 @@ const setGitUser = () => {
 
 const tagExists = (tag) => {
     try {
-        console.log('Checking the existence of tag: ', tag)
         return execer(`git rev-parse -q --verify "refs/tags/${tag}"`)
-    } catch {
-        return undefined
-    }
+    } catch {}
 }
 const getGitHashForTag = (tag) => {
     try {
         if (tagExists(tag)) {
             return execer(`git rev-list -n 1 ${tag}`)?.toString().slice(0, 7)
         }
-    } catch {
-        return
-    }
+    } catch {}
 }
 
 const tagRef = (version, commit) => {
@@ -123,12 +113,11 @@ const codeVersions = (tagFilter = (ele) => ele.startsWith('version')) => {
     const tagString = execer(`git tag`)
     const tags = tagString.toString().split('\n')
     const uniq = [...new Set(tags)]
-    const uniqFiltered = uniq.filter(tagFilter)
-    return uniqFiltered
+    return uniq.filter(tagFilter)
 }
 
 const lastVersion = (versions) => {
-    return versions[versions.length-1] || '0.0.0'
+    return versions[versions.length-1] || 'version/0.0.0'
 }
 
 const nextVersion = (versions, level, semverParse = (str) => str.substring(8), tagCompile = ele => 'version/' + ele) => {
@@ -155,10 +144,13 @@ const onBuildServer = () => {
     return process.platform === 'linux'
 }
 
-const setContainerName = (hash = getGitHash(), name = getGitName(), org = 'c6oio') => {
+const setContainerName = (
+    hash = getGitHash(),
+    name = DEFAULT_REPO_NAME,
+    org = DEFAULT_ORG_NAME) => {
     process.env.REPO_HASH = process.env.REPO_HASH || hash
     process.env.REPO_NAME = process.env.REPO_NAME || name
-    process.env.DOCKER_ORG = process.env.DOCKER_ORG || 'c6oio'
+    process.env.DOCKER_ORG = process.env.DOCKER_ORG || org
 }
 
 const containerTag = (hash = process.env.REPO_HASH , name = process.env.REPO_NAME, org = process.env.DOCKER_ORG) => {
@@ -170,7 +162,7 @@ const containerImageName = (which, hash = process.env.REPO_HASH , name = process
 }
 
 const getDeploymentName = (which, name = process.env.REPO_NAME ) => {
-    return `${process.env.REPO_NAME}-${which}`
+    return `${name}-${which}`
 }
 
 module.exports = {
@@ -194,5 +186,4 @@ module.exports = {
     spawner,
     tagExists,
     tagRef,
-    updateRef,
 }
