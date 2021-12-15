@@ -4,7 +4,6 @@ module.exports = {
     extends: [
         'eslint:recommended',
     ],
-    sourceType: "module",
     rules: {
         "camelcase": [1, { "properties": "always" }],
         "no-alert": 1,
