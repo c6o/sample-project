@@ -111,7 +111,7 @@ const deleteTag = (tag) => {
     }
 }
 
-const codeVersions = (tagFilter = (ele) => ele.startsWith('versions/v')) => {
+const codeVersions = (tagFilter = (ele) => ele.startsWith('version')) => {
     const tagString = execer(`git tag`)
     const tags = tagString.toString().split('\n')
     const uniq = [...new Set(tags)]
@@ -123,7 +123,7 @@ const lastVersion = (versions) => {
     return versions[versions.length-1] || '0.0.0'
 }
 
-const nextVersion = (versions, level, semverParse = (str) => str.substring(10), tagCompile = ele => 'versions/v' + ele) => {
+const nextVersion = (versions, level, semverParse = (str) => str.substring(8), tagCompile = ele => 'version/' + ele) => {
     const last = lastVersion(versions)
     console.log("last: ", last)
     const digits = semverParse(last)
