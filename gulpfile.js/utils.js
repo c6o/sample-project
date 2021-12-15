@@ -74,33 +74,17 @@ const setGitUser = () => {
 }
 
 const getGitHashForTag = (tag) => {
-    const tagString = execer(`git show-ref --tags`)
-    const tagRefs = tagString.toString().trim().split('\n')
-    const tags = tagRefs.reduce((acc, tagref) => {
-        const reftag = tagref.split(' ')
-        acc[reftag[1]] = reftag[0]
-        return acc
-    }, {})
-    return tags[`refs/tags/${tag}`]?.slice(0,7)
-}
-
-const getGitTagForHash = (hash) => {
-    const tagString = execer(`git show-ref --tags`)
-    const tagRefs = tagString.toString().trim().split('\n')
-    console.log('tagRefs: ', tagRefs)
-    const tags = tagRefs.reduce((acc, tagref) => {
-        const reftag = tagref.split(' ')
-        acc[reftag[0].slice(0,7)] = reftag[1]
-        return acc
-    }, {})
-    console.log('tags: ', tags)
-    console.log('looing for ', hash)
-    return tags[hash]
+    try {
+        return execer(`git rev-list -n 1 ${tag}`)?.toString().slice(0, 7)
+    } catch {
+        console.log(`\x1b[35mHash for tag ${tag} not found, ignoring... \x1b[0m`)
+        return undefined
+    }
 }
 
 const tagRef = (version, commit) => {
     if (getGitHashForTag(version)) {
-        console.log(`\x1b[35mTag ${version} already exists, skipping tagging of version\x1b[0m`)
+        console.log(`\x1b[35mVersion ${version} already exists, skipping tagging of version\x1b[0m`)
         return
     }
     return execer(`git tag -a ${version} ${commit} -m "${version}"`, dryRun())
@@ -135,17 +119,8 @@ const lastVersion = (versions) => {
     return versions[versions.length-1] || '0.0.0'
 }
 
-const hashHasTag = (hash) => {
-    // get the tags, get the tag for the hash
-    return getGitTagForHash(hash)
-}
-
 const nextVersion = (versions, level, semverParse = (str) => str.substring(1), tagCompile = ele => 'v' + ele) => {
     const last = lastVersion(versions)
-    if (hashHasTag(process.env.REPO_HASH)) {
-        console.log(`\x1b[35mTag ${version} already exists, using the already tagged version\x1b[0m`)
-        return last
-    }
     const digits = semverParse(last)
     const semver = digits.split('.')
     switch(level) {
@@ -153,7 +128,7 @@ const nextVersion = (versions, level, semverParse = (str) => str.substring(1), t
         case 'minor': semver[1] = (Number(semver[1]) + 1).toString(); break
         case 'patch': semver[2] = (Number(semver[2]) + 1).toString(); break
     }
-    const version = tagCompile(semver.join('.'))
+    const version = tagCompile(semver.join('.')).toString()
     return version
 }
 
@@ -193,9 +168,7 @@ module.exports = {
     getGitHash,
     getGitHashForTag,
     getGitName,
-    getGitTagForHash,
     getImageName,
-    hashHasTag,
     lastVersion,
     nextVersion,
     onBuildServer,

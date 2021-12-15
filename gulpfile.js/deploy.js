@@ -6,9 +6,9 @@ const {
     getGitName,
     lastVersion,
     nextVersion,
-    pushTags,
+    getGitHashForTag,
     setGitUser,
-    tagRef, hashHasTag,
+    tagRef,
 } = require('./utils')
 const { postDeployTests } = require("./tests");
 const { apply } = require("./apply");
@@ -43,15 +43,23 @@ const promote = async () => {
     await apply(environment)
 
     // tag with a semantic version things that go to production
-    if (environment === 'production' && !hashHasTag(hash)) {
+    if (environment === 'production') {
         // Update the repo semver tags for production.
         const versions = codeVersions()
-        const version = nextVersion(versions, semver)
         const last = lastVersion(versions)
-        console.log(`Bump Level: \x1b[33m${semver}\x1b[0m Version: \x1b[33m${version}\x1b[0m, Last Version: \x1b[33m${last}\x1b[0m`)
-        await setGitUser()
-        await tagRef(version, hash)
-        await pushTags()
+        const lastHash = getGitHashForTag(last)
+        console.log('lastHash: ', lastHash)
+        console.log('last: ', last)
+        console.log('process.env.REPO_HASH: ', process.env.REPO_HASH)
+        if (lastHash !== process.env.REPO_HASH) {
+            const version = nextVersion(versions, semver)
+            console.log(`Bump Level: \x1b[33m${semver}\x1b[0m Version: \x1b[33m${version}\x1b[0m, Last Version: \x1b[33m${last}\x1b[0m`)
+            await setGitUser()
+            await tagRef(version, hash)
+            // await pushTags()
+        } else {
+            console.log(`\x1b[35mA tag for hash ${process.env.REPO_HASH} already exists (${last}), skipping creating and tagging of a new version\x1b[0m`)
+        }
     }
 }
 
