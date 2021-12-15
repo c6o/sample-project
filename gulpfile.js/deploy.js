@@ -8,7 +8,7 @@ const {
     nextVersion,
     pushTags,
     setGitUser,
-    tagRef,
+    tagRef, hashHasTag,
 } = require('./utils')
 const { postDeployTests } = require("./tests");
 const { apply } = require("./apply");
@@ -43,14 +43,14 @@ const promote = async () => {
     await apply(environment)
 
     // tag with a semantic version things that go to production
-    if (environment === 'production') {
+    if (environment === 'production' && !hashHasTag(hash)) {
         // Update the repo semver tags for production.
         const versions = codeVersions()
         const version = nextVersion(versions, semver)
         const last = lastVersion(versions)
         console.log(`Bump Level: \x1b[33m${semver}\x1b[0m Version: \x1b[33m${version}\x1b[0m, Last Version: \x1b[33m${last}\x1b[0m`)
         await setGitUser()
-        await tagRef(version)
+        await tagRef(version, hash)
         await pushTags()
     }
 }

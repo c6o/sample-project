@@ -84,7 +84,21 @@ const getGitHashForTag = (tag) => {
     return tags[`refs/tags/${tag}`]?.slice(0,7)
 }
 
-const tagRef = (version, commit = '') => {
+const getGitTagForHash = (hash) => {
+    const tagString = execer(`git show-ref --tags`)
+    const tagRefs = tagString.toString().trim().split('\n')
+    console.log('tagRefs: ', tagRefs)
+    const tags = tagRefs.reduce((acc, tagref) => {
+        const reftag = tagref.split(' ')
+        acc[reftag[0].slice(0,7)] = reftag[1]
+        return acc
+    }, {})
+    console.log('tags: ', tags)
+    console.log('looing for ', hash)
+    return tags[hash]
+}
+
+const tagRef = (version, commit) => {
     if (getGitHashForTag(version)) {
         console.log(`\x1b[35mTag ${version} already exists, skipping tagging of version\x1b[0m`)
         return
@@ -121,8 +135,17 @@ const lastVersion = (versions) => {
     return versions[versions.length-1] || '0.0.0'
 }
 
+const hashHasTag = (hash) => {
+    // get the tags, get the tag for the hash
+    return getGitTagForHash(hash)
+}
+
 const nextVersion = (versions, level, semverParse = (str) => str.substring(1), tagCompile = ele => 'v' + ele) => {
     const last = lastVersion(versions)
+    if (hashHasTag(process.env.REPO_HASH)) {
+        console.log(`\x1b[35mTag ${version} already exists, using the already tagged version\x1b[0m`)
+        return last
+    }
     const digits = semverParse(last)
     const semver = digits.split('.')
     switch(level) {
@@ -130,7 +153,8 @@ const nextVersion = (versions, level, semverParse = (str) => str.substring(1), t
         case 'minor': semver[1] = (Number(semver[1]) + 1).toString(); break
         case 'patch': semver[2] = (Number(semver[2]) + 1).toString(); break
     }
-    return tagCompile(semver.join('.'))
+    const version = tagCompile(semver.join('.'))
+    return version
 }
 
 const previousVersion = (versions, backby) => {
@@ -169,7 +193,9 @@ module.exports = {
     getGitHash,
     getGitHashForTag,
     getGitName,
+    getGitTagForHash,
     getImageName,
+    hashHasTag,
     lastVersion,
     nextVersion,
     onBuildServer,
