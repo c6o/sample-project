@@ -3,10 +3,11 @@ const GulpError = require('plugin-error')
 const {
     codeVersions,
     getGitHash,
+    getGitHashForTag,
     getGitName,
     lastVersion,
     nextVersion,
-    getGitHashForTag,
+    pushTags,
     setGitUser,
     tagRef,
 } = require('./utils')
@@ -48,18 +49,17 @@ const promote = async () => {
         const versions = codeVersions()
         const last = lastVersion(versions)
         const lastHash = getGitHashForTag(last)
-        console.log('lastHash: ', lastHash)
-        console.log('last: ', last)
-        console.log('process.env.REPO_HASH: ', process.env.REPO_HASH)
         if (lastHash !== process.env.REPO_HASH) {
             const version = nextVersion(versions, semver)
             console.log(`Bump Level: \x1b[33m${semver}\x1b[0m Version: \x1b[33m${version}\x1b[0m, Last Version: \x1b[33m${last}\x1b[0m`)
             await setGitUser()
             await tagRef(version, hash)
-            // await pushTags()
+            await pushTags()
         } else {
             console.log(`\x1b[35mA tag for hash ${process.env.REPO_HASH} already exists (${last}), skipping creating and tagging of a new version\x1b[0m`)
         }
+    } else {
+        console.log(`\x1b[35mSemantic versions are only assigned to production deployments, no version tags have been generated.\x1b[0m`)
     }
 }
 

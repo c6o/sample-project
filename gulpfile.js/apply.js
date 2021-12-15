@@ -1,5 +1,5 @@
-const {spawner, setContainerName, getDeploymentName, getImageName, dryRun, onBuildServer, deleteTag, tagRef, pushTags} = require("./utils")
-const {writeFileSync} = require("fs")
+const { spawner, setContainerName, getDeploymentName, getImageName, dryRun, onBuildServer, deleteTag, tagRef, pushTags } = require("./utils")
+const { writeFileSync } = require("fs")
 const GulpError = require("plugin-error")
 
 const ZONE = process.env.ORGANIZATION_ZONE || 'us-central1-c'

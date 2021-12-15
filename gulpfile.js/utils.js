@@ -73,9 +73,14 @@ const setGitUser = () => {
     execer(`git config --global user.name "${process.env.GIT_DEPLOYER_USER || "deployer"}"`, dryRun())
 }
 
+const tagExists = (tag) => {
+    return execer(`git rev-parse -q --verify "refs/tags/${tag}"`)
+}
 const getGitHashForTag = (tag) => {
     try {
-        return execer(`git rev-list -n 1 ${tag}`)?.toString().slice(0, 7)
+        if (tagExists(tag)) {
+            return execer(`git rev-list -n 1 ${tag}`)?.toString().slice(0, 7)
+        }
     } catch {
         console.log(`\x1b[35mHash for tag ${tag} not found, ignoring... \x1b[0m`)
         return undefined
