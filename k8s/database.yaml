@@ -17,6 +17,8 @@ spec:
         app: sample-project
         component: database
     spec:
+      strategy:
+        type: Recreate
       containers:
         - name: mongodb-container
           image: mongo

@@ -40,6 +40,8 @@ spec:
         app: sample-project
         component: core
     spec:
+      strategy:
+        type: Recreate
       containers:
         - name: sample-project-core
           image: c6oio/sample-project-core
