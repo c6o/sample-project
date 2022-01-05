@@ -11,14 +11,14 @@ spec:
     matchLabels:
       app: sample-project
       component: database
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
         app: sample-project
         component: database
     spec:
-      strategy:
-        type: Recreate
       containers:
         - name: mongodb-container
           image: mongo

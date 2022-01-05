@@ -34,14 +34,14 @@ spec:
     matchLabels:
       app: sample-project
       component: core
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
         app: sample-project
         component: core
     spec:
-      strategy:
-        type: Recreate
       containers:
         - name: sample-project-core
           image: c6oio/sample-project-core
