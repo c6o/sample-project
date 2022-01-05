@@ -42,8 +42,8 @@ const sectionTemplate = (section, payload) => {
                 <table class="ui celled table">
                     <thead>
                         <tr>
-                        <th>Field</th>
-                        <th>Value</th>
+                            <th width="25%">Field</th>
+                            <th>Value</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,7 +54,7 @@ const sectionTemplate = (section, payload) => {
                     </tbody>
                     </table>
                 </div>
-                <div class="column c60-panel">
+                <div class="column c6o-panel">
                     <h2>&nbsp;</h2>
                     <pre>${JSON.stringify(payload, null, 4)}</pre>
                 </div>
@@ -79,7 +79,7 @@ const socketTemplate = () => {
             </div>
             <div class="row">
                 <div class="column">
-                ${wsLastMessage}
+                    ${wsLastMessage}
                 </div>
             </div>
         </div>
@@ -98,7 +98,7 @@ const errorTemplate = (section, title, error = '') => (`
             <i class="exclamation triangle icon" style="color: red;"></i>
             <div class="content">
                 <div class="header">
-                ${title}
+                    ${title}
                 </div>
                 <p>${error}</p>
             </div>
@@ -157,10 +157,9 @@ const callCore = () => {
         data: { "Content-Type": undefined },
         success: (result) => {
             const { mongo, leaf, file, ...core } = result
-            core.url = coreURL
             const content =
                 socketTemplate() +
-                sectionTemplate('Core', core) +
+                sectionTemplate('Core', { url: coreURL, ...core }) +
                 sectionTemplate('Leaf', leaf) +
                 sectionTemplate('Database', mongo) +
                 sectionTemplate('File', file)

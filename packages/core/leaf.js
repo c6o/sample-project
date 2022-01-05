@@ -25,7 +25,7 @@ export const leafResult = async (inHeaders) => {
             url,
             headers
         })
-        return { leaf: { url, ...result.data, 'propagated-headers': headers } }
+        return { leaf: { url, ...result.data, 'propagated-headers': JSON.stringify(headers) } }
     }
     catch (error) {
         return { leaf: { error: error.message } }
