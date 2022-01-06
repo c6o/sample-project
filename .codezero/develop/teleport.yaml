@@ -11,14 +11,3 @@ spec:
       kind: Deployment
       resourceName: sample-project-core
       namespace: sample-project
-      namespaceResourceId:
-        apiVersion: v1
-        kind: Namespace
-        metadata:
-          name: sample-project
-      resourceQuery:
-        apiVersion: v1
-        kind: Deployment
-        metadata:
-          namespace: sample-project
-          name: sample-project-core
