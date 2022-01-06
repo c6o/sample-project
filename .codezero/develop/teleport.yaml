@@ -1,0 +1,13 @@
+apiVersion: system.codezero.io/v1alpha1
+kind: DebugProfile
+metadata:
+  name: teleport
+  namespace: sample-project
+spec:
+  commands:
+  - command: Teleport
+    params:
+      envFile: ./env.sh
+      kind: Deployment
+      resourceName: sample-project-core
+      namespace: sample-project

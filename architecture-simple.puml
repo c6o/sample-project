@@ -31,7 +31,7 @@ actor "User" as user
 Cluster_Boundary(cluster, "Kubernetes Cluster") {
 
     Namespace_Boundary(nsBackEnd, "sample-project") {
-	
+
 	    KubernetesIng(traefik, "Ingress", "")
 
 		KubernetesSvc(svcFront, "frontend", "")

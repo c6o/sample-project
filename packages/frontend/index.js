@@ -30,36 +30,38 @@ const sectionTemplate = (section, payload) => {
     if (payload.error)
         return errorTemplate(section, 'Error', payload.error)
     return `
-        <div class="ui divider"></div>
-        <div class="ui two column grid">
-            <div class="row">
-                <div class="column">
-                    <h2>${section}</h2>
+        <section>
+            <div class="ui divider"></div>
+            <div class="ui two column grid">
+                <div class="row">
+                    <div class="column">
+                        <h2>${section}</h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <table class="ui celled table">
+                            <thead>
+                                <tr>
+                                    <th width="25%">Field</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Object.keys(payload).map(key => `<tr>
+                                    <td>${key}</td>
+                                    <td>${payload[key]}</td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column c6o-panel">
+                        <h2>&nbsp;</h2>
+                        <pre>${JSON.stringify(payload, null, 4)}</pre>
+                    </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="column">
-                <table class="ui celled table">
-                    <thead>
-                        <tr>
-                        <th>Field</th>
-                        <th>Value</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${Object.keys(payload).map(key => `<tr>
-                            <td>${key}</td>
-                            <td>${payload[key]}</td>
-                        </tr>`).join('')}
-                    </tbody>
-                    </table>
-                </div>
-                <div class="column c60-panel">
-                    <h2>&nbsp;</h2>
-                    <pre>${JSON.stringify(payload, null, 4)}</pre>
-                </div>
-            </div>
-        </div>
+        </section>
     `
 }
 
@@ -79,7 +81,7 @@ const socketTemplate = () => {
             </div>
             <div class="row">
                 <div class="column">
-                ${wsLastMessage}
+                    ${wsLastMessage}
                 </div>
             </div>
         </div>
@@ -98,7 +100,7 @@ const errorTemplate = (section, title, error = '') => (`
             <i class="exclamation triangle icon" style="color: red;"></i>
             <div class="content">
                 <div class="header">
-                ${title}
+                    ${title}
                 </div>
                 <p>${error}</p>
             </div>
@@ -157,10 +159,9 @@ const callCore = () => {
         data: { "Content-Type": undefined },
         success: (result) => {
             const { mongo, leaf, file, ...core } = result
-            core.url = coreURL
             const content =
                 socketTemplate() +
-                sectionTemplate('Core', core) +
+                sectionTemplate('Core', { url: coreURL, ...core }) +
                 sectionTemplate('Leaf', leaf) +
                 sectionTemplate('Database', mongo) +
                 sectionTemplate('File', file)

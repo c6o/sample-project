@@ -6,21 +6,18 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
         <style>
-            #socket-input {
-                width: 450px;
+            #container {
+                padding-bottom: 50px;
+                padding-top: 50px;
             }
+            #socket-input { width: 450px; }
             #socket-send { margin-right: 20px; }
             #socket-broadcast { margin-right: 20px; }
-            .c60-panel {
-                background-color: lightgrey;
-            }
+            .c6o-panel { background-color: lightgrey; }
             .logo {
-                width: 40px;
                 height: 40px;
-            }
-            body {
-                margin-top: 50px;
-                margin-bottom: 50px;
+                margin-right: 12px;
+                width: 40px;
             }
             pre {
                 white-space: pre-wrap;       /* Since CSS 2.1 */
@@ -29,20 +26,21 @@
                 white-space: -o-pre-wrap;    /* Opera 7 */
                 word-wrap: break-word;       /* Internet Explorer 5.5+ */
             }
+            section { margin-bottom: 30px; }
         </style>
     </head>
     <body>
-        <div class="ui centered aligned container">
+        <div id="container" class="ui centered aligned container">
             <div class="ui grid">
                 <div class="two column row">
                     <div class="left floated middle aligned column">
-                    <h1 class='border-1'><img src='c6o.png' class='logo'> Sample Kubernetes Project</h1>
+                        <h1 class='border-1'><img src='c6o.png' class='logo'>Sample Kubernetes Project</h1>
                     </div>
                     <div class="right floated right aligned column">
-                    <div class="ui statistic">
-                        <div id="coreCounter" class="value"></div>
-                        <div class="label">requests</div>
-                    </div>
+                        <div class="ui statistic">
+                            <div id="coreCounter" class="value"></div>
+                            <div class="label">requests</div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -72,5 +70,4 @@
 
         <script src='/index.js'></script>
     </body>
-
 </html>
