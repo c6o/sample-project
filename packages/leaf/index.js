@@ -1,12 +1,13 @@
 import express from 'express'
 import cors from 'cors'
+import * as os from 'os'
 
 const port = 3010
 
 // This is here to demo intercept
 // Intercept this service and replace this message
 // when running locally
-const where = process.env.HOST
+const where = os.hostname() || 'local'
 
 // Set up the express app and handle the /api endpoint
 const app = express()
