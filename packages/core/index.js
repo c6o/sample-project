@@ -9,7 +9,7 @@ const port = 3000
 // This is here to demo intercept
 // Intercept this service and replace this message
 // when running locally
-const where = 'cluster'
+const where = process.env.HOST
 
 // Set up the express app and handle the /api endpoint
 const app = express()
