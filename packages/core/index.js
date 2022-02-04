@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from 'cors'
+import * as os from 'os'
 import { mongoResult } from './mongo.js'
 import { leafResult } from './leaf.js'
 import { fileResult } from './file.js'
@@ -9,7 +10,7 @@ const port = 3000
 // This is here to demo intercept
 // Intercept this service and replace this message
 // when running locally
-const where = process.env.HOST
+const where = os.hostname() || 'local'
 
 // Set up the express app and handle the /api endpoint
 const app = express()
