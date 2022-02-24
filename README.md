@@ -1,6 +1,6 @@
 # Sample Kubernetes Project
 
-This project is to help you explore and learn CodeZero, and how various features can help greatly accelerate and enhance the Kubernetes development experience.
+This project is to help you explore and learn CodeZero, and to show you how various features can help greatly accelerate and enhance the Kubernetes development experience.
 
 Please note that this project does not contain all possible Kubernetes scenarios, and does not illustrate all CodeZero features. If there is anything you would like to see that is not covered in these samples, please submit a pull request and reach out to us on our [discussion forums](https://github.com/c6o/roadmap/discussions). We welcome new feature requests!
 
@@ -22,19 +22,7 @@ The following diagram assumes this project is deployed to the `sample-project` n
 
 ## Getting Started
 
-The goal of this project is to show you local development against an application running in a Kubernetes cluster. You will need to clone this repo and set up a Kubernetes cluster.
-
-Getting to know Kubernetes is beyond the scope of this README, however you can check out the beginers articles on our [Blog](https://blog.codezero.io/tag/learning/).
-
-### Local Setup
-
-This project requires NodeJS 16 or greater and yarn, has been tested on MacOS (BigSur), Linux, and Windows Subsystem for Linux (WSL).
-
-```bash
-npm install -g yarn
-```
-
-All microservices can run locally with minimal requirements. After you clone the project, you can build and run all the services locally with the following steps:
+After cloning the project, you can build and run all the services locally using yarn:
 
 ```bash
 yarn install
@@ -43,41 +31,6 @@ yarn start
 
 Open [http://localhost:3030](http://localhost:3030) in a browser to view the running services.
 
-If you aren't running MongoDB locally you won't see the database service running, but we'll get this working in a cluster in the next section.
+## Tutorials
 
-Hit Ctrl-C to stop the services and exit.
-
-### Kubernetes Setup
-
-For development, we recommend using either [Civo](https://civo.com) or [DigitalOcean](https://digitalocean.com) however, any k8s or k3s Kubernetes cluster will do. This project uses Persistent Volumes and either LoadBalancer services (digitalocean) or Traefik V2 (civo) for Ingress
-
-Once your cluster is set up, you can install the sample project in cluster using:
-
-```bash
-kubectl create ns sample-project
-kubectl -n sample-project apply -f ./k8s
-```
-
-This will install all the services and deployment but will not set up ingress.
-
-If you're using TraefikV2, run the following:
-
-```bash
-kubectl -n sample-project apply -f ./k8s/traefik
-```
-
-Or, if you use an Ingress Controller that supports [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/), run the following:
-
-```bash
-kubectl -n sample-project apply -f ./k8s/ingress
-```
-
-To use a generic LoadBalance service, run the following:
-
-```bash
-kubectl -n sample-project apply -f ./k8s/loadbalance
-```
-
-The above assumes port 80 is avaiable. If you'd like an alternative port, edit the port in `k8s/loadbalance/frontend.yaml`
-
-You will then need to obtain the appropriate ingress service IP address or the LoadBalancer IP address and go to `http://IP-ADDRESS` in a browser.
+We have put together a number of tutorials that can be found in our official [documentation](https://docs.codezero.io/). This Sample Project is used in all of the tutorials, and the [first tutorial](https://docs.codezero.io/#/tutorials/sample-project) walks you through using the Sample Project to perform local development against an application running in a Kubernetes cluster.
