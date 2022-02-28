@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - master
+      - feat/2833-arm64-builds
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,13 +12,27 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Log in to registry
-        run: docker login -u ${{ secrets.DOCKER_HUB_USER }} -p ${{ secrets.DOCKER_HUB_TOKEN }}
-      - name: Build and publish
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
+      - name: Setup Docker Build
+        uses: docker/setup-buildx-action@v1
+
+      - name: Docker Login
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USER }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/bake-action@master
+        with:
+          files: ./docker-compose.yaml
+          #push: true
+        env:
+          USER: latest
+
+      - name: Test
         run: |
-          export USER=$(echo $GITHUB_SHA | cut -c 1-7)
-          docker-compose build
-          docker-compose push
-          docker images | grep c6o | awk '{ print $1 }' | xargs -I{} docker tag {}:$USER {}:latest
-          export USER=latest
-          docker-compose push
+          docker inspect --format "{{.Architecture}}" c6oio/sample-project-core:latest
