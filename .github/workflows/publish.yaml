@@ -13,8 +13,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Set up QEMU
+      - id: qemu
+        name: Set up QEMU
         uses: docker/setup-qemu-action@v1
+        with:
+          platforms: linux/amd64,linux/arm64,linux/386
 
       - name: Setup Docker Build
         uses: docker/setup-buildx-action@v1
@@ -29,10 +32,13 @@ jobs:
         uses: docker/bake-action@master
         with:
           files: ./docker-compose.yaml
+          set: |
+            *.platform=${{ steps.qemu.outputs.platforms }}
           #push: true
         env:
           USER: latest
 
       - name: Test
         run: |
-          docker inspect --format "{{.Architecture}}" c6oio/sample-project-core:latest
+          docker images
+          docker inspect --format "{{.Architecture}}" sample-project-core:latest
