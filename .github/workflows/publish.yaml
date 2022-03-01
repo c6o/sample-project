@@ -34,12 +34,6 @@ jobs:
           files: ./docker-compose.yaml
           set: |
             *.platform=${{ steps.qemu.outputs.platforms }}
-          load: true
           #push: true
         env:
           USER: latest
-
-      - name: Test
-        run: |
-          docker images
-          docker inspect --format "{{.Architecture}}" sample-project-core:latest
