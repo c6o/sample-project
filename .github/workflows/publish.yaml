@@ -10,8 +10,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - id: qemu
         name: Set up QEMU
@@ -32,6 +30,6 @@ jobs:
           files: ./docker-compose.yaml
           set: |
             *.platform=linux/amd64,linux/arm64
-          #push: true
+          push: true
         env:
           USER: latest
