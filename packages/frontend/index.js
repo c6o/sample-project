@@ -1,6 +1,6 @@
 const wsSupported = 'WebSocket' in window
 const params = new URLSearchParams(window.location.search)
-const isLocal = window.location.hostname === 'localhost'
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 const isTeleported = params.get('t') || params.get('teleport')
 
 // Polling time
@@ -142,7 +142,7 @@ socketBroadcastClicked = () => {
     $('#socket-broadcast').addClass('disabled')
 }
 
-socketInputKeydown = (e) =>  {
+socketInputKeydown = (e) => {
     if (e.target.value.length)
         $('#socket-broadcast').removeClass('disabled')
     if (e.keyCode === 13) {
