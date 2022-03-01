@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - master
-      - feat/2833-arm64-builds
 jobs:
   build:
     runs-on: ubuntu-latest
