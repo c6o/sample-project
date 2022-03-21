@@ -9,11 +9,12 @@ const mongoURL = process.env.SP_DB_URL || 'mongodb://localhost:27017'
 export const mongoResult = async () => {
     let result = { url: mongoURL }
     try {
-        await MongoClient.connect(mongoURL, { useNewUrlParser: true })
+        await MongoClient.connect(mongoURL, { useNewUrlParser: true, useUnifiedTopology: true })
         result.success = true
     }
     catch (error) {
         result.error = error.name
+        console.log(error);
     }
 
     return { mongo: result }

@@ -22,6 +22,13 @@ The following diagram assumes this project is deployed to the `sample-project` n
 
 ## Getting Started
 
+### Dependancy
+-Node.js >= v16
+-MongoDB
+```
+docker run -d -p 27017:27017 --name codezero-mongo mongo:latest
+```
+
 After cloning the project, you can build and run all the services locally using yarn:
 
 ```bash
