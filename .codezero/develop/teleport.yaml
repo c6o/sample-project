@@ -10,3 +10,5 @@ spec:
       kind: Deployment
       resourceName: sample-project-core
       namespace: sample-project
+      exclude:
+        - sample-project-frontend
