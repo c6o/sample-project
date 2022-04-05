@@ -25,7 +25,7 @@ app.get('/api', async (req, res) => {
     const { method, headers } = req
     res.send({
         who: 'core',
-        where: port,
+        where,
         ...await mongoResult(),
         ...await leafResult(headers),
         ...await fileResult()
