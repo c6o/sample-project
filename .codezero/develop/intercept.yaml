@@ -1,0 +1,14 @@
+apiVersion: system.codezero.io/v1alpha1
+kind: DevelopmentProfile
+metadata:
+  name: intercept-core
+spec:
+  commands:
+    - command: Intercept
+      params:
+        remoteService: sample-project-core
+        namespace: sample-project
+        version: 1.3.2
+        localPort: 4000
+        remotePort: 3000
+        resourceName: sample-project-core

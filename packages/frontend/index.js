@@ -3,8 +3,11 @@ const params = new URLSearchParams(window.location.search)
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 const isTeleported = params.get('t') || params.get('teleport')
 
+// this needs to match the port set in sample-project-core
+const port = 3000
+
 // Polling time
-const requestInterval = 3000
+const requestInterval = 5000
 
 // URL's depend if we are running in cluster or not
 // We can use the hostname to determine configuration
@@ -14,7 +17,7 @@ const localServiceHost = svcName => isTeleported ?
     'localhost'
 
 const coreURL = isLocal ?
-    `http://${localServiceHost('sample-project-core')}:3000/api` :
+    `http://${localServiceHost('sample-project-core')}:${port}/api` :
     '/api'
 
 const socketsURL = isLocal ?
@@ -163,8 +166,9 @@ const callCore = () => {
                 socketTemplate() +
                 sectionTemplate('Core', { url: coreURL, ...core }) +
                 sectionTemplate('Leaf', leaf) +
-                sectionTemplate('Database', mongo) +
-                sectionTemplate('File', file)
+                sectionTemplate('Database', mongo)
+                // TODO: Put this back when we have a tutorial for it
+                // sectionTemplate('File', file)
             $('#data-dump').html(content)
         },
         error: (err) => {
