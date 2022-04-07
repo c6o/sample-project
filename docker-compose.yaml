@@ -4,15 +4,19 @@ services:
     image: c6oio/sample-project-core:$USER
     build:
       context: ./packages/core
+    platform: "linux/amd64"
   sample-project-leaf:
     image: c6oio/sample-project-leaf:$USER
     build:
       context: ./packages/leaf
+    platform: "linux/amd64"
   sample-project-sockets:
     image: c6oio/sample-project-sockets:$USER
     build:
       context: ./packages/sockets
+    platform: "linux/amd64"
   sample-project-web:
     image: c6oio/sample-project-frontend:$USER
     build:
       context: ./packages/frontend
+    platform: "linux/amd64"
