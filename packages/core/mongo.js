@@ -3,7 +3,7 @@ const { MongoClient } = mongoPkg
 
 // These are overridden when running in cluster
 // They default to running locally
-const mongoURL = process.env.SP_DB_URL || 'mongodb://localhost:27017'
+const mongoURL = process.env.SP_DB_URL || 'mongodb://sample-project-database:27017'
 
 // Attempt to connect to mongodb and return success or error
 export const mongoResult = async () => {
