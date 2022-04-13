@@ -22,6 +22,12 @@ const app = express()
 app.use(cors())
 
 app.get('/api', async (req, res) => {
+    console.log(`[${new Date().toTimeString()}] Request received`)
+    const otherHeaders = Object.keys(req.headers).sort().filter(item => !item.startsWith('sec') && !item.startsWith('accept') && !item.startsWith('user-agent'))
+    for (const key of otherHeaders) {
+        console.log(`${key}: ${req.headers[key]}`)
+    }
+
     const { method, headers } = req
     res.send({
         who: 'core',
@@ -37,5 +43,5 @@ app.get('/api', async (req, res) => {
 
 // Start the server
 app.listen(port, () => {
-    console.log(`Sample Project Core API [${where}] listening on http://localhost:${port}`)
+    console.log(`Sample Project Core API[${where}] listening on http://localhost:${port}`)
 })
