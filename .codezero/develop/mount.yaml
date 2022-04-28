@@ -1,0 +1,14 @@
+apiVersion: system.codezero.io/v1alpha1
+kind: DevelopmentProfile
+metadata:
+  name: "Mount Volume for Core"
+spec:
+  commands:
+    - command: Environment
+      params:
+        kind: deployment
+        resourceName: sample-project-core
+        envFile: /Users/adrian/Projects/Traxitt/sample-project/env-core.sh
+        format: sh
+        namespace: sample-project
+        output: false
