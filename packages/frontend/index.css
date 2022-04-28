@@ -1,0 +1,21 @@
+#container {
+    padding-bottom: 50px;
+    padding-top: 50px;
+}
+#socket-input { width: 450px; }
+#socket-send { margin-right: 20px; }
+#socket-broadcast { margin-right: 20px; }
+.c6o-panel { background-color: lightgrey; }
+.logo {
+    height: 40px;
+    margin-right: 12px;
+    width: 40px;
+}
+pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+section { margin-bottom: 30px; }

@@ -30,42 +30,45 @@ let wsClient
 let wsLastMessage = 'Pending connection...'
 
 const sectionTemplate = (section, payload) => {
-    if (payload.error)
-        return errorTemplate(section, 'Error', payload.error)
-    return `
-        <section>
-            <div class="ui divider"></div>
-            <div class="ui two column grid">
-                <div class="row">
-                    <div class="column">
-                        <h2>${section}</h2>
+    if (payload) {
+        if (payload?.error)
+            return errorTemplate(section, 'Error', payload.error)
+
+        return `
+            <section>
+                <div class="ui divider"></div>
+                <div class="ui two column grid">
+                    <div class="row">
+                        <div class="column">
+                            <h2>${section}</h2>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="column">
+                            <table class="ui celled table">
+                                <thead>
+                                    <tr>
+                                        <th width="25%">Field</th>
+                                        <th>Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${Object.keys(payload).map(key => `<tr>
+                                        <td>${key}</td>
+                                        <td>${payload[key]}</td>
+                                    </tr>`).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="column c6o-panel">
+                            <h2>&nbsp;</h2>
+                            <pre>${JSON.stringify(payload, null, 4)}</pre>
+                        </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="column">
-                        <table class="ui celled table">
-                            <thead>
-                                <tr>
-                                    <th width="25%">Field</th>
-                                    <th>Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${Object.keys(payload).map(key => `<tr>
-                                    <td>${key}</td>
-                                    <td>${payload[key]}</td>
-                                </tr>`).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="column c6o-panel">
-                        <h2>&nbsp;</h2>
-                        <pre>${JSON.stringify(payload, null, 4)}</pre>
-                    </div>
-                </div>
-            </div>
-        </section>
-    `
+            </section>
+        `
+    }
 }
 
 const socketTemplate = () => {
@@ -161,15 +164,18 @@ const callCore = () => {
         type: "GET",
         data: { "Content-Type": undefined },
         success: (result) => {
-            const { mongo, leaf, file, ...core } = result
-            const content =
-                socketTemplate() +
-                sectionTemplate('Core', { url: coreURL, ...core }) +
-                sectionTemplate('Leaf', leaf) +
-                sectionTemplate('Database', mongo)
-                // TODO: Put this back when we have a tutorial for it
-                // sectionTemplate('File', file)
-            $('#data-dump').html(content)
+            // check that result is an object as we are expecting.
+            // Middleware can potentially return a string
+            if (typeof result === 'object' && result !== null) {
+                const { mongo, leaf, file, ...core } = result
+                const content =
+                    socketTemplate() +
+                    sectionTemplate('Core', { url: coreURL, ...core }) +
+                    sectionTemplate('Leaf', leaf) +
+                    sectionTemplate('Database', mongo) +
+                    sectionTemplate('File', file)
+                $('#data-dump').html(content)
+            }
         },
         error: (err) => {
             const content =
@@ -187,7 +193,7 @@ $(document).ready(() => {
     $(document).on('click', "#socket-broadcast", socketBroadcastClicked)
     $(document).on('keydown', '#socket-input', socketInputKeydown)
 
-    // Call the core API every second
+    // Call the core API every interval
     setInterval(callCore, requestInterval)
 
     // Start a sockets connection
