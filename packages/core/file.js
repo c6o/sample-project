@@ -12,7 +12,7 @@ export const fileResult = async () => {
     catch (error) {
         const message = error.message
         if (error.code === 'ENOENT')
-            message += ' - This error will be fixed during the tutorials'
+            message += ' - Your mission: Fix this error and save the world!'
 
         result.error = message
     }
