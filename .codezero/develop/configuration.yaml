@@ -1,14 +1,14 @@
 apiVersion: system.codezero.io/v1alpha1
 kind: DevelopmentProfile
 metadata:
-  name: mount
+  name: configuration-core
 spec:
   commands:
-    - command: Mount
+    - command: Environment
       params:
         kind: deployment
         resourceName: sample-project-core
-        localDirectory: ./mnt
+        envFile: ./env-core.sh
+        format: sh
         namespace: sample-project
-        version: 1.6.1
-        rootDirectory: ./mnt
+        output: false
