@@ -1,7 +1,7 @@
 apiVersion: system.codezero.io/v1alpha1
 kind: DevelopmentProfile
 metadata:
-  name: "Intercept Core Service"
+  name: intercept-core
 spec:
   commands:
     - command: Teleport

@@ -1,7 +1,7 @@
 apiVersion: system.codezero.io/v1alpha1
 kind: DebugProfile
 metadata:
-  name: "Teleport for Frontend"
+  name: teleport-frontend
   namespace: sample-project
 spec:
   commands:
