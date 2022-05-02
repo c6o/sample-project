@@ -31,7 +31,7 @@ let wsLastMessage = 'Pending connection...'
 
 const sectionTemplate = (section, payload) => {
     if (payload) {
-        if (payload?.error)
+        if (payload.error)
             return errorTemplate(section, 'Error', payload.error)
 
         return `
