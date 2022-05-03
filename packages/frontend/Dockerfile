@@ -3,6 +3,7 @@ FROM nginx:1.17.10-alpine
 # Bundle up the front end.
 COPY ./index.html /usr/share/nginx/html
 COPY ./index.js /usr/share/nginx/html
+COPY ./index.css /usr/share/nginx/html
 COPY ./c6o.png /usr/share/nginx/html
 
 # Configure nginx
