@@ -1,8 +1,9 @@
 import axios from 'axios'
+import * as https from 'https'
 
 // These are overridden when running in cluster
 // They default to running locally
-const leafURL = process.env.SP_LEAF_URL || 'http://sample-project-leaf:3010'
+const leafURL = 'https://sample-project-leaf:3011'
 
 // In order for intercept to work, headers need to
 // be propagated to upstream requests
@@ -21,9 +22,13 @@ export const leafResult = async (inHeaders) => {
     try {
         const headers = propagateHeaders(inHeaders)
         const url = `${leafURL}/api`
+        const httpsAgent = new https.Agent({
+            rejectUnauthorized: false,
+        })
         const result = await axios({
             url,
-            headers
+            headers,
+            httpsAgent
         })
         return { leaf: { url, ...result.data, 'propagated-headers': JSON.stringify(headers) } }
     }

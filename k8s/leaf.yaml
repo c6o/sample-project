@@ -23,6 +23,19 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 3010
+              protocol: TCP
+              name: http
+            - containerPort: 3011
+              protocol: TCP
+              name: https
+          volumeMounts:
+            - mountPath: /etc/nginx/ssl
+              name: nginx-ssl
+              readOnly: true
+      volumes:
+        - name: nginx-ssl
+          secret:
+            secretName: selfsigned-cert-tls
 ---
 apiVersion: v1
 kind: Service
@@ -33,10 +46,14 @@ metadata:
     component: leaf
 spec:
   ports:
-    - name: unsecure
+    - name: http
       protocol: TCP
       port: 3010
       targetPort: 3010
+    - name: https
+      protocol: TCP
+      port: 3011
+      targetPort: 3011
   selector:
     app: sample-project
     component: leaf
