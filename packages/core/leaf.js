@@ -3,7 +3,7 @@ import * as https from 'https'
 
 // These are overridden when running in cluster
 // They default to running locally
-const leafURL = 'https://sample-project-leaf:3011'
+const leafURL = process.env.SP_LEAF_URL || 'https://sample-project-leaf:3443'
 
 // In order for intercept to work, headers need to
 // be propagated to upstream requests

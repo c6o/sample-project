@@ -48,7 +48,7 @@ spec:
           imagePullPolicy: Always
           env:
             - name: SP_LEAF_URL
-              value: http://sample-project-leaf:3010
+              value: https://sample-project-leaf:3443
             - name: SP_DB_URL
               value: mongodb://sample-project-database:27017/sample-project-database
           envFrom:
