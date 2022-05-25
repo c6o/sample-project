@@ -58,7 +58,8 @@ spec:
     app: sample-project
     component: leaf
 ---
-# Dummy Self-Signed Certificate (could use cert manager)
+# Self-Signed Certificate for use by leaf service SSL listener.
+# WARNING: Never do this in a real environment.  Use something like cert-manager instead.
 apiVersion: v1
 kind: Secret
 metadata:
