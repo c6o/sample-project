@@ -3,11 +3,8 @@ const params = new URLSearchParams(window.location.search)
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
 const isTeleported = params.get('t') || params.get('teleport')
 
-// this needs to match the port set in sample-project-core
-const port = 3000
-
 // Polling time
-const requestInterval = 5000
+const requestInterval = 3000
 
 // URL's depend if we are running in cluster or not
 // We can use the hostname to determine configuration
@@ -17,7 +14,7 @@ const localServiceHost = svcName => isTeleported ?
     'localhost'
 
 const coreURL = isLocal ?
-    `http://${localServiceHost('sample-project-core')}:${port}/api` :
+    `http://${localServiceHost('sample-project-core')}:3000/api` :
     '/api'
 
 const socketsURL = isLocal ?
@@ -30,45 +27,45 @@ let wsClient
 let wsLastMessage = 'Pending connection...'
 
 const sectionTemplate = (section, payload) => {
-    if (payload) {
-        if (payload.error)
-            return errorTemplate(section, 'Error', payload.error)
+    if (!payload) return ''
 
-        return `
-            <section>
-                <div class="ui divider"></div>
-                <div class="ui two column grid">
-                    <div class="row">
-                        <div class="column">
-                            <h2>${section}</h2>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="column">
-                            <table class="ui celled table">
-                                <thead>
-                                    <tr>
-                                        <th width="25%">Field</th>
-                                        <th>Value</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${Object.keys(payload).map(key => `<tr>
-                                        <td>${key}</td>
-                                        <td>${payload[key]}</td>
-                                    </tr>`).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="column c6o-panel">
-                            <h2>&nbsp;</h2>
-                            <pre>${JSON.stringify(payload, null, 4)}</pre>
-                        </div>
+    if (payload.error)
+        return errorTemplate(section, 'Error', payload.error)
+
+    return `
+        <section>
+            <div class="ui divider"></div>
+            <div class="ui two column grid">
+                <div class="row">
+                    <div class="column">
+                        <h2>${section}</h2>
                     </div>
                 </div>
-            </section>
-        `
-    }
+                <div class="row">
+                    <div class="column">
+                        <table class="ui celled table">
+                            <thead>
+                                <tr>
+                                    <th width="25%">Field</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${Object.keys(payload).map(key => `<tr>
+                                    <td>${key}</td>
+                                    <td>${payload[key]}</td>
+                                </tr>`).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="column c6o-panel">
+                        <h2>&nbsp;</h2>
+                        <pre>${JSON.stringify(payload, null, 4)}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+    `
 }
 
 const socketTemplate = () => {
