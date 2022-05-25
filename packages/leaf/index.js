@@ -1,8 +1,11 @@
 import express from 'express'
 import cors from 'cors'
+import * as fs from 'fs'
+import * as https from 'https'
 import * as os from 'os'
 
 const port = 3010
+const httpsPort = 3443
 
 // This is here to demo intercept
 // Intercept this service and replace this message
@@ -26,4 +29,13 @@ app.get('/api', async (req, res) => {
 // Start the server
 app.listen(port, () => {
     console.log(`Leaf API ${where} listening on http://localhost:${port}`)
+})
+
+const options = {
+    key: fs.readFileSync("/etc/nginx/ssl/tls.key"),
+    cert: fs.readFileSync("/etc/nginx/ssl/tls.crt")
+}
+
+https.createServer(options, app).listen(httpsPort, () => {
+    console.log(`Leaf API ${where} secure listening on https://localhost:${httpsPort}`)
 })

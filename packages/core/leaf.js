@@ -1,4 +1,5 @@
 import axios from 'axios'
+import * as https from 'https'
 
 // These are overridden when running in cluster
 // They default to running locally
@@ -21,9 +22,13 @@ export const leafResult = async (inHeaders) => {
     try {
         const headers = propagateHeaders(inHeaders)
         const url = `${leafURL}/api`
+        const httpsAgent = new https.Agent({
+            rejectUnauthorized: false,
+        })
         const result = await axios({
             url,
-            headers
+            headers,
+            httpsAgent
         })
         return { leaf: { url, ...result.data, 'propagated-headers': JSON.stringify(headers) } }
     }

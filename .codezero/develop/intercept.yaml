@@ -18,3 +18,4 @@ spec:
         localPort: 4000
         remotePort: 3000
         resourceName: sample-project-core
+        header: "X-C6O-INTERCEPT:{{email}}"
