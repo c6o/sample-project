@@ -52,8 +52,8 @@ spec:
       targetPort: 3010
     - name: https
       protocol: TCP
-      port: 3011
-      targetPort: 3011
+      port: 3443
+      targetPort: 3443
   selector:
     app: sample-project
     component: leaf
