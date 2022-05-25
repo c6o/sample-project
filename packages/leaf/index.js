@@ -37,5 +37,5 @@ const options = {
 }
 
 https.createServer(options, app).listen(httpsPort, () => {
-    console.log(`Leaf API ${where} secure listening on http://localhost:${httpsPort}`)
+    console.log(`Leaf API ${where} secure listening on https://localhost:${httpsPort}`)
 })
