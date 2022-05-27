@@ -26,16 +26,19 @@ app.get('/api', async (req, res) => {
     })
 })
 
-// Start the server
-app.listen(port, () => {
-    console.log(`Leaf API ${where} listening on http://localhost:${port}`)
-})
-
-const options = {
-    key: fs.readFileSync("/etc/nginx/ssl/tls.key"),
-    cert: fs.readFileSync("/etc/nginx/ssl/tls.crt")
+// Start the https server if credentials exist
+if (fs.existsSync('/etc/nginx/ssl/tls.key') && fs.existsSync('/etc/nginx/ssl/tls.crt')) {
+    const options = {
+        key: fs.readFileSync('/etc/nginx/ssl/tls.key'),
+        cert: fs.readFileSync('/etc/nginx/ssl/tls.crt')
+    }
+    
+    https.createServer(options, app).listen(httpsPort, () => {
+        console.log(`Leaf API ${where} secure listening on https://localhost:${httpsPort}`)
+    })    
 }
 
-https.createServer(options, app).listen(httpsPort, () => {
-    console.log(`Leaf API ${where} secure listening on https://localhost:${httpsPort}`)
+// Start the http server
+app.listen(port, () => {
+    console.log(`Leaf API ${where} listening on http://localhost:${port}`)
 })
