@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "core.fullname" . }}
+  labels:
+    {{- include "core.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "core.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "core.selectorLabels" . | nindent 8 }}
+    spec:
+      securityContext:
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: SP_LEAF_URL
+              value: http://sample-project-leaf:3010
+            - name: SP_DB_URL
+              value: mongodb://sample-project-database:27017/sample-project-database
+          envFrom:
+            - configMapRef:
+                name: {{ include "core.fullname" . }}-config
+          volumeMounts:
+            - name: data
+              mountPath: /usr/src/app/data
+          ports:
+            - name: http
+              containerPort: {{ .Values.config.containerPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /api
+              port: http
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: {{ include "core.fullname" . }}-pvc
