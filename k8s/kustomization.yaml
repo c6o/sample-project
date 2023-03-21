@@ -1,0 +1,10 @@
+resources:
+- namespace.yaml
+- ingress/frontend.yaml
+- core.yaml
+- database.yaml
+- frontend.yaml
+- leaf.yaml
+- sockets.yaml
+
+namespace: sample-project
