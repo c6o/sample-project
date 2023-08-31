@@ -1,0 +1,1 @@
+Hurray, the core service has been deployed!
