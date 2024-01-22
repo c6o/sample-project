@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-project-external
+  labels:
+    app: sample-project
+    component: external
+spec:
+  type: ExternalName
+  externalName: dummy.restapiexample.com
+  ports:
+  - port: 80
+    name: http
+    protocol: TCP
+    targetPort: 80
+  - port: 443
+    name: https
+    protocol: TCP
+    targetPort: 443

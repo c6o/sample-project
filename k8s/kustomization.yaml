@@ -6,5 +6,6 @@ resources:
 - frontend.yaml
 - leaf.yaml
 - sockets.yaml
+- external.yaml
 
 namespace: sample-project
