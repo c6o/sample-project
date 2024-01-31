@@ -12,8 +12,8 @@ export const mongoResult = async () => {
         await MongoClient.connect(mongoURL, {
             useNewUrlParser: true, 
             useUnifiedTopology: true,
-            connectTimeoutMS: 300,
-            serverSelectionTimeoutMS: 300 
+            connectTimeoutMS: 10000,
+            serverSelectionTimeoutMS: 10000 
         })
         result.success = true
     }
