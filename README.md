@@ -1,20 +1,21 @@
 # Sample Kubernetes Project
 
-This project is to help you explore and learn CodeZero, and to show you how various features can help greatly accelerate and enhance the Kubernetes development experience.
+This project is intended to help you explore and learn Codezero, and to show you how various features can help greatly accelerate and enhance your Kubernetes development experience.
 
-Please note that this project does not contain all possible Kubernetes scenarios, and does not illustrate all CodeZero features. If there is anything you would like to see that is not covered in these samples, please submit a pull request and reach out to us on our [discussion forums](https://github.com/c6o/roadmap/discussions). We welcome new feature requests!
+**Note:** this project does not contain all possible Kubernetes scenarios, and does not illustrate all Codezero features. If there is anything you would like to see that is not covered in these samples, please submit a pull request and reach out to us on our [discussion forums](https://github.com/c6o/roadmap/discussions). We welcome new feature requests!
 
-While the services in this project are written in NodeJS, CodeZero and Kubernetes are language agnostic. We chose JavaScript given its familiarity among a wide range of developers.
+While the services in this project are written in NodeJS, Codezero and Kubernetes are language agnostic. We chose JavaScript given its familiarity among a wide range of developers.
 
 ## Architecture
 
-The project comprises of the following services and their equivalent deployments:
+The project comprises the following services and their equivalent deployments:
 
 * Frontend
 * Core
 * Leaf
 * Database
 * Sockets
+* External (dummy.restapiexample.com)
 
 The following diagram assumes this project is deployed to the `sample-project` namespace and uses Traefik for ingress.
 
@@ -40,4 +41,4 @@ Open [http://localhost:3030](http://localhost:3030) in a browser to view the run
 
 ## Tutorials
 
-We have put together a number of tutorials that can be found in our official [documentation](https://docs.codezero.io/). This Sample Project is used in all of the tutorials, and the [first tutorial](https://docs.codezero.io/#/tutorials/sample-project) walks you through using the Sample Project to perform local development against an application running in a Kubernetes cluster.
+We have put together a number of tutorials that can be found in our official [documentation](https://docs.codezero.io/). This Sample Project is used in all of the tutorials, and the [first tutorial](https://docs.codezero.io/tutorials/sample-project) walks you through using the Sample Project to perform local development against an application running in a Kubernetes cluster.
