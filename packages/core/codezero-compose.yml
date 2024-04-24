@@ -1,0 +1,12 @@
+version: "1.0"
+consume:
+  primaryNamespace: sample-project
+  rules:
+    - sample-project/*
+    - '!sample-project/sample-project-core'
+serve:
+  - namespace: sample-project
+    service: sample-project-core
+    ports:
+      - local: 3000
+        remote: 3000
