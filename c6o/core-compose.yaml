@@ -1,9 +1,9 @@
-version: "1.0"
+version: 1.0
 consume:
   primaryNamespace: sample-project
   rules:
-    - sample-project/*
-    - '!sample-project/sample-project-core'
+    - sample-project/sample-project-leaf
+    - sample-project/sample-project-database
 serve:
   - namespace: sample-project
     service: sample-project-core
