@@ -1,0 +1,19 @@
+version: 1.0
+consume:
+  primaryNamespace: sample-project
+  rules:
+    - sample-project/sample-project-database
+    - sample-project/sample-project-leaf
+serve:
+  - namespace: sample-project
+    service: sample-project-core
+    ports:
+      - local: 3000
+        remote: 3000
+    condition:
+      type: policy
+      parseJWT: true
+      expr: |
+        result = true {
+            input.jwt["sub"] == {{ .Env.USER }}
+        }
