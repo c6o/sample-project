@@ -14,5 +14,5 @@ serve:
       type: policy
       expr: |
         result = true {
-            input.request.Query["foo"] == "bar"
+            input.request.query["foo"] == "bar"
         }

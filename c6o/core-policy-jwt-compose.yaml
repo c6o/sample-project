@@ -15,5 +15,5 @@ serve:
       parseJWT: true
       expr: |
         result = true {
-            input.jwt["sub"] == {{ .Env.USER }}
+            input.jwt["sub"] == test@codezero.io
         }

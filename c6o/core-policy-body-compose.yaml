@@ -1,0 +1,18 @@
+version: 1.0
+consume:
+  primaryNamespace: sample-project
+  rules:
+    - sample-project/sample-project-database
+    - sample-project/sample-project-leaf
+serve:
+  - namespace: sample-project
+    service: sample-project-core
+    ports:
+      - local: 3000
+        remote: 3000
+    condition:
+      type: policy
+      expr: |
+        result = true {
+            input.request.body.foo.bar == "car"
+        }
