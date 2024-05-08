@@ -1,0 +1,5 @@
+version: 1.0
+consume:
+  primaryNamespace: sample-project
+  rules:
+    - sample-project/sample-project-database
