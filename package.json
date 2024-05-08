@@ -8,7 +8,7 @@
     "start-core": "(cd ./packages/core && yarn start)",
     "start-sockets": "(cd ./packages/sockets && yarn start)",
     "start-leaf": "(cd ./packages/leaf && yarn start)",
-    "start": "lerna run start --stream",
+    "start": "env-cmd -f .env lerna run start --stream",
     "test": "echo \"No tests implemented\""
   },
   "version": "1.0.0",
@@ -18,6 +18,7 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
+    "env-cmd": "^10.1.0",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
     "lerna": "^4.0.0",
