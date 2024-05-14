@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Simple NGINX based frontend",
   "scripts": {
-    "start": "http-server ./ -p 3030"
+    "start": "http-server ./ -c-1 -p 3030"
   },
   "devDependencies": {
     "http-server": "^14.0.0"

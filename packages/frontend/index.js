@@ -130,6 +130,10 @@ const beginSockets = () => {
     }
 
     wsClient.onmessage = (evt) => wsLastMessage = evt.data
+    wsClient.onerror = (err) => {
+        console.error(err)
+        setTimeout(beginSockets, 1000)
+    }
 }
 
 socketToggleClicked = () => {
@@ -175,6 +179,7 @@ const callCore = () => {
             }
         },
         error: (err) => {
+            console.error(err)
             const content =
                 socketTemplate() +
                 errorTemplate('Core', `Failed to reach ${coreURL}`, `The sample-project-core service may have failed to start or is still spinning up.`)
