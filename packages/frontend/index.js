@@ -1,7 +1,7 @@
 const wsSupported = 'WebSocket' in window
 const params = new URLSearchParams(window.location.search)
 const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-const isTeleported = params.get('t') || params.get('teleport')
+const hasLocalFlag = params.get('l') || params.get('localhost')
 
 // Polling time
 const requestInterval = 3000
@@ -9,9 +9,9 @@ const requestInterval = 3000
 // URL's depend if we are running in cluster or not
 // We can use the hostname to determine configuration
 // When localhost, we are doing local development
-const localServiceHost = svcName => isTeleported ?
-    svcName :
-    'localhost'
+const localServiceHost = svcName => hasLocalFlag ?
+    'localhost' :
+    svcName
 
 const coreURL = isLocal ?
     `http://${localServiceHost('sample-project-core')}:3000/api` :
