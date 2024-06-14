@@ -72,7 +72,7 @@ const socketTemplate = () => {
     if (!wsSupported)
         return errorTemplate('Sockets', 'Browser issue', 'WebSockets are not supported')
     if (!wsClient)
-        return errorTemplate('Sockets', 'Socket is closed')
+        return errorTemplate('Sockets', `Socket is closed at ${socketsURL}`)
 
     return `
         <div class="ui divider"></div>
