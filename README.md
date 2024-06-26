@@ -2,7 +2,7 @@
 
 This project is intended to help you explore and learn Codezero, and to show you how various features can help greatly accelerate and enhance your Kubernetes development experience.
 
-**Note:** this project does not contain all possible Kubernetes scenarios, and does not illustrate all Codezero features. If there is anything you would like to see that is not covered in these samples, please submit a pull request and reach out to us on our [discussion forums](https://github.com/c6o/roadmap/discussions). We welcome new feature requests!
+**Note:** This project does not contain all possible Kubernetes scenarios, and does not illustrate all Codezero features. If you would like to see anything that is not covered in these samples, please submit a Pull Request and contact us on our [Discord](https://discord.gg/NVdS9zQu). We welcome new feature requests!
 
 While the services in this project are written in NodeJS, Codezero and Kubernetes are language agnostic. We chose JavaScript given its familiarity among a wide range of developers.
 
