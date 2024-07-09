@@ -6,7 +6,8 @@
 	"image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bullseye",
 	"features" : {
         "ghcr.io/c6o/devcontainers-features/codezero:1": {}
-    }
+    },
+	"runArgs": ["--privileged"]
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 
