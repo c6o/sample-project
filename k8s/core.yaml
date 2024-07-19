@@ -10,17 +10,6 @@ data:
   SAMPLE_PROJECT_VERSION: "Version Production"
   SAMPLE_PROJECT_API_PORT: "3000"
 ---
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: sample-project-core-pvc
-spec:
-  resources:
-    requests:
-      storage: 1Gi
-  accessModes:
-    - ReadWriteOnce
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -56,13 +45,6 @@ spec:
                 name: sample-project-core-config
           ports:
             - containerPort: 3000
-          volumeMounts:
-            - name: data
-              mountPath: /usr/src/app/data
-      volumes:
-        - name: data
-          persistentVolumeClaim:
-            claimName: sample-project-core-pvc
 ---
 apiVersion: v1
 kind: Service
