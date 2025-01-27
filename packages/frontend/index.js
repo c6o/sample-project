@@ -17,9 +17,9 @@ const coreURL = isLocal ?
     `http://${localServiceHost('sample-project-core')}:3000/api` :
     '/api'
 
-const socketsURL = isLocal ?
-    `ws://${localServiceHost('sample-project-sockets')}:8999` :
-    `ws://${window.location.host}/sockets`
+const socketsURL = isLocal 
+    ? `ws://${localServiceHost('sample-project-sockets')}:8999` 
+    : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/sockets`;
 
 // State
 let coreCounter = 0
