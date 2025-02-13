@@ -21,5 +21,10 @@
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.3.0",
     "nodemon": "^2.0.14"
+  },
+  "dependencies": {
+    "@c6o/codezero-agent": "^1.0.1",
+    "@netlify/functions": "^3.0.0",
+    "node-fetch": "^3.3.2"
   }
 }

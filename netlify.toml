@@ -1,0 +1,17 @@
+# Use your extension’s slug as the name
+[[integrations]]
+   name = "lm0he2wq-codezero-extension"
+
+[functions]
+directory = "netlify/functions/"
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/codezero"
+  status = 200
+
+[integrations.dev]
+  # Set the "path" as the path from your test site to your extension’s build folder.
+  path = "../c6o-netlify/"
+  # The following forces the extension to be used when building the test site.
+# force_run_in_build = true

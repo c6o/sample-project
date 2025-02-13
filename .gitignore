@@ -24,3 +24,6 @@ html-report
 *~
 .DS_Store
 **/*.d.ts
+
+# Local Netlify folder
+.netlify
