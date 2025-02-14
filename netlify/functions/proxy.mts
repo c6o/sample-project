@@ -12,8 +12,8 @@ export default async (req: Request, context: Context): Promise<Response> => {
     console.log('Received request for', req.url)
     const isSocketRequest = req.url.includes('/socket');
     const targetHost = isSocketRequest 
-        ? "http://sample-project-socket.sample-project:8999"
-        : "http://sample-project-core.sample-project:3000";
+        ? "http://sample-project-socket.sample-project:8999/socket"
+        : "http://sample-project-core.sample-project:3000/api";
 
     const response = await fetch(targetHost, { agent })
     if (!response.ok) {
