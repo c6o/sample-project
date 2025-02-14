@@ -14,5 +14,19 @@ export default async (req: Request, context: Context): Promise<Response> => {
         : "http://sample-project-core.sample-project.svc.cluster.local:3000";
 
     const agent = new CodezeroAgent()
-    return await fetch(targetHost, { agent })
+    const response = await fetch(targetHost, { agent })
+    if (!response.ok) {
+        return new Response('Failed to fetch data', {
+            status: response.status,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+    }
+
+    return new Response(await response.text(), {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
 }
