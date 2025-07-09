@@ -19,6 +19,7 @@ export const mongoResult = async () => {
     }
     catch (error) {
         result.error = error.name
+        console.error("ERROR", error.message)
     }
 
     return { mongo: result }
