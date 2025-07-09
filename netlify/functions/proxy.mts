@@ -15,7 +15,7 @@ const agent = new CodezeroAgent()
 // access the API
 const propagateHeaders = (headers) =>
     Object.keys(headers)
-        .filter(key => key.startsWith('x-'))
+        .filter(key => key.toLowerCase().startsWith('x-'))
         .reduce((obj, key) => {
             obj[key] = headers[key]
             return obj
