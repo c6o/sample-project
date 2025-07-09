@@ -29,6 +29,8 @@ export default async (req: Request, context: Context): Promise<Response> => {
         : "http://sample-project-core.sample-project:3000/api";
 
     const headers = propagateHeaders(req.headers)
+    if (Object.keys(headers).length !== 0) console.log('propagating', headers)
+
     const response = await fetch(targetHost, { agent, headers })
     if (!response.ok) {
         return new Response('Failed to fetch data', {
