@@ -22,7 +22,7 @@ const propagateHeaders = (headers) =>
         }, {})
         
 export default async (req: Request, context: Context): Promise<Response> => {
-    console.log('Received request for', req.url)
+    console.log('Received request for', req.url, req.headers)
     const isSocketRequest = req.url.includes('/socket');
     const targetHost = isSocketRequest 
         ? "http://sample-project-socket.sample-project:8999/socket"
